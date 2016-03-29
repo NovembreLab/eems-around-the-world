@@ -1,0 +1,14 @@
+--output_folder
+output/south-africa/
+--proj
+south-africa
+--region
+southern africa
+--grid
+50
+--max-missing
+0.1
+--bed
+/data/data_clean/merged/merge28-no-pca
+--region-buffer
+2

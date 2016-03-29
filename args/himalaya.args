@@ -1,0 +1,17 @@
+--output_folder
+output/himalaya/
+--proj
+himalaya
+--region
+india
+china
+nepal
+bangladesh
+--grid
+100
+--max-missing
+0.051
+--bed
+/data/data_clean/merged/merge28-no-pca
+--region-buffer
+2

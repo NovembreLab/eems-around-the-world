@@ -1,0 +1,112 @@
+EXE_PONG = 'pong'
+
+def create_file_list_lazy(wildcards):
+    """
+        automatically collects admixture output for PONG analysis,
+        assuming they match the naming pattern
+        admixture/{name}/{i}/{name}.{k}.Q,
+        where {name} is the name of the (input) bed file,
+        i is an integer giving the run, and k is the number
+        of "ancestral" populations. As this only picks up what
+        exists, it will not automatically create runs
+    """
+    raise NotImplementedError()
+
+def create_file_list(wildcards):
+    """
+        automatically triggers admixture and
+        collects output for PONG analysis.
+        wildcards should have the following entries:
+        -name, name of data set
+        -kmin, minimum k (inclusive)
+        -kmax, maximum k (inclusive)
+        -nruns, how many runs per k
+    """
+    kmin, kmax = int(wildcards.kmin), int(wildcards.kmax) + 1
+    n = int(wildcards.n)
+    files = expand("admixture/{name}/{i}/{name}.{k}.Q",
+        i = range(n), k = range(kmin, kmax),
+        name=wildcards.name)
+    return files
+
+rule run_admixture_single_run:
+    input:
+        bed='subset/{name}.bed',
+        bim='subset/{name}.bim',
+        fam='subset/{name}.fam',
+    benchmark:
+        'admixture/{name}/{i}/{name}.{k}.BM',
+    output:
+        P='admixture/{name}/{i}/{name}.{k}.P',
+        Q='admixture/{name}/{i}/{name}.{k}.Q'
+    run:
+        name, i, k = wildcards.name, wildcards.i, wildcards.k
+        s = 'cd admixture/{name}/{i};'
+        s += '%s ../../../{input.bed} {k}'
+        s += ' --seed={i}; '
+#        s += 'mv {name}.{k}.P {i}.{k}.P;'
+#        s += 'mv {name}.{k}.Q {i}.{k}.Q;'
+        shell(s % config['EXE']['admixture'])
+
+rule create_filemap:
+    input: create_file_list
+    output:
+        filemap='{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}.filemap',
+    run:
+        with open(output.filemap, 'w') as fm:
+            for q_row in input:
+                q = q_row.split("/")
+                run_number = q[2]
+                file_name = q[len(q) - 1]
+                fns = file_name.split(".")
+                k = fns[len(fns) - 2] #second last is K
+
+                run_id = "%s_%s" % (file_name, run_number)
+                run_id = run_id.replace(".", "_")
+                s = "%s\t%s\t%s\n" % (run_id, k, q_row)
+                fm.write(s )
+
+rule create_ind2pop:
+    input:
+        indiv_meta= 'subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo=config['DATA']['meta'] + '.pop_geo',
+    output:
+        ind2pop='pong/{name}.ind2pop',
+        pop_names='pong/{name}.pop_names',
+    run:
+        pop_display = pd.read_csv(input.pop_display)
+        pop_geo = pd.read_csv(input.pop_geo)
+        indiv_meta = pd.read_csv(input.indiv_meta)    
+        indiv = pd.merge(indiv_meta, pop_display, how='left')        
+        indiv = pd.merge(indiv, pop_geo, how='left')        
+        assert all(indiv.sampleId == indiv_meta.sampleId)
+        indiv.to_csv(output.ind2pop, columns=['popLabel'], index=None,
+            header=False)
+        indiv0 =indiv[['popLabel', 'name', 'latitude', 'longitude']]
+        indiv0.drop_duplicates(inplace=True)
+        indiv0.sort_index(by=['latitude', 'longitude'],
+            ascending=[False, True], inplace=True)
+        indiv0.to_csv(output.pop_names, sep="\t",
+            columns=['popLabel', 'name'], 
+            index=None, header=False)
+
+rule run_pong:
+    input:
+        filemap=rules.create_filemap.output,
+        ind2pop='pong/{name}.ind2pop',
+        pop_names='pong/{name}.pop_names'
+    output:
+        'pong/{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}/result_summary.txt',
+    run:
+        args= [EXE_PONG, '-fgv -c 0', 
+            '--filemap', input.filemap[0],
+            '--ind2pop', input.ind2pop,
+            '--output_dir', os.path.dirname(output[0]),
+            '--disable_server',
+            '--pop_names', input.pop_names
+            ]
+        s = " ".join(args)
+        shell(s)
+
+        

@@ -1,0 +1,14 @@
+--output_folder
+output/america/
+--proj
+america
+--region
+Americas
+--grid
+250
+--max-missing
+0.1
+--bed
+/data/meta/merged/merge_master
+--region-buffer
+2

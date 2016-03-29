@@ -1,0 +1,159 @@
+from subsetter.eems import create_diffs_file, create_ini_file
+from subsetter.load import load_pop_geo, load_indiv_meta
+from subsetter.intersect import intersect
+import pandas as pd
+import numpy as np
+
+GRID_PATH = 'subsetter/maps/grid%s.shp'
+EPS = 0.00001
+
+base = lambda x: os.path.splitext(x)[0]
+
+rule bed2diffs:
+    input:
+        bed='subset/{name}.bed',
+        bim='subset/{name}.bim',
+        fam='subset/{name}.fam',
+    output:
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
+    threads: 4
+    run:
+        infile=base(input.bed)
+        outfile=base(output.diffs)
+        create_diffs_file(bedfile=infile,
+                          bed2diffs=config['EXE']['bed2diffs2'],
+                          outname=outfile)
+        
+
+rule make_coord:
+    input:
+        pop_geo='subset/{name}.pop_geo',
+        indiv_meta='subset/{name}.indiv_meta',
+        order='eems/{name}.order'
+    output:
+        coord='eems/{name}-run{i, \d+}.coord',
+    run:
+        location_data = load_pop_geo(input.pop_geo)
+        sample_data = load_indiv_meta(input.indiv_meta)
+        order = pd.read_table(input.order, header=None, sep=" ")
+        meta_data = sample_data.merge(location_data)
+
+        seed = int(wildcards.i) + sum(ord(s) for s in wildcards.name)
+        np.random.seed(seed)
+        sd = meta_data['accuracy'] * config['sdfactor'] + EPS
+        long_jitter = np.random.normal(meta_data['longitude'], sd)
+        lat_jitter = np.random.normal(meta_data['latitude'], sd)
+        long_jitter = ["%2.2f" % i for i in long_jitter]
+        lat_jitter = ["%2.2f" % i for i in lat_jitter]
+        temp_data = pd.DataFrame({'longitude':long_jitter,
+                                 'latitude': lat_jitter})
+        
+        temp_data.to_csv(output.coord, sep=" ", header=False, index=False,
+                         columns=('longitude', 'latitude'))
+        
+        
+rule make_outer:
+    input:
+        outer='subset/{name}.polygon'
+    output:
+        outer='eems/{name}.outer'
+    shell:
+        'cp {input.outer} {output.outer}'
+
+        
+rule make_grid:
+    input:
+        outer='eems/{name}.outer',
+        coord='eems/{name}-run{i, \d+}.coord',
+    output:
+        edges='eems/{name}-run{i, \d+}.edges',
+        demes='eems/{name}-run{i, \d+}.demes',
+        ipmap='eems/{name}-run{i, \d+}.ipmap'
+    run:
+        name = wildcards.name
+        if 'grid' in config['eems'][name]:
+            grid2 = GRID_PATH % config['eems'][name]['grid']
+        else:
+            grid2 = GRID_PATH % config['eems']['__default__']['grid']
+        
+        out_path = base(output.edges)
+        intersect(grid2, input.outer, input.coord, out_path)
+
+rule make_ini_file:
+    input:
+        bim='subset/{name}.bim',
+        coord='eems/{name}-run{i, \d+}.coord',
+        outer='eems/{name}.outer',
+        order='eems/{name}.order',
+        diffs='eems/{name}.diffs',
+        edges='eems/{name}-run{i, \d+}.edges',
+        demes='eems/{name}-run{i, \d+}.demes',
+        ipmap='eems/{name}-run{i, \d+}.ipmap'
+    output:
+        inifile='eems/{name}-run{i, \d+}.ini'
+    run:
+        cfg = config['eems']['__default__'].copy()
+        if wildcards.name in config['eems']:
+            cfg.update(config['eems'][wildcards.name])
+        
+        n_demes = cfg.pop('nDemes')
+        n_sites = np.loadtxt(input.bim, str).shape[0]
+        cfg['nSites'] = n_sites
+        mcmcpath='eemsout/' + wildcards.i + "/" + wildcards.name + '/'
+        datapath = base(input.outer)
+        ini = base(output.inifile)
+        meta_data= pd.read_table(input.coord, header=None)
+
+        cfg['gridpath'] = datapath
+        create_ini_file(ini, mcmcpath, datapath,
+            meta_data=meta_data,
+            n_demes=n_demes, **cfg)
+        
+
+rule run_eems:
+    input:
+        outer='eems/{name}.outer',
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
+        coord='eems/{name}-run{i, \d+}.coord',
+        inifile='eems/{name}-run{i, \d+}.ini',
+    log:
+        'eemsout/{i, \d+}/{name}/log.txt',
+    output:
+        demes='eemsout/{i, \d+}/{name}/demes.txt',
+        edges='eemsout/{i, \d+}/{name}/edges.txt',
+        ipmap='eemsout/{i, \d+}/{name}/ipmap.txt',
+        outer='eemsout/{i, \d+}/{name}/outer.txt',
+        mhyper='eemsout/{i, \d+}/{name}/mcmcmhyper.txt',
+        mrates='eemsout/{i, \d+}/{name}/mcmcmrates.txt',
+        mtiles='eemsout/{i, \d+}/{name}/mcmcmtiles.txt',
+        pilogl='eemsout/{i, \d+}/{name}/mcmcpilogl.txt',
+        qhyper='eemsout/{i, \d+}/{name}/mcmcqhyper.txt',
+        qrates='eemsout/{i, \d+}/{name}/mcmcqrates.txt',
+        qtiles='eemsout/{i, \d+}/{name}/mcmcqtiles.txt',
+        thetas='eemsout/{i, \d+}/{name}/mcmcthetas.txt',
+        wcoord='eemsout/{i, \d+}/{name}/mcmcwcoord.txt',
+        xcoord='eemsout/{i, \d+}/{name}/mcmcxcoord.txt',
+        ycoord='eemsout/{i, \d+}/{name}/mcmcycoord.txt',
+        zcoord='eemsout/{i, \d+}/{name}/mcmczcoord.txt',
+    run:
+        s = config['EXE']['eems'] + " --params " + input.inifile 
+        shell(s + " 2> {log}")
+
+
+rule run_eems_replicates:
+    input:
+        expand('eems/subset/oceania-run{i}.ini', i = range(10))
+        #expand('eemsout/{i}/subset/oceania/mcmcmrates.txt', i = range(10))
+
+rule diagnostic_mds:
+    input:
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__='diagnostic_mds.R'
+    output:
+        pdf='eems/figures/{name}-mds.pdf'
+    script: input.__script__

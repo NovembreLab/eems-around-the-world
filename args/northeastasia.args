@@ -1,0 +1,14 @@
+--output_folder
+output/east-asia/
+--proj
+east-asia
+--region
+eastern asia
+--grid
+100
+--max-missing
+0.01
+--bed
+/data/data_clean/merged/merge26-no-pca
+--region-buffer
+2

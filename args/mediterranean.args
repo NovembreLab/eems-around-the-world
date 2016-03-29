@@ -1,0 +1,18 @@
+--output_folder
+output/medi/
+--proj
+medi
+--region
+southern europe
+western asia
+northern africa
+--grid
+100
+--max-missing
+0.01
+--bed
+/data/data_clean/merged/merge26-no-pca
+--region-buffer
+2
+--diffs
+tmp/medi

@@ -1,0 +1,64 @@
+{
+    "eems" :
+    {
+        "__default__" :{
+            "nDemes" : 350,
+            "numThinIter" : 9999,
+            "numBurnIter" : 1500000,
+            "numMCMCIter" : 5000000,
+	    "grid" : 500
+        },
+        "africa" :
+        {
+	    "grid" : 100
+        },
+        "america" :
+        {
+	    "grid" : 250 
+        },
+        "asia" :
+        {
+	    "grid" : 250 
+        },
+        "centralasia" :
+        {
+	    "grid" : 100 
+        },
+        "europe" :
+        {
+	    "grid" : 100 
+        },
+        "himalaya" :
+        {
+	    "grid" : 100 
+        },
+        "india" :
+        {
+	    "grid" : 50 
+        },
+        "medi" :
+        {
+	    "grid" : 100 
+        },
+        "eastasia" :
+        {
+	    "grid" : 100 
+        },
+        "seasia" :
+        {
+	    "grid" : 100 
+        },
+        "southafrica" :
+        {
+	    "grid" : 50 
+        },
+        "oceania" :
+        {
+        "nDemes" : 350,
+        "numThinIter" : 9999,
+        "numBurnIter" : 500000,
+        "numMCMCIter" : 1000000,
+	    "grid" : 250 
+        }
+    }
+}

@@ -1,0 +1,15 @@
+--output_folder
+output/asia/
+--proj
+asia
+--region
+asia
+oceania
+--grid
+250
+--max-missing
+0.005
+--bed
+/data/data_clean/merged/merge26-no-pca
+--region-buffer
+2
