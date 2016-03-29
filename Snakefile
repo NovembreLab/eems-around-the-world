@@ -2,12 +2,12 @@ from subsetter.load import load_pop_geo, load_indiv_meta
 from subsetter.subset.polygon import _get_subset_area, create_polygon_file
 from subsetter.subset import filter_data
 
-configfile: "subset.json"
-configfile: "eems.json"
-configfile: "config.json"
+configfile: "config/subset.json"
+configfile: "config/eems.json"
+configfile: "config/config.json"
 
-include: 'eems.snake'
-include: 'pong.snake'
+include: 'scripts/eems.snake'
+include: 'scripts/pong.snake'
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
@@ -27,6 +27,22 @@ META_SRC = config['DATA']['meta']
 base = lambda x: os.path.splitext(x)[0]
 
 def snakemake_subsetter(input, output, name):
+    """ creates a subset of data based on a geographical region
+        see the rule `subset` for an example.
+        it assumes that output is in a folder named `subset/`
+    input : snakemake.input
+        input.plink : a triple of plink format genetic data files
+        input.meta : a path to pgs-type meta-data
+        input.map : path to a shapefile map
+    output : snakemake.output
+        output.indiv_meta : indiv_meta file of subset
+        output.pop_geo: pop_geo file restricted to subset
+        output.polygon: a l x 2 file with latitude and longitude
+            of polygon points delineating region
+    name : str
+        the name of the resulting dataset, also, config is read
+        from config['subset'][name]
+    """
     params = config['subset']['__default__']
     params.update(config['subset'][name])
     location_data = load_pop_geo(input.meta[0])
@@ -58,6 +74,7 @@ def subset_all_fun(ext, prefix=''):
         return infiles
     return ss
     
+
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
         subsets = config['subset'].keys()
@@ -110,8 +127,8 @@ rule install:
         'apt-get install libgeos-dev libgda1-dev python-pandas python-pip '
         ' python-mpltoolkits.basemap ;' #ubuntu repos
         'pip3 install shapely fiona descartes basemap;' #python3 stuff
-        'pip install pong' #python 2
-
+        'pip install pong;' #python 2
+        # R packages: deldir SDMtools, rworldmap, rworldxtra
 
 
 rule run_flashpca:
@@ -140,15 +157,11 @@ rule diagnostic_pca:
         order='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
-        __script__='diagnostic_pca.R',
+        __script__='scripts/diagnostic_pca.R',
         __lib__='pw_plot.R'
     output:
         pdf='pca/figures/{name}-pca.pdf'
     script: input.__script__
-EEMS_FILES=['mcmcxcoord.txt', 'mcmcycoord.txt',
-            'mcmczcoord.txt', 'mcmcwcoord.txt', 
-            'mcmcmtiles.txt', 'mcmcqtiles.txt']
-
 
 """
 rule run_eems:

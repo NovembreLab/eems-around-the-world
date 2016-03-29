@@ -80,6 +80,7 @@ rule make_grid:
         out_path = base(output.edges)
         intersect(grid2, input.outer, input.coord, out_path)
 
+
 rule make_ini_file:
     input:
         bim='subset/{name}.bim',
@@ -101,7 +102,7 @@ rule make_ini_file:
         n_sites = np.loadtxt(input.bim, str).shape[0]
         cfg['nSites'] = n_sites
         mcmcpath='eemsout/' + wildcards.i + "/" + wildcards.name + '/'
-        datapath = base(input.outer)
+        datapath = base(input.coord)
         ini = base(output.inifile)
         meta_data= pd.read_table(input.coord, header=None)
 
@@ -138,14 +139,22 @@ rule run_eems:
         ycoord='eemsout/{i, \d+}/{name}/mcmcycoord.txt',
         zcoord='eemsout/{i, \d+}/{name}/mcmczcoord.txt',
     run:
+        wc = wildcards.name, wildcards.i
+        new_diff = 'eems/%s-run%s.diffs' % wc
+        new_outer = 'eems/%s-run%s.outer' % wc
+        s = 'ln -f %s %s ' % (input.outer, new_outer)
+        shell(s)
+        s = 'ln -f %s %s ' % (input.diffs, new_diff)
+        shell(s)
         s = config['EXE']['eems'] + " --params " + input.inifile 
         shell(s + " 2> {log}")
 
 
 rule run_eems_replicates:
     input:
-        expand('eems/subset/oceania-run{i}.ini', i = range(10))
-        #expand('eemsout/{i}/subset/oceania/mcmcmrates.txt', i = range(10))
+        #expand('eems/oceania-run{i}.ini', i = range(10))
+        expand('eemsout/{i}/oceania/mcmcmrates.txt', i = range(10))
+
 
 rule diagnostic_mds:
     input:
@@ -153,7 +162,7 @@ rule diagnostic_mds:
         order='eems/{name}.order',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
-        __script__='diagnostic_mds.R'
+        __script__='scripts/diagnostic_mds.R'
     output:
         pdf='eems/figures/{name}-mds.pdf'
     script: input.__script__

@@ -51,7 +51,7 @@ rule run_admixture_single_run:
 rule create_filemap:
     input: create_file_list
     output:
-        filemap='{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}.filemap',
+        filemap='pong/{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}.filemap',
     run:
         with open(output.filemap, 'w') as fm:
             for q_row in input:
@@ -63,7 +63,7 @@ rule create_filemap:
 
                 run_id = "%s_%s" % (file_name, run_number)
                 run_id = run_id.replace(".", "_")
-                s = "%s\t%s\t%s\n" % (run_id, k, q_row)
+                s = "%s\t%s\t../%s\n" % (run_id, k, q_row)
                 fm.write(s )
 
 rule create_ind2pop:
@@ -103,7 +103,7 @@ rule run_pong:
             '--filemap', input.filemap[0],
             '--ind2pop', input.ind2pop,
             '--output_dir', os.path.dirname(output[0]),
-            '--disable_server',
+       #     '--disable_server',
             '--pop_names', input.pop_names
             ]
         s = " ".join(args)
