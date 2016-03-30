@@ -6,8 +6,9 @@ configfile: "config/subset.json"
 configfile: "config/eems.json"
 configfile: "config/config.json"
 
-include: 'scripts/eems.snake'
-include: 'scripts/pong.snake'
+include: 'sfiles/eems.snake'
+include: 'sfiles/pong.snake'
+include: 'sfiles/pca.snake'
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
@@ -128,28 +129,10 @@ rule install:
         ' python-mpltoolkits.basemap ;' #ubuntu repos
         'pip3 install shapely fiona descartes basemap;' #python3 stuff
         'pip install pong;' #python 2
-        # R packages: deldir SDMtools, rworldmap, rworldxtra
+        # R packages: deldir SDMtools, rworldmap, rworldxtra        
+        #   mapdata, FNN:q
 
 
-rule run_flashpca:
-    input:
-        bed='subset/{name}.bed',
-        bim='subset/{name}.bim',
-        fam='subset/{name}.fam',
-    output:
-        pc=protected("pca/flash_{name}_dim{ndim}.pc"),
-        load=protected("pca/flash_{name}_dim{ndim}.load"),
-        pve=protected("pca/flash_{name}_dim{ndim}.pve")
-    params: seed=12
-    run:
-        infile = base(input.bed)
-        s = '%s --bfile %s ' % (config['EXE']['flashpca'], infile)
-        s += '--ndim %s ' % wildcards.ndim 
-        s += '--outpc {output.pc} '
-        s += '--outload {output.load} '
-        s += '--outpve {output.pve} '
-        s += '--v --mem low --seed {params.seed}'
-        shell(s)
 
 rule diagnostic_pca:
     input:
