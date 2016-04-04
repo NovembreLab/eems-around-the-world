@@ -91,22 +91,28 @@ rule create_ind2pop:
             columns=['popLabel', 'name'], 
             index=None, header=False)
 
-rule run_pong:
+rule make_pong_script:
+    """
+        since pong does not save figures, running it
+        automatically makes little sense; I therefore 
+        set up a script
+    """
     input:
         filemap=rules.create_filemap.output,
         ind2pop='pong/{name}.ind2pop',
         pop_names='pong/{name}.pop_names'
     output:
-        'pong/{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}/result_summary.txt',
+        file='pong/run_pong_{name}-K{kmin, \d+}-{kmax, \d+}-nruns{n}.sh'
     run:
         args= [EXE_PONG, '-fgv -c 0', 
             '--filemap', input.filemap[0],
             '--ind2pop', input.ind2pop,
-            '--output_dir', os.path.dirname(output[0]),
+            '--output_dir', 'pong/' + wildcards.name,
        #     '--disable_server',
             '--pop_names', input.pop_names
             ]
         s = " ".join(args)
-        shell(s)
+        with open(output.file, 'w') as f:
+            f.write(s)
 
         

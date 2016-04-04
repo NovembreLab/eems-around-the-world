@@ -98,7 +98,9 @@ rule subset_all_diagnostic_mds:
     input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
 
 rule subset_all_pca:
-    input: subset_all_fun(ext='-pca.pdf', prefix='pca/figures/')
+    input:
+        subset_all_fun(ext='_dim20_pc2.png', prefix='figures/pca/'),
+         subset_all_fun(ext='_dim20_pc1.png', prefix='figures/pca/')
 
 rule subset_admixture_k2:
     input: subset_all_fun_reps(prefix='admixture/{i}/', ext='.2.P')

@@ -28,8 +28,8 @@ rule make_pc_plots:
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/ggpca.R'
     output:
-        pc1='figures/pca/raw/{name}_dim20_pc1.png',
-        pc2='figures/pca/raw/{name}_dim20_pc2.png',
+        pc1='figures/pca/{name}_dim20_pc1.png',
+        pc2='figures/pca/{name}_dim20_pc2.png',
     script: "../" +input.__script__
     #shell:
     #    'Rscript --vanilla snakescripts/ggpca.R {input} {output} 30'
@@ -40,7 +40,7 @@ rule make_loadings_plots:
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
-        fig='figures/pca/raw/{name}_dim20_loadings.png'
+        fig='figures/pca/{name}_dim20_loadings.png'
     script:
         '../' + input.__script__
     #shell:
