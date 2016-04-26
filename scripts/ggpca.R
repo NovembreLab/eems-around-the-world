@@ -110,7 +110,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 }
 args <- commandArgs(T)
 if(exists('snakemake')){
-    print(args)
     pc <- snakemake@input[['pc']]
     fam <- snakemake@input[['fam']]
     indiv_meta <- snakemake@input[['indiv_meta']]
@@ -122,6 +121,17 @@ if(exists('snakemake')){
                 scale_fill_manual(name=data$abbrev, values=data$color))
     makePlots(data, col, output, output2)
 } else{
+    args <- commandArgs(T)
+    pc <- args[1]
+    fam <- args[2]
+    indiv_meta <- args[3]
+    pop_display <- args[4]
+    output <- args[5]
+    output2 <- args[6]
+    data <- load.data(pc, fam, indiv_meta, pop_display)
+    col <- list(scale_color_manual(name=data$abbrev, values=data$color),
+                scale_fill_manual(name=data$abbrev, values=data$color))
+    makePlots(data, col, output, output2)
 }
 
 

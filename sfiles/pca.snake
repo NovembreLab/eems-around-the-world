@@ -30,7 +30,10 @@ rule make_pc_plots:
     output:
         pc1='figures/pca/{name}_dim20_pc1.png',
         pc2='figures/pca/{name}_dim20_pc2.png',
-    script: "../" +input.__script__
+    #script: "../" +input.__script__
+    shell: "Rscript {input.__script__} {input.pc} {input.fam}"
+        " {input.indiv_meta} {input.pop_display} "
+        " {output.pc1} {output.pc2} 20"
     #shell:
     #    'Rscript --vanilla snakescripts/ggpca.R {input} {output} 30'
 
@@ -41,7 +44,7 @@ rule make_loadings_plots:
         __script__='scripts/pcaloadings.R'
     output:
         fig='figures/pca/{name}_dim20_loadings.png'
-    script:
-        '../' + input.__script__
-    #shell:
-    #    "Rscript " + D['scripts'] + "/pcaloadings.R {input} {output}"
+    #script: '../' + input.__script__
+    shell:
+        "Rscript {input.__script__} {input.load} "
+        "{input.bim} {output.fig}"
