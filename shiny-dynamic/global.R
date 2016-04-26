@@ -1,6 +1,7 @@
 source("modules/map.R")
 source("modules/pca.R")
 source("modules/pca1D.R")
+source("modules/pca_spat.R")
 
 
 setup_modules <- function(){
@@ -10,6 +11,7 @@ setup_modules <- function(){
     modules$plot <- list()
     modules$call <- list()
     modules$from_readable_name <- list()
+    modules$dataloader <- list()
     modules
 }
 
@@ -28,5 +30,7 @@ modules <- setup_modules()
 modules <- add_plot_module(modules,  "pc2d", "PCA", pc2d_args)
 modules <- add_plot_module(modules,  "map", "Map", map_args)
 modules <- add_plot_module(modules,  "pca1d", "1D PCA (vioplot)", pca1d_args)
+modules <- add_plot_module(modules,  "pca_spat", "Spatial PCA", pca_spat_args)
+
 
 modules <<- modules

@@ -2,14 +2,16 @@ source("scripts/ggpca.R")
 
 print(getwd())
 
+
+
 pca1d_main_UI <- function(id, config) {
     ns <- NS(id)
 
     conditionalPanel(
         condition = "input.plot_selector.indexOf('pca1d') != -1",
-	absolutePanel(plotOutput(ns("gg_pc1d"), brush=ns("test_brush"), width='100%', height='100%'),
+	absolutePanel(plotOutput(ns("gg_pca1d"), brush=ns("test_brush"), width='100%', height='100%'),
        	draggable=F, style='background:purple; padding:20px;', left="00%",
-	width="50%", height="500px")
+	width="50%", height="500px", top="600px")
 )}
 
 pca1d_options_UI <- function(id, config) {
@@ -33,7 +35,6 @@ pca1d_plot <- function(input, output, session, dataset) {
     observeEvent(input$which_PC,{
 	 if(config$PC != input$which_PC){
 	     config$PC <- input$which_PC}
-         x <<- dataset()
     })
 
     observeEvent(input$test_brush, {
@@ -49,7 +50,7 @@ pca1d_plot <- function(input, output, session, dataset) {
     })
 
 
-    output$gg_pc1d <- renderPlot({
+    output$gg_pca1d <- renderPlot({
         x = dataset()
 
         cmap = unique(x[,c('abbrev', 'color')])
@@ -60,4 +61,22 @@ pca1d_plot <- function(input, output, session, dataset) {
     return(config)
 }
 
+pca1d_loader <- reactive({
+    print("reload pc data using pca1d loader")
+    files = input_files()
+    pcs <- read.table(files$pca)
+    names(pcs) <- paste0("PC", 1:ncol(pcs))
+    fam <- read.table(files$fam)[,1]
+    pc_data <- data.frame(sampleId=fam, pcs, n=1:length(fam))
+})
+
+
 pca1d_args <-  c("get_dataset")
+
+mod <- list(main_UI=pca1d_main_UI,
+            options_UI=pca1d_options_UI,
+            plot=pca1d_plot,
+            args=pca1d_args,
+            name="pca1d",
+            readable_name="PCA 1D (vioplots"
+            )
