@@ -22,9 +22,6 @@ PLINK_SRC = config['DATA']['genotypes']
 META_SRC = config['DATA']['meta']
 
 
-
-
-
 base = lambda x: os.path.splitext(x)[0]
 
 def snakemake_subsetter(input, output, name):
@@ -85,29 +82,45 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     return ss
     
 
-rule subset_all_bed:
-    input: subset_all_fun(ext='.bed')
 
-rule subset_all_ini0:
-    input: subset_all_fun(prefix='eems/', ext='-run0.ini')
 
-rule subset_all_ini10:
-    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini')
+# rules that run important stuff for all subsets
 
-rule subset_all_diagnostic_mds:
-    input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
+rule subset_all_eems:
+    input:
+        subset_all_fun(prefix='eemsout/', ext='_runs30.controller')
 
 rule subset_all_pca:
     input:
         subset_all_fun(ext='_dim20_pc2.png', prefix='figures/pca/'),
          subset_all_fun(ext='_dim20_pc1.png', prefix='figures/pca/')
 
+rule subset_all_pong:
+    input: subset_all_fun_reps(prefix='pong/', ext='-K2-8-nruns5/result_summary.txt')
+
+rule all:
+    input:
+        rules.subset_all_eems.input,
+        rules.subset_all_pca.input,
+        rules.subset_all_pong.input
+
+# rules that run testing or partial stuff for all subsets
+rule subset_all_ini0:
+    input: subset_all_fun(prefix='eems/', ext='-run0.ini')
+
+rule subset_all_ini30:
+    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini', nreps=30)
+
+rule subset_all_diagnostic_mds:
+    input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
+
+
+
 rule subset_admixture_k2:
     input: subset_all_fun_reps(prefix='admixture/{i}/', ext='.2.P')
         
-rule subset_pong:
-    input: subset_all_fun_reps(prefix='pong/', ext='-K2-8-nruns5/result_summary.txt')
 
+# rules that do the data partitioning
 rule subset:
     input:
         plink=expand("%s.{ext}"% PLINK_SRC, ext=PLINK_EXT),

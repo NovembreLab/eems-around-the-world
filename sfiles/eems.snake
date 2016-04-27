@@ -113,7 +113,7 @@ rule make_ini_file:
             n_demes=n_demes, **cfg)
         
 
-rule run_eems:
+rule run_eems_single_run:
     input:
         outer='eems/{name}.outer',
         diffs='eems/{name}.diffs',
@@ -151,10 +151,19 @@ rule run_eems:
         shell(s + " 2> {log}")
 
 
-rule run_eems_replicates:
+def eemsinfn(wildcards):
+        return expand('eemsout/{i}/{n}/mcmcmrates.txt',
+            i = range(int(wildcards.nruns)),
+            n=[wildcards.name])
+    
+rule run_eems_replicate_runs:
     input:
+        eemsinfn
         #expand('eems/oceania-run{i}.ini', i = range(10))
-        expand('eemsout/{i}/oceania/mcmcmrates.txt', i = range(10))
+    output:
+        'eemsout/{name}_runs{nruns}.controller'
+    shell: 'touch {output}'
+    
 
 
 rule diagnostic_mds:
