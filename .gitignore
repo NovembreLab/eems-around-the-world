@@ -1,0 +1,15 @@
+admixture/
+pca/
+subset/
+.*
+*pdf
+eems/
+merged/
+pong/
+*.pyc
+tmp*
+eemsout/
+app-gridster/
+shiny*/
+test*
+viz/
