@@ -9,9 +9,8 @@
         "bed2diffs2" : "/data/eems/bed2diffs/src/bed2diffs_v2"
     },
     "DATA" : {
-        "genotypes" : "/data/meta/merged/merge_prun6",
-        "meta" : "/data/meta/pgs/gvar",
+        "genotypes" : "../pps-popres/POPRES_NovembreEtAl2008_finalSet",
+        "meta" : "../popres",
         "map" : "/home/peterb/old_data/eems-project/eems/pipeline/pipeline/maps/ne_50m_admin_0_map_subunits.shp"
     }
-
 }

@@ -13,8 +13,8 @@ include: 'sfiles/pca.snake'
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
-    'originalId', 'permissions', 'popLabel']
-POP_GEO_COLS = ['popLabel', 'latitude', 'longitude', 'accuracy'] 
+    'originalId', 'permissions', 'popId']
+POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy'] 
 
 
 PLINK_EXE = config['EXE']['plink']
@@ -108,8 +108,8 @@ rule all:
 rule subset_all_ini0:
     input: subset_all_fun(prefix='eems/', ext='-run0.ini')
 
-rule subset_all_ini30:
-    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini', nreps=30)
+rule subset_all_ini10:
+    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini', nreps=10)
 
 rule subset_all_diagnostic_mds:
     input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
