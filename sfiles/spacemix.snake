@@ -1,0 +1,78 @@
+from snakemake.utils import R
+
+rule get_pop_frq:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+        indiv_meta='{name}.indiv_meta',
+    output:
+        frq='{name}.frq.strat',
+        pops='{name}.pops'
+    run:
+        im = pd.read_csv(input.indiv_meta)
+        im = im[['sampleId', 'sampleId', 'popLabel']]
+        im.to_csv(output.pops, sep=" ", index=False)
+        shell('cp {output.pops} tmpf')
+
+        inname = base(input.bed)
+        outname = base(base(output.frq))
+        s = [PLINK_EXE, '--bfile', inname, '--freq',
+            '--within', output.pops, '--out', outname]
+        shell(" ".join(s))
+
+rule make_spacemix_counts:
+    input:
+        '{name}.frq.strat'
+    output:
+        'spacemix/{name}.counts',
+    run:
+        R("""library(tidyr); library(dplyr);
+            x <- read.table("{input}", header=T)  %>% 
+                select(CLST, MAC, SNP) %>% 
+                spread(key=CLST, value=MAC) %>%
+                select(-SNP) %>% write.csv("{output}", row.names=F)
+        """)
+        
+rule make_spacemix_sample_size:
+    input:
+        '{name}.frq.strat'
+    output:
+        'spacemix/{name}.sample_size',
+    run:
+        R("""library(tidyr); library(dplyr);
+            x <- read.table("{input}", header=T)  %>% 
+                select(CLST, NCHROBS, SNP) %>% 
+                spread(key=CLST, value=NCHROBS) %>%
+                select(-SNP) %>% write.csv("{output}", row.names=F)
+        """)
+
+rule run_spacemix:
+    input:
+        ss='spacemix/{name}.sample_size',
+        cts='spacemix/{name}.counts',
+        pop_geo='{name}.pop_geo',
+        __script__='scripts/run_spacemix.R'
+    output:
+        "spacemix/{name}/mcmc/__LongRun/__space_MCMC_output1.Robj"
+    script: '../' + input.__script__
+
+
+rule plot_spacemix_geospace:
+    input:
+        spacemix_output = rules.run_spacemix.output,
+        pop_geo='{name}.pop_geo',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__='scripts/plot_spacemix.R'
+    output:
+        'spacemix/{name}/plot1.png'
+    script: '../' + input.__script__
+
+
+        
+    
+        
+
+rule install_spacemix:
+    run: R("""install_github("gbradburd/SpaceMix")""")
+        

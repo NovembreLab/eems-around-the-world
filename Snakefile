@@ -9,6 +9,7 @@ configfile: "config/config.json"
 include: 'sfiles/eems.snake'
 include: 'sfiles/pong.snake'
 include: 'sfiles/pca.snake'
+include: 'sfiles/spacemix.snake'
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
