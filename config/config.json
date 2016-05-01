@@ -6,7 +6,8 @@
         "flashpca" : "flashpca",
         "eems" : "/data/eems/runeems_snps/src/runeems_snps",
         "bed2diffs1" : "/data/eems/bed2diffs/src/bed2diffs_v1",
-        "bed2diffs2" : "/data/eems/bed2diffs/src/bed2diffs_v2"
+        "bed2diffs2" : "/data/eems/bed2diffs/src/bed2diffs_v2",
+        "treemix" : "/data/programs/treemix/src/treemix"
     },
     "DATA" : {
         "genotypes" : "../pps-popres/POPRES_NovembreEtAl2008_finalSet",
