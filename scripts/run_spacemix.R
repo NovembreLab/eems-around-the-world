@@ -1,10 +1,10 @@
 library(SpaceMix)
 
-spacemix_wrapper <- function(cts, ss, pop_geo, output_name, ...){
+spacemix_wrapper <- function(cts, ss, pop_geo, output_name, model="target", ...){
 run.spacemix.analysis(n.fast.reps = 10,
                         fast.MCMC.ngen = 1e5,
-                        fast.model.option = "target",
-                        long.model.option = "source_and_target",
+                        fast.model.option = model,
+                        long.model.option = model,
                         data.type = "counts",
                         counts = cts,
                         sample.sizes = ss,
@@ -19,7 +19,7 @@ run.spacemix.analysis(n.fast.reps = 10,
                         mixing.diagn.freq = 50,
                         savefreq = 1e4,
                         directory=output_name,
-                        prefix = "_")
+                        prefix = model)
 }
 
 plot_object <- function(opt, pop_geo, pop_display, ...){
@@ -37,12 +37,14 @@ plot_object <- function(opt, pop_geo, pop_display, ...){
         ss = snakemake@input$ss
         cts = snakemake@input$cts
         pop_geo = snakemake@input$pop_geo
+        model = snakemake@wildcards$model
         opt = snakemake@output[[1]]
     } else if(length(args) >=4){
         ss = args[1]
         cts = args[2]
         pop_geo = args[3]
-        opt = args[4]
+        model = args[4]
+        opt = args[5]
     }
     if(exists('ss')){
         samp_size <- t(read.csv(ss, check.names=F))

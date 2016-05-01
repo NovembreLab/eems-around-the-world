@@ -34,8 +34,17 @@ rule run_spacemix:
         pop_geo='{name}.pop_geo',
         __script__='scripts/run_spacemix.R'
     output:
-        "spacemix/{name}/mcmc/__LongRun/__space_MCMC_output1.Robj"
+        "spacemix/{name}/mcmc/{model}_LongRun/{model}_space_MCMC_output1.Robj"
     script: '../' + input.__script__
+
+rule plot_spacemix_4_models:
+    input:
+        expand('spacemix/{name}_model{model}/plot1.png',
+            model=['no_movement', 'source', 'target', 'source_and_target'],
+            name=['{name}'])
+    output:
+        'spacemix/{name}.controller'
+    shell: 'touch {output}'
 
 
 rule plot_spacemix_geospace:
@@ -45,7 +54,7 @@ rule plot_spacemix_geospace:
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/plot_spacemix.R'
     output:
-        'spacemix/{name}/plot1.png'
+        'spacemix/{name}_model{model}/plot1.png'
     script: '../' + input.__script__
 
 
