@@ -6,6 +6,8 @@ configfile: "config/subset.json"
 configfile: "config/eems.json"
 configfile: "config/config.json"
 
+include: 'sfiles/utils.snake'
+include: 'sfiles/treemix.snake'
 include: 'sfiles/eems.snake'
 include: 'sfiles/pong.snake'
 include: 'sfiles/pca.snake'
