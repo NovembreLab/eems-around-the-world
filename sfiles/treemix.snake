@@ -1,0 +1,57 @@
+import gzip
+from collections import defaultdict
+
+def plink2treemix(inname, outname):
+    """this is a condensed version of Joe Pickrell's script
+        plink2treemix.py, which is distributed with treemix
+    """
+    pop2rs = defaultdict(dict)                                                                  
+    pops = set()                                                                     
+                                                                                     
+    with open(inname) as infile:
+        line = infile.readline()                                                         
+        for line in infile:
+            line = line.strip().split()                                                  
+            _, rs, pop, _, _, _, mc, total = line
+            pop2rs[rs][pop] = int(mc), int(total) - int(mc)
+            pops.add(pop)
+
+    pops = list(pops)
+
+    with gzip.open(outname, 'wt') as outfile:
+        outfile.write(" ".join(pops) + "\n")
+                                                                                     
+        for rs in pop2rs:                                                                   
+            l = ["%d,%d" % pop2rs[rs][pop] for pop in pops]
+            s = " ".join(l) + "\n"
+            outfile.write(s)
+
+rule make_treemix_input:
+    input:
+        frq_strat='{name}.frq.strat'
+    output:
+        treemix_in='treemix/{name}.in.gz',
+    run:
+        plink2treemix(input.frq_strat, output.treemix_in)
+
+rule run_treemix_single:
+    input: rules.make_treemix_input.output
+    params:
+        seed=141
+    output:
+        cov='treemix/{name}_m{m}.cov.gz',
+        covse='treemix/{name}_m{m}.covse.gz',
+        edges='treemix/{name}_m{m}.edges.gz',
+        modelcov='treemix/{name}_m{m}.modelcov.gz',
+        llik='treemix/{name}_m{m}.llik',
+        treeout='treemix/{name}_m{m}.treeout.gz',
+        vertices='treemix/{name}_m{m}.vertices.gz',
+    log: 'treemix.log'
+    run:
+        outname = base(base(output.cov))
+        s = config['EXE']['treemix'] + ' -i {input} '
+        s += '-m {wildcards.m} '
+        s += '-o {outname} '
+        s += '-seed {params.seed} '
+        s += '2> treemix.log '
+        shell(s)
