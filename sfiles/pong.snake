@@ -41,9 +41,10 @@ rule run_admixture_single_run:
         Q='admixture/{name}/{i}/{name}.{k}.Q'
     run:
         name, i, k = wildcards.name, wildcards.i, wildcards.k
+        seed = int(i) * 23 + int(k) * 1541
         s = 'cd admixture/{name}/{i};'
         s += '%s ../../../{input.bed} {k}'
-        s += ' --seed={i}; '
+        s += ' --seed={seed}; '
 #        s += 'mv {name}.{k}.P {i}.{k}.P;'
 #        s += 'mv {name}.{k}.Q {i}.{k}.Q;'
         shell(s % config['EXE']['admixture'])
