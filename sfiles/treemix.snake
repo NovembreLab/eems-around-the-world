@@ -55,3 +55,13 @@ rule run_treemix_single:
         s += '-seed {params.seed} '
         s += '2> treemix.log '
         shell(s)
+
+def treemix_setfun(wildcards):
+    ext = ['treeout.gz']
+    m = range(int(wildcards.mlower), int(wildcards.mupper) + 1)
+    return expand("treemix/{name}_m{m}.{ext}",
+        name = [wildcards.name], m=m, ext=ext)
+rule run_treemix_set:
+    input: treemix_setfun
+    output:
+        'treemix/{name}_m{mlower, \d+}-{mupper, \d+}.controller'
