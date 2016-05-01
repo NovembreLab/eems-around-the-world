@@ -37,31 +37,35 @@ rule make_treemix_input:
 rule run_treemix_single:
     input: rules.make_treemix_input.output
     params:
-        seed=141
+        seed_base=141
     output:
-        cov='treemix/{name}_m{m}.cov.gz',
-        covse='treemix/{name}_m{m}.covse.gz',
-        edges='treemix/{name}_m{m}.edges.gz',
-        modelcov='treemix/{name}_m{m}.modelcov.gz',
-        llik='treemix/{name}_m{m}.llik',
-        treeout='treemix/{name}_m{m}.treeout.gz',
-        vertices='treemix/{name}_m{m}.vertices.gz',
+        cov='treemix/{name}_m{m}_run{run}.cov.gz',
+        covse='treemix/{name}_m{m}_run{run}.covse.gz',
+        edges='treemix/{name}_m{m}_run{run}.edges.gz',
+        modelcov='treemix/{name}_m{m}_run{run}.modelcov.gz',
+        llik='treemix/{name}_m{m}_run{run}.llik',
+        treeout='treemix/{name}_m{m}_run{run}.treeout.gz',
+        vertices='treemix/{name}_m{m}_run{run}.vertices.gz',
     log: 'treemix.log'
     run:
         outname = base(base(output.cov))
+        seed = params.seed_base * 23 + int(wildcards.m) * 19 + int(wildcards.run)
         s = config['EXE']['treemix'] + ' -i {input} '
         s += '-m {wildcards.m} '
         s += '-o {outname} '
-        s += '-seed {params.seed} '
+        s += '-seed {seed} '
         s += '2> treemix.log '
         shell(s)
 
 def treemix_setfun(wildcards):
     ext = ['treeout.gz']
     m = range(int(wildcards.mlower), int(wildcards.mupper) + 1)
-    return expand("treemix/{name}_m{m}.{ext}",
-        name = [wildcards.name], m=m, ext=ext)
+    runs = range(wildcards.nrun)
+    return expand("treemix/{name}_m{m}_run{runs}.{ext}",
+        name = [wildcards.name], m=m, ext=ext, runs=runs)
 rule run_treemix_set:
     input: treemix_setfun
     output:
-        'treemix/{name}_m{mlower, \d+}-{mupper, \d+}.controller'
+        'treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.controller'
+    shell: 'touch {output}'
+

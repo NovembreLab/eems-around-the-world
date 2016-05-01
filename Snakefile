@@ -1,6 +1,8 @@
 from subsetter.load import load_pop_geo, load_indiv_meta
 from subsetter.subset.polygon import _get_subset_area, create_polygon_file
 from subsetter.subset import filter_data
+from collections import Counter
+import numpy as np
 
 configfile: "config/subset.json"
 configfile: "config/eems.json"
@@ -49,6 +51,12 @@ def snakemake_subsetter(input, output, name):
     location_data = load_pop_geo(input.meta[0])
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
+
+    counter = Counter(meta_data.popId)
+    pops_to_keep = [c for c in counter if counter[c] >= params['min_sample_size']]
+    inds_to_keep = np.in1d(meta_data.popId, pops_to_keep)
+    meta_data = meta_data[inds_to_keep]
+
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
         region=params['region'],
         sample_buffer=float(params['sample_buffer']),

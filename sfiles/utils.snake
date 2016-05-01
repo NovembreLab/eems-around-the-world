@@ -12,7 +12,7 @@ rule get_pop_frq:
     run:
         im = pd.read_csv(input.indiv_meta)
         im = im[['sampleId', 'sampleId', 'popId']]
-        im.popId = im.popId.str.replace(' ', '___')
+        im.popId = im.popId.str.replace(' ', '_')
         im.to_csv(output.pops, sep=" ", index=False)
         shell('cp {output.pops} tmpf')
 
