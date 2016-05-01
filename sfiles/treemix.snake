@@ -1,5 +1,6 @@
 import gzip
 from collections import defaultdict
+from snakemake.utils import R
 
 def plink2treemix(inname, outname):
     """this is a condensed version of Joe Pickrell's script
@@ -60,7 +61,7 @@ rule run_treemix_single:
 def treemix_setfun(wildcards):
     ext = ['treeout.gz']
     m = range(int(wildcards.mlower), int(wildcards.mupper) + 1)
-    runs = range(wildcards.nrun)
+    runs = range(int(wildcards.nruns))
     return expand("treemix/{name}_m{m}_run{runs}.{ext}",
         name = [wildcards.name], m=m, ext=ext, runs=runs)
 rule run_treemix_set:
@@ -68,4 +69,47 @@ rule run_treemix_set:
     output:
         'treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.controller'
     shell: 'touch {output}'
+
+rule plot_treemix_best:
+    input: 
+        '/data/programs/treemix/src/plotting_funcs.R',
+        config['DATA']['meta'] + '.pop_display',
+        rules.run_treemix_set.input,
+    output: 
+        treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
+        residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',
+    run:
+        infiles = input[2:]
+        pop_display = input[1]
+        __script__ = input[0]
+        bases = [base(base(s)) for s in infiles]
+        max_llik = 'NONE', -np.inf
+        for b in bases:
+            with open("%s.llik" %b) as f:
+                x = f.read().split()
+                ll = float(x[len(x)-1])
+                if ll > max_llik[1]:
+                    max_llik = b, ll
+
+        print(max_llik)
+        R("""
+            source("{__script__}")
+            png(file="{output.treeplot}", width=1600)
+            plot_tree("{max_llik[0]}")
+            dev.off()
+            """)
+
+        R("""
+            source("{__script__}")
+            x = read.table(gzfile("{max_llik[0]}.cov.gz"), check.names=F)
+            n <- data.frame(popId=gsub("___", " ", names(x)))
+            pop_display <- read.csv("{pop_display}")       
+            m <- merge(n, pop_display, all.x=T)
+            m <- m[order(m$order),'popId']
+            write.table(gsub(" ", "___", m), "X", row.names=F, quote=F, col.names=F)
+        
+            png(file="{output.residplot}", width=1600)
+            plot_resid("{max_llik[0]}", "X")
+            dev.off()
+        """)
 
