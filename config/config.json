@@ -4,14 +4,16 @@
         "plink" : "plink",
         "admixture" : "admixture",
         "flashpca" : "flashpca",
-        "eems" : "/data/eems/runeems_snps/src/runeems_snps",
-        "bed2diffs1" : "/data/eems/bed2diffs/src/bed2diffs_v1",
-        "bed2diffs2" : "/data/eems/bed2diffs/src/bed2diffs_v2",
-        "treemix" : "/data/programs/treemix/src/treemix"
+        "eems" : "/mnt/gluster/home/bpeter/eems/runeems_snps/src/runeems_snps",
+        "bed2diffs1" : "/mnt/gluster/home/bpeter/eemstest/eems/bed2diffs/src/bed2diffs_v1",
+        "bed2diffs2" : "/mnt/gluster/home/bpeter/eemstest/eems/bed2diffs/src/bed2diffs_v2",
+        "treemix" : "/mnt/gluster/home/bpeter/programs/treemix/src/treemix",
+        "tess" : "/mnt/gluster/home/bpeter/programs/TESS3/build/TESS3"
     },
     "DATA" : {
-        "genotypes" : "../pps-popres/POPRES_NovembreEtAl2008_finalSet",
-        "meta" : "../popres",
-        "map" : "/home/peterb/old_data/eems-project/eems/pipeline/pipeline/maps/ne_50m_admin_0_map_subunits.shp"
+        "genotypes" : "/mnt/gluster/home/bpeter/meta/merged/merge_prun6",
+        "meta" : "/mnt/gluster/home/bpeter/meta/pgs/gvar",
+        "map" : "/mnt/gluster/home/bpeter/maps/ne_50m_admin_0_map_subunits.shp"
     }
+
 }
