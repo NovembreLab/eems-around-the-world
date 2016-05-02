@@ -7,12 +7,16 @@ rule make_spacemix_counts:
     output:
         'spacemix/{name}.counts',
     run:
-        R("""library(tidyr); library(dplyr);
-            x <- read.table("{input}", header=T)  %>% 
+        s = """library(dplyr); library(tidyr);
+            x <- read.table('{input}', header=T)  %>% 
                 select(CLST, MAC, SNP) %>% 
                 spread(key=CLST, value=MAC) %>%
-                select(-SNP) %>% write.csv("{output}", row.names=F)
-        """)
+                select(-SNP) %>% write.csv('{output}', row.names=F)
+        """
+        #R(s)
+        s = s.replace("\n", " ")
+        shell("""/data/tools/R_latest/bin/Rscript -e "%s" """ % s)
+        
         
 rule make_spacemix_sample_size:
     input:
@@ -20,12 +24,15 @@ rule make_spacemix_sample_size:
     output:
         'spacemix/{name}.sample_size',
     run:
-        R("""library(tidyr); library(dplyr);
-            x <- read.table("{input}", header=T)  %>% 
+        s = """library(dplyr); library(tidyr);
+            x <- read.table('{input}', header=T)  %>% 
                 select(CLST, NCHROBS, SNP) %>% 
                 spread(key=CLST, value=NCHROBS) %>%
-                select(-SNP) %>% write.csv("{output}", row.names=F)
-        """)
+                select(-SNP) %>% write.csv('{output}', row.names=F)
+        """
+        #R(s)
+        s = s.replace("\n", " ")
+        shell("""/data/tools/R_latest/bin/Rscript -e "%s" """ % s)
 
 rule run_spacemix:
     input:
@@ -35,7 +42,13 @@ rule run_spacemix:
         __script__='scripts/run_spacemix.R'
     output:
         "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj"
-    script: '../' + input.__script__
+    #script: '../' + input.__script__
+    run:
+        l = ["/data/tools/R_latest/bin/Rscript", input.__script__, input.ss, input.cts,
+                input.pop_geo, wildcards.model, output[0]]
+        shell(" ".join(l))
+        
+
 
 rule plot_spacemix_4_models:
     input:
