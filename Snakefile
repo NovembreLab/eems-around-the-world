@@ -15,6 +15,7 @@ include: 'sfiles/pong.snake'
 include: 'sfiles/pca.snake'
 include: 'sfiles/spacemix.snake'
 include: 'sfiles/paintings.snake'
+include: 'sfiles/tess.snake'
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
