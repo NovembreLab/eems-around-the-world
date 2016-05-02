@@ -22,20 +22,15 @@ rule to_tess_coords:
         fam="{name}.fam",
         indiv_meta="{name}.indiv_meta",
         pop_geo="{name}.pop_geo",
+        __script__="scripts/make_tess_input.sh",
     output:
         tess='{name}.tess_coords'
-    run: 
-        R("""
-        fam <- read.table("{input.fam}")
-        fam <- data.frame(sampleId=fam[,1], n=1:nrow(fam))
-        indiv_meta <- read.csv("{input.indiv_meta}")
-        pop_geo <- read.csv("{input.pop_geo}")
-        indiv_meta <- merge(indiv_meta, pop_geo)
-        m <- merge(fam, indiv_meta)
-        m <- m[order(m$n),]
-        print(names(m))
-        write.table(m[,c('longitude', 'latitude')], "{output.tess}", row.names=F, col.names=F)
-        """)
+    run:
+        l = ["Rscript", input.__script__, input.fam,
+            input.indiv_meta, input.pop_geo,
+            output.tess]
+        shell(" ".join(l))
+        
 
 rule run_tess_single:
     input:
