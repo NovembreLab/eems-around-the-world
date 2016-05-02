@@ -120,7 +120,7 @@ if(exists('snakemake')){
     col <- list(scale_color_manual(name=data$abbrev, values=data$color),
                 scale_fill_manual(name=data$abbrev, values=data$color))
     makePlots(data, col, output, output2)
-} else{
+} else if(length(args)>5){
     args <- commandArgs(T)
     pc <- args[1]
     fam <- args[2]

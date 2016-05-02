@@ -1,8 +1,8 @@
 library(SpaceMix)
+library(dplyr)
 
 make.spacemix.map <- function (spacemix.map.list, text = FALSE, ellipses = TRUE, source.option = TRUE, 
-    xlim = NULL, ylim = NULL, ...) 
-{
+    xlim = NULL, ylim = NULL, ...) {
     with(spacemix.map.list, {
         plot(MAPP.geogen.coords, type = "n", xlim = xlim, ylim = ylim, 
             xlab = "", ylab = "", ...)
@@ -37,13 +37,13 @@ make.spacemix.map <- function (spacemix.map.list, text = FALSE, ellipses = TRUE,
 }
 
 
-plot_object <- function(opt, pop_geo, pop_display, ...){
+plot_object <- function(opt, pop_meta, ...){
     make.spacemix.map.list(
         #MCMC.output.file=sprintf("%s/__LongRun/__space_MCMC_output1.Robj", opt),
         MCMC.output.file=opt,
-        geographic.locations = as.matrix(pop_geo[,c('longitude', 'latitude')]),
-        name.vector = pop_display$name,
-        color.vector = pop_display$color,
+        geographic.locations = as.matrix(pop_meta[,c('longitude', 'latitude')]),
+        name.vector = pop_meta$name,
+        color.vector = pop_meta$color,
         quantile = 0.95,
         burnin = 0)
 }
@@ -62,20 +62,17 @@ plot_object <- function(opt, pop_geo, pop_display, ...){
     }
     if(exists('spm_out')){
         pop_g <- read.csv(pop_geo)
-        pop_g$o <- 1:nrow(pop_g)
         pop_d <- read.csv(pop_display, strings=F)
-        pop_d <- merge(pop_g, pop_d, all.x=T)
-        pop_d <- pop_d[order(pop_d$o),]
-        save.image('qqqtmpx')
+        pop_meta <- pop_g %>% left_join(pop_d) %>% arrange(popId)
+        #save.image('qqqtmpx')
         print("SDFAS")
-        pobj <- plot_object(spm_out, pop_g,
-                            pop_d)
+        pobj <- plot_object(spm_out, pop_meta)
         png(opt, width=1600)
-        make.spacemix.map(pobj, text=T, source.option=T,
-            xlim=range(pop_g$longitude),
-            ylim=range(pop_g$latitude))
-        require(maps)
+        make.spacemix.map(pobj, text=T, source.option=T)
+#            xlim=range(pop_g$longitude),
+#            ylim=range(pop_g$latitude))
+#        require(maps)
 
-        map(add=T)
+        #map(add=T)
         dev.off()
     }

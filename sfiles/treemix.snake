@@ -78,6 +78,7 @@ rule plot_treemix_best:
     output: 
         treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
         residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',
+        tmp='tmp{name}{mlower}{mupper}{nruns}.order'
     run:
         infiles = input[2:]
         pop_display = input[1]
@@ -102,14 +103,14 @@ rule plot_treemix_best:
         R("""
             source("{__script__}")
             x = read.table(gzfile("{max_llik[0]}.cov.gz"), check.names=F)
-            n <- data.frame(popId=gsub("___", " ", names(x)))
+            n <- data.frame(popId=gsub("_", " ", names(x)))
             pop_display <- read.csv("{pop_display}")       
             m <- merge(n, pop_display, all.x=T)
             m <- m[order(m$order),'popId']
-            write.table(gsub(" ", "___", m), "X", row.names=F, quote=F, col.names=F)
+            write.table(gsub(" ", "_", m), "{output.tmp}", row.names=F, quote=F, col.names=F)
         
             png(file="{output.residplot}", width=1600)
-            plot_resid("{max_llik[0]}", "X")
+            plot_resid("{max_llik[0]}", "{output.tmp}")
             dev.off()
         """)
 
