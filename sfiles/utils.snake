@@ -1,0 +1,47 @@
+import pandas as pd
+
+rule get_pop_frq:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+        indiv_meta='{name}.indiv_meta',
+    output:
+        frq='{name}.frq.strat',
+        pops='{name}.pops'
+    run:
+        im = pd.read_csv(input.indiv_meta)
+        im = im[['sampleId', 'sampleId', 'popId']]
+        im.popId = im.popId.str.replace(' ', '_')
+        im.to_csv(output.pops, sep=" ", index=False)
+        shell('cp {output.pops} tmpf')
+
+        inname = base(input.bed)
+        outname = base(base(output.frq))
+        s = [PLINK_EXE, '--bfile', inname, '--freq',
+            '--within', output.pops, '--out', outname]
+        shell(" ".join(s))
+
+
+rule to_vcf:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+    output:
+        vcf='{name}.vcf.gz'
+    run:
+        n = wildcards.name
+        s = 'plink --bfile {n} --recode vcf-iid bgz --out {n}'
+        shell(s)
+
+        
+rule to_pbwt:
+    input:
+        vcf='{name}.vcf.gz'
+    output:
+        pbwt='{name}.pbwt'
+    run:
+        l = [config['EXE']['pbwt'], '-readVcfGT', '{input.vcf}',
+            '-write', output.pbwt]
+        shell(" ".join(l))

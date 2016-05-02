@@ -1,0 +1,67 @@
+from snakemake.utils import R
+
+
+rule make_spacemix_counts:
+    input:
+        '{name}.frq.strat'
+    output:
+        'spacemix/{name}.counts',
+    run:
+        R("""library(tidyr); library(dplyr);
+            x <- read.table("{input}", header=T)  %>% 
+                select(CLST, MAC, SNP) %>% 
+                spread(key=CLST, value=MAC) %>%
+                select(-SNP) %>% write.csv("{output}", row.names=F)
+        """)
+        
+rule make_spacemix_sample_size:
+    input:
+        '{name}.frq.strat'
+    output:
+        'spacemix/{name}.sample_size',
+    run:
+        R("""library(tidyr); library(dplyr);
+            x <- read.table("{input}", header=T)  %>% 
+                select(CLST, NCHROBS, SNP) %>% 
+                spread(key=CLST, value=NCHROBS) %>%
+                select(-SNP) %>% write.csv("{output}", row.names=F)
+        """)
+
+rule run_spacemix:
+    input:
+        ss='spacemix/{name}.sample_size',
+        cts='spacemix/{name}.counts',
+        pop_geo='{name}.pop_geo',
+        __script__='scripts/run_spacemix.R'
+    output:
+        "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj"
+    script: '../' + input.__script__
+
+rule plot_spacemix_4_models:
+    input:
+        expand('spacemix/{name}/{model}_geospace.png',
+            model=['no_movement', 'source', 'target', 'source_and_target'],
+            name=['{name}'])
+    output:
+        'spacemix/{name}.controller'
+    shell: 'touch {output}'
+
+
+rule plot_spacemix_geospace:
+    input:
+        spacemix_output = "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj",
+        pop_geo='{name}.pop_geo',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__='scripts/plot_spacemix.R'
+    output:
+        'spacemix/{name}/{model}_geospace.png'
+    script: '../' + input.__script__
+
+
+        
+    
+        
+
+rule install_spacemix:
+    run: R("""install_github("gbradburd/SpaceMix")""")
+        

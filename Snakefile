@@ -1,17 +1,21 @@
-
 configfile: "config/subset.json"
 configfile: "config/eems.json"
 configfile: "config/config.json"
 
+include: 'sfiles/utils.snake'
+include: 'sfiles/treemix.snake'
 include: 'sfiles/eems.snake'
 include: 'sfiles/pong.snake'
 include: 'sfiles/pca.snake'
+include: 'sfiles/spacemix.snake'
+include: 'sfiles/paintings.snake'
+include: 'sfiles/tess.snake'
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
-    'originalId', 'permissions', 'popLabel']
-POP_GEO_COLS = ['popLabel', 'latitude', 'longitude', 'accuracy'] 
+    'originalId', 'permissions', 'popId']
+POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy'] 
 
 
 PLINK_EXE = config['EXE']['plink']
@@ -47,6 +51,12 @@ def snakemake_subsetter(input, output, name):
     location_data = load_pop_geo(input.meta[0])
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
+
+    counter = Counter(meta_data.popId)
+    pops_to_keep = [c for c in counter if counter[c] >= params['min_sample_size']]
+    inds_to_keep = np.in1d(meta_data.popId, pops_to_keep)
+    meta_data = meta_data[inds_to_keep]
+
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
         region=params['region'],
         sample_buffer=float(params['sample_buffer']),
@@ -109,8 +119,8 @@ rule all:
 rule subset_all_ini0:
     input: subset_all_fun(prefix='eems/', ext='-run0.ini')
 
-rule subset_all_ini30:
-    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini', nreps=30)
+rule subset_all_ini10:
+    input: subset_all_fun_reps(prefix='eems/', ext='-run{i}.ini', nreps=10)
 
 rule subset_all_diagnostic_mds:
     input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')

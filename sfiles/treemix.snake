@@ -1,0 +1,116 @@
+import gzip
+from collections import defaultdict
+from snakemake.utils import R
+
+def plink2treemix(inname, outname):
+    """this is a condensed version of Joe Pickrell's script
+        plink2treemix.py, which is distributed with treemix
+    """
+    pop2rs = defaultdict(dict)                                                                  
+    pops = set()                                                                     
+                                                                                     
+    with open(inname) as infile:
+        line = infile.readline()                                                         
+        for line in infile:
+            line = line.strip().split()                                                  
+            _, rs, pop, _, _, _, mc, total = line
+            pop2rs[rs][pop] = int(mc), int(total) - int(mc)
+            pops.add(pop)
+
+    pops = list(pops)
+
+    with gzip.open(outname, 'wt') as outfile:
+        outfile.write(" ".join(pops) + "\n")
+                                                                                     
+        for rs in pop2rs:                                                                   
+            l = ["%d,%d" % pop2rs[rs][pop] for pop in pops]
+            s = " ".join(l) + "\n"
+            outfile.write(s)
+
+rule make_treemix_input:
+    input:
+        frq_strat='{name}.frq.strat'
+    output:
+        treemix_in='treemix/{name}.in.gz',
+    run:
+        plink2treemix(input.frq_strat, output.treemix_in)
+
+rule run_treemix_single:
+    input: rules.make_treemix_input.output
+    params:
+        seed_base=141
+    output:
+        cov='treemix/{name}_m{m}_run{run}.cov.gz',
+        covse='treemix/{name}_m{m}_run{run}.covse.gz',
+        edges='treemix/{name}_m{m}_run{run}.edges.gz',
+        modelcov='treemix/{name}_m{m}_run{run}.modelcov.gz',
+        llik='treemix/{name}_m{m}_run{run}.llik',
+        treeout='treemix/{name}_m{m}_run{run}.treeout.gz',
+        vertices='treemix/{name}_m{m}_run{run}.vertices.gz',
+    log: 'treemix.log'
+    run:
+        outname = base(base(output.cov))
+        seed = params.seed_base * 23 + int(wildcards.m) * 19 + int(wildcards.run)
+        s = config['EXE']['treemix'] + ' -i {input} '
+        s += '-m {wildcards.m} '
+        s += '-o {outname} '
+        s += '-seed {seed} '
+        s += '2> treemix.log '
+        shell(s)
+
+def treemix_setfun(wildcards):
+    ext = ['treeout.gz']
+    m = range(int(wildcards.mlower), int(wildcards.mupper) + 1)
+    runs = range(int(wildcards.nruns))
+    return expand("treemix/{name}_m{m}_run{runs}.{ext}",
+        name = [wildcards.name], m=m, ext=ext, runs=runs)
+rule run_treemix_set:
+    input: treemix_setfun
+    output:
+        'treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.controller'
+    shell: 'touch {output}'
+
+rule plot_treemix_best:
+    input: 
+        '/data/programs/treemix/src/plotting_funcs.R',
+        config['DATA']['meta'] + '.pop_display',
+        rules.run_treemix_set.input,
+    output: 
+        treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
+        residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',
+        tmp='tmp{name}{mlower}{mupper}{nruns}.order'
+    run:
+        infiles = input[2:]
+        pop_display = input[1]
+        __script__ = input[0]
+        bases = [base(base(s)) for s in infiles]
+        max_llik = 'NONE', -np.inf
+        for b in bases:
+            with open("%s.llik" %b) as f:
+                x = f.read().split()
+                ll = float(x[len(x)-1])
+                if ll > max_llik[1]:
+                    max_llik = b, ll
+
+        print(max_llik)
+        R("""
+            source("{__script__}")
+            png(file="{output.treeplot}", width=1600)
+            plot_tree("{max_llik[0]}")
+            dev.off()
+            """)
+
+        R("""
+            source("{__script__}")
+            x = read.table(gzfile("{max_llik[0]}.cov.gz"), check.names=F)
+            n <- data.frame(popId=gsub("_", " ", names(x)))
+            pop_display <- read.csv("{pop_display}")       
+            m <- merge(n, pop_display, all.x=T)
+            m <- m[order(m$order),'popId']
+            write.table(gsub(" ", "_", m), "{output.tmp}", row.names=F, quote=F, col.names=F)
+        
+            png(file="{output.residplot}", width=1600)
+            plot_resid("{max_llik[0]}", "{output.tmp}")
+            dev.off()
+        """)
+
