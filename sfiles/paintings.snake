@@ -1,0 +1,17 @@
+rule paint_pbwt:                                                                      
+    input:                                                                       
+        pbwt='{name}.pbwt'
+    output:                                                                      
+        chunkcounts="paintings/{name}.chunkcounts.out",
+        chunklengths="paintings/{name}.chunklengths.out",
+        regionchunkcounts="paintings/{name}.regionchunkcounts.out",
+        regionsquaredchunkcounts="paintings/{name}.regionsquaredchunkcounts.out",
+    run:                                                                         
+        outname = base(base(output.chunkcounts))                                 
+        s ="%s -read {input} -paint %s 100" % (config['EXE']['pbwt'], outname)                    
+        shell(s)
+
+rule paint_fs:
+    input:
+
+

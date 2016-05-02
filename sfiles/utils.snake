@@ -1,4 +1,3 @@
-import pandas as pd
 
 rule get_pop_frq:
     input:
@@ -10,9 +9,13 @@ rule get_pop_frq:
         frq='{name}.frq.strat',
         pops='{name}.pops'
     run:
+        import pandas as pd
         im = pd.read_csv(input.indiv_meta)
         im = im[['sampleId', 'sampleId', 'popId']]
-        im.popId = im.popId.str.replace(' ', '___')
+        try:
+            im.popId = im.popId.str.replace(' ', '_')
+        except AttributeError:
+            pass
         im.to_csv(output.pops, sep=" ", index=False)
         shell('cp {output.pops} tmpf')
 
@@ -21,3 +24,27 @@ rule get_pop_frq:
         s = [PLINK_EXE, '--bfile', inname, '--freq',
             '--within', output.pops, '--out', outname]
         shell(" ".join(s))
+
+
+rule to_vcf:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+    output:
+        vcf='{name}.vcf.gz'
+    run:
+        n = wildcards.name
+        s = 'plink --bfile {n} --recode vcf-iid bgz --out {n}'
+        shell(s)
+
+        
+rule to_pbwt:
+    input:
+        vcf='{name}.vcf.gz'
+    output:
+        pbwt='{name}.pbwt'
+    run:
+        l = [config['EXE']['pbwt'], '-readVcfGT', '{input.vcf}',
+            '-write', output.pbwt]
+        shell(" ".join(l))

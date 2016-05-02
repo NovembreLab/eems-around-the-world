@@ -70,7 +70,9 @@ add_original_points <- function(G, data, PC="PC1"){
 
 get_interpolation <- function(data, boundary, PC="PC1", n=10000, idp=4, maxdist=40,...){
     coordinates(boundary) <- ~ x + y 
+    set.seed(1)
     extrapolation_points <- spsample(Polygon(boundary), n=n, 'regular')
+#    extrapolation_points <- makegrid(Polygon(boundary), n=n) 
 
     #lzn.vgm <- variogram(as.name(PC)~1, data=data)                   
     #lzn.fit <- fit.variogram(lzn.vgm, model=vgm(model="Mat"))

@@ -41,9 +41,10 @@ rule run_admixture_single_run:
         Q='admixture/{name}/{i}/{name}.{k}.Q'
     run:
         name, i, k = wildcards.name, wildcards.i, wildcards.k
+        seed = int(i) * 23 + int(k) * 1541
         s = 'cd admixture/{name}/{i};'
         s += '%s ../../../{input.bed} {k}'
-        s += ' --seed={i}; '
+        s += ' --seed={seed}; '
 #        s += 'mv {name}.{k}.P {i}.{k}.P;'
 #        s += 'mv {name}.{k}.Q {i}.{k}.Q;'
         shell(s % config['EXE']['admixture'])
@@ -81,14 +82,14 @@ rule create_ind2pop:
         indiv = pd.merge(indiv_meta, pop_display, how='left')        
         indiv = pd.merge(indiv, pop_geo, how='left')        
         assert all(indiv.sampleId == indiv_meta.sampleId)
-        indiv.to_csv(output.ind2pop, columns=['popLabel'], index=None,
+        indiv.to_csv(output.ind2pop, columns=['popId'], index=None,
             header=False)
-        indiv0 =indiv[['popLabel', 'name', 'latitude', 'longitude']]
+        indiv0 =indiv[['popId', 'name', 'latitude', 'longitude']]
         indiv0.drop_duplicates(inplace=True)
         indiv0.sort_index(by=['latitude', 'longitude'],
             ascending=[False, True], inplace=True)
         indiv0.to_csv(output.pop_names, sep="\t",
-            columns=['popLabel', 'name'], 
+            columns=['popId', 'name'], 
             index=None, header=False)
 
 rule make_pong_script:

@@ -1,10 +1,11 @@
 library(SpaceMix)
+library(dplyr)
 
-spacemix_wrapper <- function(cts, ss, pop_geo, output_name, ...){
-run.spacemix.analysis(n.fast.reps = 10,
-                        fast.MCMC.ngen = 1e5,
-                        fast.model.option = "target",
-                        long.model.option = "source_and_target",
+spacemix_wrapper <- function(cts, ss, pop_geo, output_name, model="target", ...){
+pop_geo <- pop_geo %>% arrange(popId)
+run.spacemix.analysis(
+                        fast.model.option = model,
+                        long.model.option = model,
                         data.type = "counts",
                         counts = cts,
                         sample.sizes = ss,
@@ -13,23 +14,25 @@ run.spacemix.analysis(n.fast.reps = 10,
                         round.earth = TRUE,
                         k = nrow(cts),
                         loci = ncol(cts),
-                        ngen = 1e6,
-                        printfreq = 1e2,
-                        samplefreq = 1e3,
+
+			###production option set
+                        ngen = 1e7,
+                        samplefreq = 5e4,
+                        fast.MCMC.ngen = 5e5,
+                        savefreq = 1e6,
+			n.fast.reps = 10,
+
+			###debug option set
+                        #ngen = 1e5,
+                        #samplefreq = 1e3,
+                        #fast.MCMC.ngen = 1e3,
+                        #savefreq = 1e5,
+			#n.fast.reps = 3,
+
                         mixing.diagn.freq = 50,
-                        savefreq = 1e4,
+                        printfreq = 1e5,
                         directory=output_name,
                         prefix = "_")
-}
-
-plot_object <- function(opt, pop_geo, pop_display, ...){
-    make.spacemix.map.list(
-        MCMC.output.file=sprintf("%s/__LongRun/__space_MCMC_output1.Robj", opt),
-        geographic.locations = pop_geo[,c('longitude', 'latitude')],
-        name.vector = pop_display$name,
-        color.vector = pop_display$color,
-        quantile = 0.95,
-        burnin = 0)
 }
 
     args <- commandArgs(T)
@@ -37,17 +40,19 @@ plot_object <- function(opt, pop_geo, pop_display, ...){
         ss = snakemake@input$ss
         cts = snakemake@input$cts
         pop_geo = snakemake@input$pop_geo
-        opt = snakemake@output[[1]]
+        model = snakemake@wildcards$model
+        opt = dirname(dirname(snakemake@output[[1]]))
     } else if(length(args) >=4){
         ss = args[1]
         cts = args[2]
         pop_geo = args[3]
-        opt = args[4]
+        model = args[4]
+	opt = dirname(dirname(args[5]))
     }
     if(exists('ss')){
         samp_size <- t(read.csv(ss, check.names=F))
         counts <- t(read.csv(cts, check.names=F))
         pop_g <- read.csv(pop_geo)
-        spacemix_wrapper(counts, samp_size, pop_g, 
-            dirname(dirname(opt)))
+	print(opt)
+        spacemix_wrapper(counts, samp_size, pop_g, opt)
     }

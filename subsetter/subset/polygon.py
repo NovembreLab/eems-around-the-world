@@ -4,7 +4,7 @@ import shapely.ops as ops
 import numpy as np
 from ..load import wrap_america
 from .geoloc2 import load_countries
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 
 
 def get_polygon(polygon, wrap=True):

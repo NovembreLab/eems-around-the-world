@@ -1,0 +1,68 @@
+from snakemake.utils import R
+
+rule to_tess:
+    input:
+        bed="{name}.bed",
+        bim="{name}.bim",
+        fam="{name}.fam",
+    output:
+        traw='{name}.traw',
+        tess='{name}.tess_in'
+    run:
+        inname = base(input.bed)
+        outname = base(output.traw)
+        s = [config['EXE']['plink'], '--bfile', inname,
+            '--recode A-transpose --out', outname]
+        shell(" ".join(s))
+        shell("cut -f7- {output.traw} | tail -n+2 | " +
+            "sed 's/NA/9/g; s/\t//g'  > {output.tess}")
+
+rule to_tess_coords:
+    input:
+        fam="{name}.fam",
+        indiv_meta="{name}.indiv_meta",
+        pop_geo="{name}.pop_geo",
+        __script__="scripts/make_tess_input.sh",
+    output:
+        tess='{name}.tess_coords'
+    run:
+        l = ["Rscript", input.__script__, input.fam,
+            input.indiv_meta, input.pop_geo,
+            output.tess]
+        shell(" ".join(l))
+        
+
+rule run_tess_single:
+    input:
+        geno='{name}.tess_in',
+        coords='{name}.tess_coords'
+    output:
+        Q='tess/{name}.{K, \d+}_run{RUN, \d+}.Q',
+        G='tess/{name}.{K, \d+}_run{RUN, \d+}.G',
+        FST='tess/{name}.{K, \d+}_run{RUN, \d+}.FST',
+        #summary='tess/{name}.{K, \d+}_run{RUN, \d+}.sum',
+    run:
+        seed = int(wildcards.K) * 1241 + int(wildcards.RUN) * 31
+        s = [config['EXE']['tess'], '-K', wildcards.K,
+            '-x', input.geno, '-r', input.coords,
+            '-q', output.Q, '-g', output.G, '-f', output.FST,
+            '-s', str(seed), 
+            #'-y', output.summary
+            ]
+        shell(" ".join(s))
+            
+
+def tess_multiple(wildcards):
+        s = expand('tess/{name}.{K}_run{RUN}.Q',
+            name=[wildcards.name],
+            K=range(int(wildcards.Kmin), int(wildcards.Kmax)+1), 
+            RUN=range(int(wildcards.nruns)))
+        return s
+            
+rule run_tess_multiple:
+    input:
+        tess_multiple
+    output:
+        'tess/{name}_K{Kmin, \d+}-{Kmax, \d+}_nruns{nruns, \d+}.controller',
+    shell: 'touch {output}'
+        
