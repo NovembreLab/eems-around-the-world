@@ -6,6 +6,40 @@
             "max_missing" : 0.001,
             "hull" : false
         },
+        "africa" :
+        {
+            "region" : [
+                "Africa"
+            ],
+            "hull" : true
+        },
+        "america" :
+        {
+            "region" : [
+                "Americas"
+            ],
+            "sample_buffer" : 2.0,
+            "max_missing" : 0.1
+        },
+        "asia" :
+        {
+            "region" : [
+                "Asia",
+                "Oceania"
+            ],
+            "max_missing" : 0.005
+        },
+        "centralasia" :
+        {
+            "region" : [
+                "western asia",
+                "central asia",
+                "russia",
+                "eastern europe"
+            ],
+            "hull" : true,
+            "max_missing" : 0.005
+        },
         "europe" :
         {
             "region" : [
@@ -14,6 +48,67 @@
                 "Georgia"
             ],
             "max_missing" : 0.05
+        },
+        "himalaya" :
+        {
+            "region" : [
+                "India",
+                "China",
+                "Nepal",
+                "Bangladesh"
+            ],
+            "max_missing" : 0.051
+        },
+        "india" :
+        {
+            "region" : [
+                "India",
+                "Pakistan",
+                "Sri Lanka",
+                "Bangladesh"
+            ],
+            "max_missing" : 0.1
+        },
+        "medi" :
+        {
+            "region" : [
+                "southern europe",
+                "western asia",
+                "middle east & north africa"
+            ],
+            "max_missing" : 0.01
+        },
+        "eastasia" :
+        {
+            "region" : [
+                "eastern asia"
+            ],
+            "max_missing" : 0.01
+        },
+        "seasia" :
+        {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "australia",
+                "oceania"
+            ],
+            "hull" : true,
+            "max_missing" : 0.14
+        },
+        "southafrica" :
+        {
+            "region" : [
+                "southern africa"
+            ],
+            "max_missing" : 0.1
+        },
+        "oceania" :
+        {
+            "region" : [
+                "oceania"
+            ],
+            "max_missing" : 0.001
         }
     }
 }
