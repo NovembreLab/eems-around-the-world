@@ -4,7 +4,8 @@
             "sample_buffer" : 2.0,
             "region_buffer" : 2.0,
             "max_missing" : 0.001,
-            "hull" : false
+            "hull" : false,
+            "min_sample_size" : 1
         },
         "africa" :
         {
