@@ -1,6 +1,3 @@
-from subsetter.load import load_pop_geo, load_indiv_meta
-from subsetter.subset.polygon import _get_subset_area, create_polygon_file
-from subsetter.subset import filter_data
 
 configfile: "config/subset.json"
 configfile: "config/eems.json"
@@ -41,6 +38,10 @@ def snakemake_subsetter(input, output, name):
         the name of the resulting dataset, also, config is read
         from config['subset'][name]
     """
+    from subsetter.load import load_pop_geo, load_indiv_meta
+    from subsetter.subset.polygon import _get_subset_area, create_polygon_file
+    from subsetter.subset import filter_data
+
     params = config['subset']['__default__']
     params.update(config['subset'][name])
     location_data = load_pop_geo(input.meta[0])
@@ -88,7 +89,7 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
 
 rule subset_all_eems:
     input:
-        subset_all_fun(prefix='eemsout/', ext='_runs30.controller')
+        subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
 
 rule subset_all_pca:
     input:

@@ -1,10 +1,4 @@
 
-from subsetter.eems import create_diffs_file, create_ini_file
-from subsetter.load import load_pop_geo, load_indiv_meta
-from subsetter.intersect import intersect
-import pandas as pd
-import numpy as np
-
 GRID_PATH = 'subsetter/maps/grid%s.shp'
 EPS = 0.00001
 
@@ -20,6 +14,7 @@ rule bed2diffs:
         order='eems/{name}.order',
     threads: 4
     run:
+        from subsetter.eems import create_diffs_file, create_ini_file
         infile=base(input.bed)
         outfile=base(output.diffs)
         create_diffs_file(bedfile=infile,
@@ -35,6 +30,11 @@ rule make_coord:
     output:
         coord='eems/{name}-run{i, \d+}.coord',
     run:
+        from subsetter.eems import create_diffs_file, create_ini_file
+        from subsetter.load import load_pop_geo, load_indiv_meta
+        from subsetter.intersect import intersect
+        import pandas as pd
+        import numpy as np
         location_data = load_pop_geo(input.pop_geo)
         sample_data = load_indiv_meta(input.indiv_meta)
         order = pd.read_table(input.order, header=None, sep=" ")
@@ -72,6 +72,11 @@ rule make_grid:
         demes='eems/{name}-run{i, \d+}.demes',
         ipmap='eems/{name}-run{i, \d+}.ipmap'
     run:
+        from subsetter.eems import create_diffs_file, create_ini_file
+        from subsetter.load import load_pop_geo, load_indiv_meta
+        from subsetter.intersect import intersect
+        import pandas as pd
+        import numpy as np
         name = wildcards.name
         if 'grid' in config['eems'][name]:
             grid2 = GRID_PATH % config['eems'][name]['grid']
@@ -95,6 +100,11 @@ rule make_ini_file:
     output:
         inifile='eems/{name}-run{i, \d+}.ini'
     run:
+        from subsetter.eems import create_diffs_file, create_ini_file
+        from subsetter.load import load_pop_geo, load_indiv_meta
+        from subsetter.intersect import intersect
+        import pandas as pd
+        import numpy as np
         cfg = config['eems']['__default__'].copy()
         if wildcards.name in config['eems']:
             cfg.update(config['eems'][wildcards.name])
