@@ -67,9 +67,9 @@ plot_object <- function(opt, pop_meta, ...){
         #save.image('qqqtmpx')
         print("SDFAS")
 	q <- SpaceMix::load_MCMC_output(spm_out)
-	saveRDs(q, 'temp_q.rds')
+	saveRDS(q, 'temp_q.rds')
         pobj <- plot_object(spm_out, pop_meta)
-	saveRDs(pobj, 'temp.rds')
+	saveRDS(pobj, 'temp.rds')
         png(opt, width=1600)
         make.spacemix.map(pobj, text=T, source.option=T)
 #            xlim=range(pop_g$longitude),
