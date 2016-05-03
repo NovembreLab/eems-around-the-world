@@ -31,7 +31,7 @@ rule make_pc_plots:
         pc1='figures/pca/{name}_dim20_pc1.png',
         pc2='figures/pca/{name}_dim20_pc2.png',
     #script: "../" +input.__script__
-    shell: "Rscript {input.__script__} {input.pc} {input.fam}"
+    shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
         " {input.indiv_meta} {input.pop_display} "
         " {output.pc1} {output.pc2} 20"
     #shell:
@@ -46,5 +46,5 @@ rule make_loadings_plots:
         fig='figures/pca/{name}_dim20_loadings.png'
     #script: '../' + input.__script__
     shell:
-        "Rscript {input.__script__} {input.load} "
+        config['EXE']['R'] + " {input.__script__} {input.load} "
         "{input.bim} {output.fig}"
