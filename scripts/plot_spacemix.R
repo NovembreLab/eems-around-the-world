@@ -51,13 +51,13 @@ plot_object <- function(opt, pop_meta, ...){
     args <- commandArgs(T)
     if(exists('snakemake')){
         spm_out = snakemake@input$spacemix_output
-        pop_display = snakemake@input$pop_display
         pop_geo = snakemake@input$pop_geo
+        pop_display = snakemake@input$pop_display
         opt = snakemake@output[[1]]
     } else if(length(args) >=4){
         spm_out = args[1]
-        pop_display = args[2]
-        pop_geo = args[3]
+        pop_geo = args[2]
+        pop_display = args[3]
         opt = args[4]
     }
     if(exists('spm_out')){
@@ -66,7 +66,10 @@ plot_object <- function(opt, pop_meta, ...){
         pop_meta <- pop_g %>% left_join(pop_d) %>% arrange(popId)
         #save.image('qqqtmpx')
         print("SDFAS")
+	q <- SpaceMix::load_MCMC_output(spm_out)
+	saveRDS(q, 'temp_q.rds')
         pobj <- plot_object(spm_out, pop_meta)
+	saveRDS(pobj, 'temp.rds')
         png(opt, width=1600)
         make.spacemix.map(pobj, text=T, source.option=T)
 #            xlim=range(pop_g$longitude),

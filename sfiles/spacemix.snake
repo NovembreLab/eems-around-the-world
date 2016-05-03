@@ -68,7 +68,11 @@ rule plot_spacemix_geospace:
         __script__='scripts/plot_spacemix.R'
     output:
         'spacemix/{name}/{model}_geospace.png'
-    script: '../' + input.__script__
+    #script: '../' + input.__script__
+    run:
+        l = ["/data/tools/R_latest/bin/Rscript", input.__script__, input.spacemix_output, 
+                input.pop_geo, input.pop_display,  output[0]]
+        shell(" ".join(l))
 
 
         
