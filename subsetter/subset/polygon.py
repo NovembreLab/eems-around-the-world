@@ -162,8 +162,9 @@ def _get_subset_area(meta_data, population=None,
     -------
     """
     if population is not None:
+        print(meta_data.columns)
         to_keep = [s in population
-                   for s in meta_data.POP]
+                   for s in meta_data.popId]
         meta_data = meta_data[to_keep]
         meta_data.index = range(len(meta_data))
 

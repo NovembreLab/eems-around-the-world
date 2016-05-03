@@ -48,3 +48,26 @@ rule to_pbwt:
         l = [config['EXE']['pbwt'], '-readVcfGT', '{input.vcf}',
             '-write', output.pbwt]
         shell(" ".join(l))
+
+rule indiv_meta:
+    input:
+        indiv_prov='{name}.indiv_prov',
+        indiv_label='{name}.indiv_label'
+    output:
+        indiv_meta='{name}.indiv_meta'
+    run:
+        import pandas as pd
+        prov = pd.read_csv(input.indiv_prov)
+        label = pd.read_csv(input.indiv_label)
+        data = pd.merge(prov, label)
+        data.to_csv(output.indiv_meta, index=False)
+
+rule sample_plot:
+    input:
+        poly="subset/{name}.polygon",
+        pop_geo="subset/{name}.pop_geo"
+    output:
+        plot="subset/{name}_sample_map.pdf"
+    shell:
+        "/data/tools/R_latest/bin/Rscript scripts/sample_plot.R {wildcards.name}"
+
