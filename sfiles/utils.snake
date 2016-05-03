@@ -11,7 +11,7 @@ rule get_pop_frq:
     run:
         import pandas as pd
         im = pd.read_csv(input.indiv_meta)
-        im = im[['sampleId', 'sampleId', 'popId']]
+        im = im[['popId', 'sampleId', 'popId']]
         try:
             im.popId = im.popId.str.replace(' ', '_')
         except AttributeError:
