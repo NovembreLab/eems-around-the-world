@@ -186,3 +186,29 @@ rule diagnostic_mds:
     output:
         pdf='eems/figures/{name}-mds.pdf'
     script: input.__script__
+
+
+
+
+def eemsin(wildcards):
+        demes=expand('eemsout/{i}/{name}/demes.txt',
+            i=range(int(wildcards.nruns)),
+            name=[wildcards.name])
+        thetas=expand('eemsout/{i}/{name}/mcmcthetas.txt',
+            i=range(int(wildcards.nruns)),
+            name=[wildcards.name])
+        outer=expand('eems/{name}.outer', 
+            name=[wildcards.name])
+
+        return demes + thetas + outer
+rule plot_eems:
+    input:
+        eemsin
+    output:
+        mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
+    run:
+       grid = config['eems'][wildcards.name]['grid'] 
+       s =  "Rscript scripts/eems_plot/make_plots.r"
+       s +=   " {wildcards.nruns} {wildcards.name} {grid}"
+       shell(s)
+        

@@ -111,6 +111,10 @@ rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
 
+rule subset_all_eems_plot:
+    input:
+        subset_all_fun(prefix='eemsout/', ext='_nruns10-mrates01.png')
+
 rule subset_all_pca:
     input:
         subset_all_fun(ext='_dim20_pc2.png', prefix='figures/pca/'),
