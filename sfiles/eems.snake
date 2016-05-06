@@ -208,7 +208,7 @@ rule plot_eems:
         mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
     run:
        grid = config['eems'][wildcards.name]['grid'] 
-       s =  "Rscript scripts/eems_plot/make_plots.r"
+       s =  "%s scripts/eems_plot/make_plots.r" % config['EXE']['R']
        s +=   " {wildcards.nruns} {wildcards.name} {grid}"
        shell(s)
         

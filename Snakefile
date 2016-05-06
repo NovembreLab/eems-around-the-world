@@ -121,7 +121,10 @@ rule subset_all_pca:
          subset_all_fun(ext='_dim20_pc1.png', prefix='figures/pca/')
 
 rule subset_all_pong:
-    input: subset_all_fun_reps(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
+    input: subset_all_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
+
+rule subset_all_tess:
+    input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 
 rule all:
     input:

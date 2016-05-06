@@ -290,7 +290,7 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
     minSize <- pmin(matSize,t(matSize))
     JtDobsJ <- matrix(0,nPops,nPops)
     JtDhatJ <- matrix(0,nPops,nPops)
-    for (path in mcmcpath) {
+    for (path in mcmcpath[1]) {
         print(path)
         JtDobsJ <- JtDobsJ + as.matrix(read.table(paste(path,'/rdistJtDobsJ.txt',sep=''),header=FALSE))
         JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
