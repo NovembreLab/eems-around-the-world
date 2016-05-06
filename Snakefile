@@ -123,6 +123,9 @@ rule subset_all_pca:
 rule subset_all_pong:
     input: subset_all_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
 
+rule subset_all_treemix:
+    input : subset_all_fun(prefix='treemix/subset/', ext='_m2-8_runs4.controller')
+
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 

@@ -42,17 +42,24 @@ run.spacemix.analysis(
         pop_geo = snakemake@input$pop_geo
         model = snakemake@wildcards$model
         opt = dirname(dirname(snakemake@output[[1]]))
+
+        samp_size <- t(read.csv(ss, check.names=F))
+        counts <- t(read.csv(cts, check.names=F))
+        pop_g <- read.csv(pop_geo)
+	print(opt)
+        spacemix_wrapper(counts, samp_size, pop_g, opt)
     } else if(length(args) >=4){
         ss = args[1]
         cts = args[2]
         pop_geo = args[3]
         model = args[4]
 	opt = dirname(dirname(args[5]))
-    }
-    if(exists('ss')){
+
         samp_size <- t(read.csv(ss, check.names=F))
         counts <- t(read.csv(cts, check.names=F))
         pop_g <- read.csv(pop_geo)
 	print(opt)
         spacemix_wrapper(counts, samp_size, pop_g, opt)
+    }
+    if(exists('ss')){
     }
