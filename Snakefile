@@ -45,6 +45,7 @@ def snakemake_subsetter(input, output, name):
     from subsetter.load import load_pop_geo, load_indiv_meta
     from subsetter.subset.polygon import _get_subset_area, create_polygon_file
     from subsetter.subset import filter_data
+    import numpy as np
 
     params = config['subset']['__default__']
     params.update(config['subset'][name])
@@ -52,17 +53,26 @@ def snakemake_subsetter(input, output, name):
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
 
+    from collections import Counter
     counter = Counter(meta_data.popId)
     pops_to_keep = [c for c in counter if counter[c] >= params['min_sample_size']]
     inds_to_keep = np.in1d(meta_data.popId, pops_to_keep)
     meta_data = meta_data[inds_to_keep]
 
+    if "population" not in params:
+        print("POP NOT FOUND WEEE")
+        params['population'] = None
+
+    if "region" not in params:
+        print("REGION NOT FOUND WEEE")
+        params['region'] = None
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
         region=params['region'],
         sample_buffer=float(params['sample_buffer']),
         region_buffer=float(params['region_buffer']),
         convex_hull=params['hull'],
-        _map=input.map)
+        population=params['population'],
+                _map=input.map)
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
@@ -101,13 +111,20 @@ rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
 
+rule subset_all_eems_plot:
+    input:
+        subset_all_fun(prefix='eemsout/', ext='_nruns10-mrates01.png')
+
 rule subset_all_pca:
     input:
         subset_all_fun(ext='_dim20_pc2.png', prefix='figures/pca/'),
          subset_all_fun(ext='_dim20_pc1.png', prefix='figures/pca/')
 
 rule subset_all_pong:
-    input: subset_all_fun_reps(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
+    input: subset_all_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
+
+rule subset_all_tess:
+    input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 
 rule all:
     input:
