@@ -107,6 +107,9 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
 
 # rules that run important stuff for all subsets
 
+rule subset_all_spacemix:
+    input:
+        subset_all_fun(prefix='spacemix/subset/', ext='.controller')
 rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs10.controller')

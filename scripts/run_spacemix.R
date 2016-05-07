@@ -16,10 +16,10 @@ run.spacemix.analysis(
                         loci = ncol(cts),
 
 			###production option set
-                        ngen = 1e7,
-                        samplefreq = 5e4,
+                        ngen = 5e8,
+                        samplefreq = 5e6,
                         fast.MCMC.ngen = 5e5,
-                        savefreq = 1e6,
+                        savefreq = 1e7,
 			n.fast.reps = 10,
 
 			###debug option set
@@ -30,7 +30,7 @@ run.spacemix.analysis(
 			#n.fast.reps = 3,
 
                         mixing.diagn.freq = 50,
-                        printfreq = 1e5,
+                        printfreq = 1e7,
                         directory=output_name,
                         prefix = "_")
 }
