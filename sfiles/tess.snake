@@ -26,7 +26,7 @@ rule to_tess_coords:
     output:
         tess='{name}.tess_coords'
     run:
-        l = ["Rscript", input.__script__, input.fam,
+        l = [config['EXE']['R'], input.__script__, input.fam,
             input.indiv_meta, input.pop_geo,
             output.tess]
         shell(" ".join(l))
