@@ -53,7 +53,7 @@ rule run_tess_single:
             
 
 def tess_multiple(wildcards):
-        s = expand('tess/{name}.{K}_run{RUN}.Q',
+        s = expand('tess/{name}_n{K}_run{RUN}.png',
             name=[wildcards.name],
             K=range(int(wildcards.Kmin), int(wildcards.Kmax)+1), 
             RUN=range(int(wildcards.nruns)))
@@ -65,4 +65,24 @@ rule run_tess_multiple:
     output:
         'tess/{name}_K{Kmin, \d+}-{Kmax, \d+}_nruns{nruns, \d+}.controller',
     shell: 'touch {output}'
+        
+
+rule plot_tess:
+    input:
+        tess="tess/{name}.{n}_run{run}.Q",
+        fam="{name}.fam",
+        indiv_meta="{name}.indiv_meta",
+        pop_geo="{name}.pop_geo",
+        boundary="{name}.polygon",
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__='scripts/plot_tess.R',
+    output:
+        plot="tess/{name}_n{n}_run{run}.png"
+    run:
+        l = [config['EXE']['R'], input.__script__, 
+            input.pop_display,
+            wildcards.name, wildcards.n, wildcards.run,
+            output.plot]
+	shell(" ".join(l))
+
         

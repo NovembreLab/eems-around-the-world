@@ -104,6 +104,8 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     
 
 
+       
+	
 
 # rules that run important stuff for all subsets
 
@@ -132,11 +134,6 @@ rule subset_all_treemix:
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 
-rule all:
-    input:
-        rules.subset_all_eems.input,
-        rules.subset_all_pca.input,
-        rules.subset_all_pong.input
 
 # rules that run testing or partial stuff for all subsets
 rule subset_all_ini0:
@@ -220,27 +217,15 @@ rule run_tess:
         bim='{name}.bim',
         fam='{name}.fam',
 
-rule run_spacemix:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
 
-rule run_f2:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
 
-rule run_f3:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
 
-rule run_f4:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
 """
+rule all:
+    input:
+        rules.subset_all_spacemix.input,
+        rules.subset_all_pca.input,
+        rules.subset_all_eems_plot.input,
+        rules.subset_all_pong.input,
+        rules.subset_all_treemix.input,
+        rules.subset_all_tess.input,
