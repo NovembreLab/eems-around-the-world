@@ -71,13 +71,15 @@ plot_object <- function(opt, pop_meta, ...){
         saveRDS(q, 'temp_q.rds')
         pobj <- plot_object(spm_out, pop_meta)
         saveRDS(pobj, 'temp.rds')
-        png(opt, width=1600)
-        make.spacemix.map(pobj, text=T, source.option=T)
-#            xlim=range(pop_g$longitude),
-#            ylim=range(pop_g$latitude))
-#        require(maps)
+        png(opt, width=1600/2, height=600)
+        make.spacemix.map(pobj, text=T, source.option=T,
+            xlim=range(pop_g$longitude),
+            ylim=range(pop_g$latitude))
+        require(maps)
+        points(pop_g$longitude, pop_g$latitude, pch=16, col='red')
 
-        #map(add=T)
+
+        map(add=T)
         dev.off()
     }
     if(exists('spm_out')){
