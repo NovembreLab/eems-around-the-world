@@ -16,10 +16,10 @@ run.spacemix.analysis(
                         loci = ncol(cts),
 
 			###production option set
-                        ngen = 1e6,
+                        ngen = 1e7,
                         samplefreq = 5e4,
-                        fast.MCMC.ngen = 5e4,
-                        savefreq = 1e5,
+                        fast.MCMC.ngen = 1e6,
+                        savefreq = 1e6,
 			n.fast.reps = 10,
 
 			###debug option set
@@ -47,7 +47,7 @@ run.spacemix.analysis(
         counts <- t(read.csv(cts, check.names=F))
         pop_g <- read.csv(pop_geo)
 	print(opt)
-        spacemix_wrapper(counts, samp_size, pop_g, opt)
+        spacemix_wrapper(counts, samp_size, pop_g, opt, model)
     } else if(length(args) >=4){
         ss = args[1]
         cts = args[2]
@@ -60,6 +60,4 @@ run.spacemix.analysis(
         pop_g <- read.csv(pop_geo)
 	print(opt)
         spacemix_wrapper(counts, samp_size, pop_g, opt, model)
-    }
-    if(exists('ss')){
     }
