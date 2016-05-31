@@ -111,7 +111,7 @@ rule plot_treemix_best:
             m <- m[order(m$order),"popId"]
             write.table(gsub(" ", "_", m), "{output.tmp}", row.names=F, quote=F, col.names=F)
         
-            png(file="{output.residplot}", width=1600)
+            png(file="{output.residplot}", width=1600, height=1200)
             plot_resid("{max_llik[0]}", "{output.tmp}")
             dev.off()
         """
