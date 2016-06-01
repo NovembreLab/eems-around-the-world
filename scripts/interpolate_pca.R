@@ -24,7 +24,7 @@ make_subset_data <- function(subset){
     names(boundary) <- c('x', 'y')
 
 
-    d2 <- aggregate(data, list(data$popLabel),
+    d2 <- aggregate(data, list(data$popId),
                     function(x)ifelse(is.numeric(x), median(x),x[1]) )
 
     coordinates(d2) <- ~ longitude + latitude
