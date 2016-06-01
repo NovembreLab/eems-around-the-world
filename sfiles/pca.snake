@@ -28,14 +28,14 @@ rule make_pc_plots:
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/ggpca.R'
     output:
-        pc1='figures/pca/{name}_dim20_pc1.png',
-        pc2='figures/pca/{name}_dim20_pc2.png',
-    #script: "../" +input.__script__
-    shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
-        " {input.indiv_meta} {input.pop_display} "
-        " {output.pc1} {output.pc2} 20"
-    #shell:
-    #    'Rscript --vanilla snakescripts/ggpca.R {input} {output} 30'
+        pc1=expand('figures/pca/pc1d_{name}_pc{PC}.png', 
+            PC=range(1,21), name=['{name}']),
+        pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
+            PC=range(1,21,2), name=['{name}']),
+    script: "../" +input.__script__
+    #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
+    #    " {input.indiv_meta} {input.pop_display} "
+    #    " {output.pc1} {output.pc2} 20"
 
 rule make_loadings_plots:
     input:
@@ -43,8 +43,9 @@ rule make_loadings_plots:
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
-        fig='figures/pca/{name}_dim20_loadings.png'
-    #script: '../' + input.__script__
-    shell:
-        config['EXE']['R'] + " {input.__script__} {input.load} "
-        "{input.bim} {output.fig}"
+        fig=expand('figures/pca/loadings_{name}_pc{PC}.png', 
+            PC=range(1,21), name=['{name}']),
+    script: '../' + input.__script__
+    #shell:
+    #    config['EXE']['R'] + " {input.__script__} {input.load} "
+    #    "{input.bim} {output.fig}"

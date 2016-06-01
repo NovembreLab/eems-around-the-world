@@ -27,6 +27,9 @@ def create_file_list(wildcards):
     files = expand("admixture/{name}/{i}/{name}.{k}.Q",
         i = range(n), k = range(kmin, kmax),
         name=wildcards.name)
+#    files = expand("tess/subset/{name}.{k}_run{i}.Q",
+#        i = range(n), k = range(kmin, kmax),
+#        name=wildcards.name)
     return files
 
 rule run_admixture_single_run:

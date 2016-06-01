@@ -1,3 +1,5 @@
+library(gridExtra)
+
 source("scripts/tessplot.r")
 source("scripts/interpolate_pca.R")
 
@@ -21,14 +23,16 @@ load.data <- function(pc, fam,
 }                                                        
 
 
-make_subset_data <- function(subset){
-    data <- load.data(sprintf("tess/subset/%s.3_run0.Q", subset),
-                      sprintf("subset/%s.fam", subset),
-                      sprintf("subset/%s.indiv_meta", subset),
-                      "/data/popres_data/popres.pop_display")
-    loc <- read.csv(sprintf("subset/%s.pop_geo", subset))
+make_subset_data <- function(subset, n=3,
+	pop_display="/data/popres_data/popres.pop_display",
+	run=0){
+    data <- load.data(sprintf("tess/%s.%s_run%s.Q", subset, n, run),
+                      sprintf("%s.fam", subset),
+                      sprintf("%s.indiv_meta", subset),
+                      pop_display)
+    loc <- read.csv(sprintf("%s.pop_geo", subset))
     data <- merge(data,loc)
-    boundary <- read.table(sprintf("subset/%s.polygon", subset))
+    boundary <- read.table(sprintf("%s.polygon", subset))
     names(boundary) <- c('x', 'y')
 
 
@@ -37,4 +41,26 @@ make_subset_data <- function(subset){
 
     coordinates(d2) <- ~ longitude + latitude
     list(data=d2, boundary=boundary)
+}
+
+plot_tess <- function(subset, n, pop_display, ...){ 
+    n <- as.numeric(n)
+    d <- make_subset_data(subset, n, pop_display)
+    l <- lapply(1:n, function(i){
+	col <- sprintf('TESSPOP%s', i) 
+        plot_factor_interpolation(d$data, d$boundary, col)
+	})
+
+    do.call(arrangeGrob,l)
+    
+}
+
+args <- commandArgs(T)
+print(args)
+if(length(args)>3){
+    n = as.numeric(args[3])
+    p <- plot_tess(subset=args[2], n=n,
+        pop_display=args[1], run=args[4])
+    nrow = ceiling(n/2)
+    ggsave(args[5], p, width=8, height = 4 * nrow)
 }
