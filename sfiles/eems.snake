@@ -199,16 +199,19 @@ def eemsin(wildcards):
             name=[wildcards.name])
         outer=expand('eems/{name}.outer', 
             name=[wildcards.name])
-
         return demes + thetas + outer
 rule plot_eems:
     input:
-        eemsin
+        eemsin,
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo='subset/{name}.pop_geo',
+        indiv_label='subset/{name}.indiv_meta'
     output:
         mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
     run:
-       grid = config['eems'][wildcards.name]['grid'] 
-       s =  "%s scripts/eems_plot/make_plots.r" % config['EXE']['R']
-       s +=   " {wildcards.nruns} {wildcards.name} {grid}"
-       shell(s)
+        grid = config['eems'][wildcards.name]['grid'] 
+        s =  "%s scripts/eems_plot/make_plots.r" % config['EXE']['R']
+        s +=   " {wildcards.nruns} {wildcards.name} {grid}"
+        s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
+        shell(s)
         

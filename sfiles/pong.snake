@@ -76,20 +76,21 @@ rule create_ind2pop:
         ind2pop='pong/{name}.ind2pop',
         pop_names='pong/{name}.pop_names',
     run:
+        import pandas as pd
         pop_display = pd.read_csv(input.pop_display)
         pop_geo = pd.read_csv(input.pop_geo)
         indiv_meta = pd.read_csv(input.indiv_meta)    
         indiv = pd.merge(indiv_meta, pop_display, how='left')        
         indiv = pd.merge(indiv, pop_geo, how='left')        
         assert all(indiv.sampleId == indiv_meta.sampleId)
-        indiv.to_csv(output.ind2pop, columns=['popId'], index=None,
+        indiv.to_csv(output.ind2pop, columns=['popLabel'], index=None,
             header=False)
-        indiv0 =indiv[['popId', 'name', 'latitude', 'longitude']]
+        indiv0 =indiv[['popLabel', 'name', 'latitude', 'longitude']]
         indiv0.drop_duplicates(inplace=True)
         indiv0.sort_index(by=['latitude', 'longitude'],
             ascending=[False, True], inplace=True)
         indiv0.to_csv(output.pop_names, sep="\t",
-            columns=['popId', 'name'], 
+            columns=['popLabel', 'name'], 
             index=None, header=False)
 
 rule make_pong_script:
