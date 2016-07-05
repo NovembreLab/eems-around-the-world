@@ -1,3 +1,4 @@
+require(dplyr)
 source("scripts/eems_plot/contour.r")
 source("scripts/eems_plot/compute_spatial_posterior.r")
 source("scripts/eems_plot/plot_raw_data.r")
@@ -301,7 +302,7 @@ plot.param <- function(mcmcpath, fname, column=1, ...){
     data
 }
 
-dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=TRUE, ...) {
+dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=T, ...) {
     print('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -330,6 +331,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
         }
     }
     Sizes <- oDemes[,3]
+    Sizes <<- Sizes
     nPops <- length(Sizes)
     matSize <- matrix(Sizes,nPops,nPops)
     minSize <- pmin(matSize,t(matSize))
@@ -342,6 +344,12 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     }
     JtDobsJ <- JtDobsJ/nsimnos
     JtDhatJ <- JtDhatJ/nsimnos
+
+    pop_labels <- get_fit_matrix(mcmcpath, indiv_label_file, pop_display_file)
+    label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
+    label_mat <<- label_mat
+
+
     if (remove.singletons) {
         remove <- which(Sizes<=1)
         if (length(remove)) {
@@ -350,6 +358,8 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
             minSize <- minSize[-remove,-remove]
             Sizes <- Sizes[-remove]
             nPops <- length(Sizes)
+            label_mat <- label_mat[-remove, -remove]
+            pop_labels <- pop_labels[-remove]
         }
     }
     if (nPops<2) {
@@ -370,13 +380,8 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2
     ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
+    label_mat <- label_mat[upper.tri(label_mat, diag=FALSE)]
     
-    print("FIT MAT DEBUG")
-    print(mcmcpath)
-    print(indiv_label_file)
-    print(pop_display_file)
-    labels <- get_fit_matrix(mcmcpath, indiv_label_file, pop_display_file)
-    labels <- labels[upper.tri(labels, diag=FALSE)]
 
     cnts <- minSize[upper.tri(minSize,diag=FALSE)]
     par(font.main=1)
@@ -388,12 +393,13 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     } else {
         title(main="Dissimilarities between demes\nGray means a or b has a single individual sampled from")
     }
-    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=labels)
+    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=label_mat)
+    abline(0, 1, col='grey', lty=2)
 
 
     ypts <- Wobs
     xpts <- What
-    plot(xpts,ypts,col=c("black","gray60")[1+1*(Sizes==1)],
+    plot(xpts,ypts,col=NULL,
          xlab=expression(paste("Fitted dissimilarity within demes,  ",hat(D)[aa],sep="")),
          ylab=expression(paste("Observed dissimilarity within demes,  ",D[aa],sep="")), ...)
     if (remove.singletons) {
@@ -401,6 +407,21 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     } else {
         title(main="Dissimilarities within demes\nGray means a has a single individual sampled from")
     }
+    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=pop_labels)
+    abline(0, 1, col='grey', lty=2)
+
+    diag(Bobs) <- 0
+    diag(Bhat) <- 0
+    print(dim(Bobs))
+    Bobs <<- Bobs
+    Bhat <<- Bhat
+    print(dim(Bobs))
+    error_by_pop <<- sqrt(colMeans(abs(Bobs-Bhat), na.rm=T))
+    o20 <- order(error_by_pop, decreasing=T)[1:min(20, length(error_by_pop))]
+    pop_labels <<- pop_labels
+    barplot(error_by_pop[o20], names.arg=pop_labels[o20], las=2, cex.names=1)
+    title("Mean Abs Error of Fitted Dissimilarities")
+
 }
 
 plot.all.posterior.stuff <- function(pop_display, pop_geo, indiv_label,
@@ -425,7 +446,7 @@ plot.all.posterior.stuff <- function(pop_display, pop_geo, indiv_label,
     plot.to.pdf(dist.scatterplot, plotpath=plotpath, mcmcpath=mcmcpath,
                 pop_display_file=pop_display,
                 indiv_label_file=indiv_label,
-		remove.singletons=F)
+		remove.singletons=T)
     print('4')
 }
 
@@ -449,5 +470,14 @@ get_fit_matrix <- function(mcmcpath, indiv_label, pop_display){
     x <- i2 %>% group_by(grid) %>% 
         summarize(grid_order=first(grid_order), f=first(abbrev)) %>% 
         arrange(grid_order) %>% select(f) %>% mutate(f=as.character(f))
-    return(outer(FUN=paste, x$f, x$f, sep="-"))
+    return(x$f)
+}
+
+
+load_test_data <- function(){
+	mcmcpath <- 'eemsout/0/africa/'               
+	pop_display <- '../meta/pgs/gvar.pop_display' 
+	pop_geo <- 'subset/africa.pop_geo'            
+	indiv_label <- 'subset/africa.indiv_meta'
+	grid <- '100'
 }

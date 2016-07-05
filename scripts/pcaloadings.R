@@ -54,6 +54,3 @@ if(length(args) >= 3){
     output <- 'test.rds'
 }
 
-
-
-
