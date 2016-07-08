@@ -345,7 +345,8 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     JtDobsJ <- JtDobsJ/nsimnos
     JtDhatJ <- JtDhatJ/nsimnos
 
-    pop_labels <- get_fit_matrix(mcmcpath, indiv_label_file, pop_display_file)
+    pop_labels <- get_fit_matrix_abbrev(mcmcpath, indiv_label_file, pop_display_file)
+    pop_labels_full<- get_fit_matrix_full(mcmcpath, indiv_label_file, pop_display_file)
     label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
     label_mat <<- label_mat
 
@@ -360,6 +361,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
             nPops <- length(Sizes)
             label_mat <- label_mat[-remove, -remove]
             pop_labels <- pop_labels[-remove]
+            pop_labels_full <- pop_labels_full[-remove]
         }
     }
     if (nPops<2) {
@@ -417,9 +419,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     Bhat <<- Bhat
     print(dim(Bobs))
     error_by_pop <<- sqrt(colMeans(abs(Bobs-Bhat), na.rm=T))
-    o20 <- order(error_by_pop, decreasing=T)[1:min(40, length(error_by_pop))]
-    pop_labels <<- pop_labels
-    barplot(error_by_pop[o20], names.arg=pop_labels[o20], las=2, cex.names=0.6)
+    barplot(error_by_pop[o20], names.arg=pop_labels_full[o20], las=2, cex.names=0.6)
     title("Mean Abs Error of Fitted Dissimilarities")
 
 }
@@ -460,7 +460,7 @@ add.samples_true <- function(pop_geo_file,
 }
 
 
-get_fit_matrix <- function(mcmcpath, indiv_label, pop_display){
+get_fit_matrix_full <- function(mcmcpath, indiv_label, pop_display){
     pop_display <- read.csv(pop_display)
     o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
     names(o) <- 'grid'
@@ -470,7 +470,19 @@ get_fit_matrix <- function(mcmcpath, indiv_label, pop_display){
     x <- i2 %>% group_by(grid) %>% 
         summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
         arrange(grid_order) %>% select(f, a) %>% 
-        mutate(f=paste(as.character(f), as.character(a), sep="_"))
+        mutate(f=paste(as.character(a), as.character(f), sep="_"))
+    return(x$f)
+}
+get_fit_matrix_abbrev <- function(mcmcpath, indiv_label, pop_display){
+    pop_display <- read.csv(pop_display)
+    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    names(o) <- 'grid'
+    o <- cbind(grid=o, grid_order=1:nrow(o))
+    indiv_label <- read.csv(indiv_label)     
+    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+    x <- i2 %>% group_by(grid) %>% 
+        summarize(grid_order=first(grid_order), f=first(abbrev), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a)
     return(x$f)
 }
 
