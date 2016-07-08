@@ -185,8 +185,8 @@ plot.to.png <- function( plotf, plotpath='tmp', dimns=NULL, ...){
 	plot.width=800
     } else if( identical(plotf, dist.scatterplot) ){
 	ext = '-scatter'
-	plot.height=400
-	plot.width=400
+	plot.height=800
+	plot.width=800
     }
     save.graphics(paste0(plotpath,ext), plot.height, plot.width, out.png=T)
     plotf(...)
@@ -417,9 +417,9 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     Bhat <<- Bhat
     print(dim(Bobs))
     error_by_pop <<- sqrt(colMeans(abs(Bobs-Bhat), na.rm=T))
-    o20 <- order(error_by_pop, decreasing=T)[1:min(20, length(error_by_pop))]
+    o20 <- order(error_by_pop, decreasing=T)[1:min(40, length(error_by_pop))]
     pop_labels <<- pop_labels
-    barplot(error_by_pop[o20], names.arg=pop_labels[o20], las=2, cex.names=1)
+    barplot(error_by_pop[o20], names.arg=pop_labels[o20], las=2, cex.names=0.6)
     title("Mean Abs Error of Fitted Dissimilarities")
 
 }
@@ -468,8 +468,9 @@ get_fit_matrix <- function(mcmcpath, indiv_label, pop_display){
     indiv_label <- read.csv(indiv_label)     
     i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
     x <- i2 %>% group_by(grid) %>% 
-        summarize(grid_order=first(grid_order), f=first(abbrev)) %>% 
-        arrange(grid_order) %>% select(f) %>% mutate(f=as.character(f))
+        summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a) %>% 
+        mutate(f=paste(as.character(f), as.character(a), sep="_"))
     return(x$f)
 }
 

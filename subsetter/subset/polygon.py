@@ -92,7 +92,7 @@ def get_envelope(meta_data):
     return pts.envelope
 
 
-def get_region_polygon(region, map_file='', rbuffer=1, wrap=True):
+def get_region_polygon(region, map_file='', rbuffer=0, wrap=True):
     if region is None:
         return None
 
@@ -106,8 +106,17 @@ def get_region_polygon(region, map_file='', rbuffer=1, wrap=True):
     return polygon
 
 
+def get_polygon_from_extrema(extrema):
+        polygon=[[extrema[0], extrema[2]],
+                 [extrema[0], extrema[3]],
+                 [extrema[1], extrema[3]],
+                 [extrema[1], extrema[2]]]
+        return Polygon(polygon)
+
 def _get_subset_area(meta_data, population=None,
+                     exclude_pop=None,
                      polygon=None, region=None,
+                     extrema=None,
                      convex_hull=False, envelope=False, map_projection=None,
                      _map=None, region_buffer=2, sample_buffer=2,
                      wrap=True):
@@ -123,6 +132,11 @@ def _get_subset_area(meta_data, population=None,
         in minimum, contains latitude and longitude columns
     population : list or None
         A list of populations to be kept. Is compared to the
+            meta_data.POP column (popLabel in PGS framework).
+            Samples not having an ID are removed.
+            If None, all samples are retained
+    exclude_pop : list or None
+        A list of populations to be specifically excluded. Is compared to the
             meta_data.POP column (popLabel in PGS framework).
             Samples not having an ID are removed.
             If None, all samples are retained
@@ -161,6 +175,8 @@ def _get_subset_area(meta_data, population=None,
     Returns
     -------
     """
+
+
     if population is not None:
         print(meta_data.columns)
         to_keep = [s in population
@@ -168,30 +184,43 @@ def _get_subset_area(meta_data, population=None,
         meta_data = meta_data[to_keep]
         meta_data.index = range(len(meta_data))
 
+    if exclude_pop is not None:
+        print("excluding")
+        print("before:", meta_data.shape)
+        to_keep = [s not in exclude_pop
+                   for s in meta_data.popId]
+        meta_data = meta_data[to_keep]
+        meta_data.index = range(len(meta_data))
+        print("after: ", meta_data.shape)
+
 
     create_points(meta_data)
-    if polygon is None and region is not None:
-        poly1 = get_region_polygon(region, _map,
-                                   region_buffer, wrap)
-        print("case 1")
-    elif polygon is not None and region is None:
+    poly1 = None
+    if extrema  is not None:
+        poly1 = get_polygon_from_extrema(extrema)
+        print("case1")
+    elif polygon is not None:
         poly1 = get_polygon(polygon, wrap=True)
-        print("case 2")
-    elif polygon is None and region is None:
-        poly1 = None
-        print("case 3")
-    elif polygon is not None and region is not None:
-        poly_region = get_region_polygon(region, _map,
-                                         region_buffer, wrap)
-        poly_file = get_polygon(polygon, wrap=True)
-        poly1 = poly_region.intersection(poly_file)
-        print("case 4")
+        print("case2")
 
+    if region is not None and poly1 is None:
+        poly1 = get_region_polygon(region, _map,
+                                   rbuffer=0, wrap=wrap)
+        print("case3")
+
+    elif region is not None and poly1 is not None:
+        poly_region = get_region_polygon(region, _map,
+                                         rbuffer=0, wrap=wrap)
+        meta_data = filter_individuals_based_on_location(meta_data, poly_region)
+        poly1 = poly_region.intersection(poly1)
+        print("case4")
     print("loaded polygons")
 
-    # hulls depend on trhe data
+    # hulls depend on the data
     if poly1 is not None:
         meta_data = filter_individuals_based_on_location(meta_data, poly1)
+        print("META DATA:", meta_data.shape)
+        poly1 = poly1.buffer(region_buffer)
 
     hull = None
     if convex_hull:
@@ -259,5 +288,9 @@ def create_polygon_file(polygon, outname, add_outer=True):
     -------
     """
     if add_outer: outname += ".outer"
-    points = list(polygon.exterior.coords)
-    np.savetxt(outname, points, fmt="%f")
+    try:
+        points = list(polygon.exterior.coords)
+        np.savetxt(outname, points, fmt="%f")
+    except:
+        points = list(polygon.convex_hull.exterior.coords)
+        np.savetxt(outname, points, fmt="%f")

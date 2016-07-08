@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import shapely.ops as ops
 from collections import defaultdict
 import numpy as np
-#from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.basemap import Basemap
 
 WRAP_POINT=-25.
 
@@ -91,7 +91,7 @@ class CountryContainer(object):
         for c in self:
             c.remove_northern_islands(limit)
 
-    def get_boundary_polygon(self, simplify_level=0.5, buffer_lvl=1,
+    def get_boundary_polygon(self, simplify_level=0.5, buffer_lvl=0,
                              min_area=0.95, return_type="array"):
         """get_boundary_polygon
         Gets a polygon around all countries in the CountryContainer
@@ -142,6 +142,7 @@ class CountryContainer(object):
                 return continent
             except:
                 print("continent is nonsingle", len(continent))
+                return continent
                 return continent.convex_hull
         raise ValueError("invalid return_type: %s", return_type)
 

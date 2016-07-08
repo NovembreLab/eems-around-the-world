@@ -11,6 +11,7 @@ include: 'sfiles/spacemix.snake'
 include: 'sfiles/paintings.snake'
 include: 'sfiles/tess.snake'
 
+
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
@@ -66,12 +67,20 @@ def snakemake_subsetter(input, output, name):
     if "region" not in params:
         print("REGION NOT FOUND WEEE")
         params['region'] = None
+
+    if "exclude_pop" not in params:
+        print("NO POPS EXCLUDED")
+        params['exclude_pop'] = None
+
+
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
         region=params['region'],
         sample_buffer=float(params['sample_buffer']),
         region_buffer=float(params['region_buffer']),
         convex_hull=params['hull'],
+        extrema=params['extrema'],
         population=params['population'],
+        exclude_pop=params['exclude_pop'],
                 _map=input.map)
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
@@ -88,11 +97,13 @@ def snakemake_subsetter(input, output, name):
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
         subsets = config['subset'].keys()
+        subsets = [s for s in subsets if "2" not in s and "3" not in s]
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
     return ss
     
+include: 'sfiles/paper_figures.snake'
 
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
@@ -105,13 +116,13 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
 
 
        
-	
 
 # rules that run important stuff for all subsets
 
 rule subset_all_spacemix:
     input:
         subset_all_fun(prefix='spacemix/subset/', ext='.controller')
+
 rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
