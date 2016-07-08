@@ -48,6 +48,8 @@ def snakemake_subsetter(input, output, name):
     from subsetter.subset import filter_data
     import numpy as np
 
+    outname = base(output.bed)
+
     params = config['subset']['__default__']
     params.update(config['subset'][name])
     location_data = load_pop_geo(input.meta[0])
@@ -87,7 +89,7 @@ def snakemake_subsetter(input, output, name):
                             bedfile=bed,
                             missing=float(params['max_missing']), 
                             plink=PLINK_EXE,
-                            outfile='subset/' + name)
+                            outfile=outname)
     
     meta_data[POP_GEO_COLS].drop_duplicates().to_csv(output.pop_geo, index=False)
     meta_data[INDIV_META_COLS].to_csv(output.indiv_meta, index=False)
@@ -115,9 +117,14 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     
 
 
+
+
        
 
 # rules that run important stuff for all subsets
+rule subset_all_bed:
+    input:
+        subset_all_fun(prefix='subset/', ext='.bed')
 
 rule subset_all_spacemix:
     input:
@@ -163,7 +170,7 @@ rule subset_admixture_k2:
         
 
 # rules that do the data partitioning
-rule subset:
+rule subset_nopca:
     input:
         plink=expand("%s.{ext}"% PLINK_SRC, ext=PLINK_EXT),
         meta=expand("%s.{ext}"% META_SRC, ext=META_EXT),
@@ -172,12 +179,30 @@ rule subset:
         pop_geo='subset/{name}.pop_geo',
         indiv_meta='subset/{name}.indiv_meta',
         polygon='subset/{name}.polygon',
+        bed=temp('subset_nopca/{name}.bed'),
+        bim=temp('subset_nopca/{name}.bim'),
+        fam=temp('subset_nopca/{name}.fam'),
+    version: "2"
+    run:
+        snakemake_subsetter(input, output, wildcards.name)
+
+rule subset_pca:
+    input:
+        bed='subset_nopca/{name}.bed',
+        bim='subset_nopca/{name}.bim',
+        fam='subset_nopca/{name}.fam',
+        outliers="subset/{name}_dim10.outlier_snp"
+    output:
         bed='subset/{name}.bed',
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
-    version: "1"
-    run:
-        snakemake_subsetter(input, output, wildcards.name)
+    shell:
+        'plink --bfile subset_nopca/{wildcards.name} '
+        '--exclude {input.outliers} '
+        '--out subset/{wildcards.name} --make-bed'
+
+
+
 
 
 rule install:
