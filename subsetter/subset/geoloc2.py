@@ -47,6 +47,8 @@ class CountryContainer(object):
         self.regions[c.subregion.lower()].append(c)
         self.regions[c.region_wb.lower()].append(c)
 
+        self.regions[c.name.lower()].append(c)
+
         if c.continent not in ['Oceania', 'Antarctica']:
             self.regions['world'].append(c)
             self.regions['World'].append(c)
@@ -193,6 +195,10 @@ class CountryContainer(object):
     def unwrap_americas(self, wrapping_point=360):
         for c in self:
             self.unwrap_americas(wrapping_point)
+
+    @property
+    def area(self):
+        return sum(sum(c.area) for c in self)
 
         
 class Country(object):

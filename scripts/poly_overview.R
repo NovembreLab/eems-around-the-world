@@ -17,7 +17,7 @@ load_snakemake <- function(){
 
 
 plot_polys <- function(){
-    png(filename=out_png, width=1600, height=700, res=150)
+    pdf(file=out_png, width=16, height=7)
     palette(brewer.pal(12,"Set3"))
     par(mar=c(0,0,0,0))
     plot(pops, asp=1, xlab="", ylab="", axes=F, pch=16, col=NULL)

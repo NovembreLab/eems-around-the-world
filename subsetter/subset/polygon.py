@@ -99,7 +99,7 @@ def get_region_polygon(region, map_file='', rbuffer=0, wrap=True):
     countries = load_countries(map_file, wrap_americas=wrap)
     print('loaded countries', region)
     eems_region = countries[region]
-    polygon = eems_region.get_boundary_polygon(min_area=0.9,
+    polygon = eems_region.get_boundary_polygon(min_area=0.3,
                                                buffer_lvl=rbuffer,
                                                return_type="polygon")
     print('got boundary polygon')
@@ -204,14 +204,19 @@ def _get_subset_area(meta_data, population=None,
         print("case2")
 
     if region is not None and poly1 is None:
+        unbuffered_poly = get_region_polygon(region, _map,
+                                   rbuffer=0.2, wrap=wrap)
         poly1 = get_region_polygon(region, _map,
-                                   rbuffer=0, wrap=wrap)
+                                   rbuffer=region_buffer, wrap=wrap)
+        meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
         print("case3")
 
     elif region is not None and poly1 is not None:
+        unbuffered_poly = get_region_polygon(region, _map,
+                                   rbuffer=0.2, wrap=wrap)
         poly_region = get_region_polygon(region, _map,
-                                         rbuffer=0, wrap=wrap)
-        meta_data = filter_individuals_based_on_location(meta_data, poly_region)
+                                         rbuffer=region_buffer, wrap=wrap)
+        meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
         poly1 = poly_region.intersection(poly1)
         print("case4")
     print("loaded polygons")

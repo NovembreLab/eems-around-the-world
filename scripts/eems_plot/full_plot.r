@@ -418,7 +418,8 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     Bobs <<- Bobs
     Bhat <<- Bhat
     print(dim(Bobs))
-    error_by_pop <<- sqrt(colMeans(abs(Bobs-Bhat), na.rm=T))
+    error_by_pop <- colMeans(abs(Bobs-Bhat), na.rm=T)
+    o20 <- order(error_by_pop, decreasing=T)[1:min(40, length(error_by_pop))]
     barplot(error_by_pop[o20], names.arg=pop_labels_full[o20], las=2, cex.names=0.6)
     title("Mean Abs Error of Fitted Dissimilarities")
 
