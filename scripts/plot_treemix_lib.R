@@ -258,7 +258,7 @@ get_f = function(stem){
 
 }
 
-plot_tree = function(stem, o = NA, cex = 1, disp = 0.003, plus = 0.01, flip = vector(), arrow = 0.05, scale = T, ybar = 0.1, mbar = T, plotmig = T, plotnames = T, xmin = 0, lwd = 1, font = 1){
+plot_tree = function(stem, o = NA, cex = 2, disp = 0.00002, plus = 0.0005, flip = vector(), arrow = 0.05, scale = F, ybar = -10.1, mbar = T, plotmig = T, plotnames = T, xmin = 0, lwd = 1, font = 1){
 	d = paste(stem, ".vertices.gz", sep = "")
 	e = paste(stem, ".edges.gz", sep = "")
 	se = paste(stem, ".covse.gz", sep = "")

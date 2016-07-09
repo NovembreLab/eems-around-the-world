@@ -27,6 +27,9 @@ def create_file_list(wildcards):
     files = expand("admixture/{name}/{i}/{name}.{k}.Q",
         i = range(n), k = range(kmin, kmax),
         name=wildcards.name)
+#    files = expand("tess/subset/{name}.{k}_run{i}.Q",
+#        i = range(n), k = range(kmin, kmax),
+#        name=wildcards.name)
     return files
 
 rule run_admixture_single_run:
@@ -76,6 +79,7 @@ rule create_ind2pop:
         ind2pop='pong/{name}.ind2pop',
         pop_names='pong/{name}.pop_names',
     run:
+        import pandas as pd
         pop_display = pd.read_csv(input.pop_display)
         pop_geo = pd.read_csv(input.pop_geo)
         indiv_meta = pd.read_csv(input.indiv_meta)    

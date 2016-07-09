@@ -15,3 +15,8 @@ test*
 viz/
 spacemix/
 autosnake/
+*png
+eigenvalues.txt
+eigenvectors.txt
+eemsout_names/
+paper/

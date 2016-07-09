@@ -5,13 +5,13 @@ source("scripts/eems_plot/worldmap.r")
 
 default.eems.colors <- function(par='m' ) {
     if(par == 'q'){
-	eems.colors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC", ## orange sequence
-			 #"#bbbbbb",                                                   ## white
-			 "#BBFFBB","#86FF86","#50FF50","#00BB00","#008600","#005000") ## green sequence
+    eems.colors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC", ## orange sequence
+             #"#bbbbbb",                                                   ## white
+             "#BBFFBB","#86FF86","#50FF50","#00BB00","#008600","#005000") ## green sequence
     } else {
-	eems.colors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC", ## orange sequence
-			 #"#bbbbbb",                                                   ## white
-			 "#CCFDFF","#99F8FF","#66F0FF","#33E4FF","#00AACC","#007A99") ## blue sequence
+    eems.colors <- c("#994000","#CC5800","#FF8F33","#FFAD66","#FFCA99","#FFE6CC", ## orange sequence
+             #"#bbbbbb",                                                   ## white
+             "#CCFDFF","#99F8FF","#66F0FF","#33E4FF","#00AACC","#007A99") ## blue sequence
     }
     return (eems.colors)
 }
@@ -23,13 +23,13 @@ log.seq <- function(x,...){
 plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=length(col), mode='logmean', add=F){
     mat <- matrix(NA, nrow=dimns$nxmrks, ncol=dimns$nymrks) 
     if(mode=='mean'){
-	mat[dimns$filter] <- colMeans(pts)
+    mat[dimns$filter] <- colMeans(pts)
     } else if(mode =='logmean'){
-	mat[dimns$filter] <- exp(colMeans(log(pts)))
+    mat[dimns$filter] <- exp(colMeans(log(pts)))
     } else if(mode =='median'){
-	mat[dimns$filter] <- apply(pts, 2, median)
+    mat[dimns$filter] <- apply(pts, 2, median)
     } else {
-	stop('mode not known')
+    stop('mode not known')
     }
 
 
@@ -38,19 +38,27 @@ plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=leng
     if(!add){
     par(mar=c(0,0,0,0))
     plot(NA, xlim=dimns$xrange, ylim=dimns$yrange,axes=F, xlab='', ylab='',
-	 xaxs='i', yaxs='i', asp=1) 
+     xaxs='i', yaxs='i', asp=1) 
     }
 
     if(is.null(col.range)){
-	sq <- log.seq(range(mat,na.rm=T),length.out=n.levels+1)
+    sq <- log.seq(range(mat,na.rm=T),length.out=n.levels+1)
     } else{
-	sq <- log.seq(col.range,length.out=n.levels+1)
-	sq[1] <- min(min(mat, na.rm=T), sq[1])
-	sq[length(sq)] <- max(max(mat, na.rm=T), sq[length(sq)])
+    sq <- log.seq(col.range,length.out=n.levels+1)
+    sq[1] <- min(min(mat, na.rm=T), sq[1])
+    sq[length(sq)] <- max(max(mat, na.rm=T), sq[length(sq)])
     }
     #sq <- seq(min(mat,na.rm=T),max(mat,na.rm=T),length.out=n.levels+1)
     print(sq)
     .filled.contour(dimns$xmrks, dimns$ymrks, mat, levels=sq, col=col)
+}
+
+whiteout_filter <- function(dimns){
+    .filled.contour(dimns$xmrks, dimns$ymrks,
+                   matrix(dimns$filter, nrow=dimns$nxmrks),
+                   levels=c(-1,.5, 2),
+                   col=c(rgb(1,1,1, .6), rgb(0,0,.12, 0)))
+
 }
 
 plot.key <- function(n=13, range=c(0.1,1000)){
@@ -63,8 +71,8 @@ plot.key <- function(n=13, range=c(0.1,1000)){
 
     options(scipen=999)
     plot(NA, xlim=range, ylim=0:1, xaxs='i', yaxs='i',
-	 xlab='', ylab='', yaxt='n', log='x', cex.axis=1.6
-	 )
+     xlab='', ylab='', yaxt='n', log='x', cex.axis=1.6
+     )
     rect(xleft, ybottom, xright, ytop, col = default.eems.colors('q'))
     dev.off()
 }
@@ -89,7 +97,7 @@ plot.empty<- function(dimns){
     levels <- c(0, 2)
 
     .filled.contour(dimns$xmrks, dimns$ymrks, mat, levels=levels,
-		    col='white')
+            col='white')
 }
 
 add.map <- function(lwd=3, ...){
@@ -109,8 +117,8 @@ add.samples <- function(mcmcpath, cex.samples=.8, max.cex.samples=2, pch=16, ...
     rel.sizes <- g$sizes / max(g$sizes)
     cex.v <- cex.samples + max.cex.samples * rel.sizes
     points(g$demes[g$alpha,1], g$demes[g$alpha,2], cex=cex.v,
-	   pch=pch, ...
-	   )
+       pch=pch, ...
+       )
 }
 
 add.samples <- function(mcmcpath, cex.samples=.8, max.cex.samples=2, pch=16, ...){
@@ -118,8 +126,8 @@ add.samples <- function(mcmcpath, cex.samples=.8, max.cex.samples=2, pch=16, ...
     rel.sizes <- g$sizes / max(g$sizes)
     cex.v <- cex.samples + max.cex.samples * rel.sizes
     points(g$demes[g$alpha,1], g$demes[g$alpha,2], cex=cex.v,
-	   pch=pch, ...
-	   )
+       pch=pch, ...
+       )
 }
 
 

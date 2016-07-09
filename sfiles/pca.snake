@@ -1,4 +1,26 @@
 
+def run_pca(input, output, params, wildcards, config):
+        infile = base(input.bed)
+        s = '%s --bfile %s ' % (config['EXE']['flashpca'], infile)
+        s += '--ndim %s ' % wildcards.ndim 
+        s += '--outpc {output.pc} '
+        s += '--outload {output.load} '
+        s += '--outpve {output.pve} '
+        s += '--v --mem low --seed {params.seed}'
+        shell(s)
+
+rule run_flashpca_outliers:
+    input:
+        bed='subset_nopca/{name}.bed',
+        bim='subset_nopca/{name}.bim',
+        fam='subset_nopca/{name}.fam',
+    output:
+        pc="subset_nopca/flash_{name}_dim{ndim}.pc",
+        load="subset_nopca/flash_{name}_dim{ndim}.load",
+        pve="subset_nopca/flash_{name}_dim{ndim}.pve",
+    params: seed=14
+    run: 
+        run_pca(input, output, params, wildcards, config)
 
 rule run_flashpca:
     input:
@@ -10,15 +32,20 @@ rule run_flashpca:
         load=protected("pca/flash_{name}_dim{ndim}.load"),
         pve=protected("pca/flash_{name}_dim{ndim}.pve")
     params: seed=12
-    run:
-        infile = base(input.bed)
-        s = '%s --bfile %s ' % (config['EXE']['flashpca'], infile)
-        s += '--ndim %s ' % wildcards.ndim 
-        s += '--outpc {output.pc} '
-        s += '--outload {output.load} '
-        s += '--outpve {output.pve} '
-        s += '--v --mem low --seed {params.seed}'
-        shell(s)
+    run: 
+        run_pca(input, output, params, wildcards, config)
+
+rule get_pca_outliers:
+    input:
+        loadings='subset_nopca/flash_{name}_dim{ndims}.load',
+        bimfile='subset_nopca/{name}.bim',
+        __script__='scripts/get_pca_outliers.R'
+    params: 
+        abs_cutoff=5,
+        region_bp=100000
+    output:
+        outliers="subset/{name}_dim{ndims}.outlier_snp"
+    script: "../" + input.__script__
 
 rule make_pc_plots:
     input:
@@ -28,14 +55,14 @@ rule make_pc_plots:
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/ggpca.R'
     output:
-        pc1='figures/pca/{name}_dim20_pc1.png',
-        pc2='figures/pca/{name}_dim20_pc2.png',
-    #script: "../" +input.__script__
-    shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
-        " {input.indiv_meta} {input.pop_display} "
-        " {output.pc1} {output.pc2} 20"
-    #shell:
-    #    'Rscript --vanilla snakescripts/ggpca.R {input} {output} 30'
+        pc1=expand('figures/pca/pc1d_{name}_pc{PC}.png', 
+            PC=range(1,21), name=['{name}']),
+        pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
+            PC=range(1,21,2), name=['{name}']),
+    script: "../" +input.__script__
+    #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
+    #    " {input.indiv_meta} {input.pop_display} "
+    #    " {output.pc1} {output.pc2} 20"
 
 rule make_loadings_plots:
     input:
@@ -43,8 +70,9 @@ rule make_loadings_plots:
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
-        fig='figures/pca/{name}_dim20_loadings.png'
-    #script: '../' + input.__script__
-    shell:
-        config['EXE']['R'] + " {input.__script__} {input.load} "
-        "{input.bim} {output.fig}"
+        fig=expand('figures/pca/loadings_{name}_pc{PC}.png', 
+            PC=range(1,21), name=['{name}']),
+    script: '../' + input.__script__
+    #shell:
+    #    config['EXE']['R'] + " {input.__script__} {input.load} "
+    #    "{input.bim} {output.fig}"

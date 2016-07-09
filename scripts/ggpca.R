@@ -1,11 +1,14 @@
+suppressPackageStartupMessages({
 library(ggplot2)
 library(data.table)
+library(dplyr)
+})
 #! called from snakefiles/pca.snake:make_pc_plots
 
 makePC <- function(data, n, col, field='abbrev'){
-    f = sprintf('factor(%s)' , field)
+    f = sprintf('%s' , field)
     id <- sprintf('PC%d', n)
-    g <- ggplot(data, aes_string(f, id, fill=field))
+    g <- ggplot(data, aes_string(f, id, fill=field, color=field))
     g <- g + geom_violin(adjust=.2) + col
     g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1),
               axis.title.x = element_blank(),
@@ -35,12 +38,14 @@ makePlots <- function(data, col, output1, output2){
     p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col))
     l = list(PC1=p1, PC2=p2)
-    png(file=output1, width=3200, height=1600)
-    multiplot(plotlist=p1, file=output, cols=4)
-    dev.off()
-    png(file=output2, width=3200, height=1600)
-    multiplot(plotlist=p2, file=output, cols=5)
-    dev.off()
+    #png(file=output1, width=3200, height=1600)
+    #multiplot(plotlist=p1, file=output, cols=4)
+    for(i in 1:20){
+        ggsave(output1[i], p1[[i]], width=7, height=4)
+    }
+    for(i in 1:10){
+        ggsave(output2[i], p2[[i]], width=6, height=6)
+    }
 }
 
 load.data <- function(pc, fam,
@@ -117,9 +122,17 @@ if(exists('snakemake')){
     output <- snakemake@output[['pc1']]
     output2 <- snakemake@output[['pc2']]
     data <- load.data(pc, fam, indiv_meta, pop_display)
-    col <- list(scale_color_manual(name=data$abbrev, values=data$color),
-                scale_fill_manual(name=data$abbrev, values=data$color))
+    col_list <- data %>% group_by(abbrev) %>% 
+        summarize(color=first(color), order=mean(order)) %>% 
+        arrange(order)
+    data$abbrev <- factor(data$abbrev, levels=col_list$abbrev)
+    print(names(col_list))
+    cv <- as.character(col_list$color)
+    names(cv) <- col_list$abbrev
+    col <- list(scale_color_manual(values=cv),
+                scale_fill_manual(values=cv))
     makePlots(data, col, output, output2)
+    save.image('.Rsnakemakedebug')
 } else if(length(args)>5){
     args <- commandArgs(T)
     pc <- args[1]
@@ -129,8 +142,9 @@ if(exists('snakemake')){
     output <- args[5]
     output2 <- args[6]
     data <- load.data(pc, fam, indiv_meta, pop_display)
-    col <- list(scale_color_manual(name=data$abbrev, values=data$color),
-                scale_fill_manual(name=data$abbrev, values=data$color))
+    col_list <- data %>% group_by(abbrev) %>% summarize(first(color))
+    col <- list(scale_color_manual(name=col_list$abbrev, values=col_list$color),
+                scale_fill_manual(name=col_list$abbrev, values=col_list$color))
     makePlots(data, col, output, output2)
 }
 

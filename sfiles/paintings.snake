@@ -11,7 +11,5 @@ rule paint_pbwt:
         s ="%s -read {input} -paint %s 100" % (config['EXE']['pbwt'], outname)                    
         shell(s)
 
-rule paint_fs:
-    input:
 
 

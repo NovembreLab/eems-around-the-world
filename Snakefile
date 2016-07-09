@@ -11,6 +11,7 @@ include: 'sfiles/spacemix.snake'
 include: 'sfiles/paintings.snake'
 include: 'sfiles/tess.snake'
 
+
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
@@ -47,6 +48,8 @@ def snakemake_subsetter(input, output, name):
     from subsetter.subset import filter_data
     import numpy as np
 
+    outname = base(output.bed)
+
     params = config['subset']['__default__']
     params.update(config['subset'][name])
     location_data = load_pop_geo(input.meta[0])
@@ -66,19 +69,29 @@ def snakemake_subsetter(input, output, name):
     if "region" not in params:
         print("REGION NOT FOUND WEEE")
         params['region'] = None
+
+    if "exclude_pop" not in params:
+        print("NO POPS EXCLUDED")
+        params['exclude_pop'] = None
+
+
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
         region=params['region'],
         sample_buffer=float(params['sample_buffer']),
         region_buffer=float(params['region_buffer']),
         convex_hull=params['hull'],
+        extrema=params['extrema'],
         population=params['population'],
+        exclude_pop=params['exclude_pop'],
+        exclude_source=params['exclude_source'],
+        min_area=params['min_area'],
                 _map=input.map)
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
                             missing=float(params['max_missing']), 
                             plink=PLINK_EXE,
-                            outfile='subset/' + name)
+                            outfile=outname)
     
     meta_data[POP_GEO_COLS].drop_duplicates().to_csv(output.pop_geo, index=False)
     meta_data[INDIV_META_COLS].to_csv(output.indiv_meta, index=False)
@@ -88,11 +101,13 @@ def snakemake_subsetter(input, output, name):
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
         subsets = config['subset'].keys()
+        subsets = [s for s in subsets if "2" not in s and "3" not in s]
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
     return ss
     
+include: 'sfiles/paper_figures.snake'
 
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
@@ -104,14 +119,19 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     
 
 
+
+
        
-	
 
 # rules that run important stuff for all subsets
+rule subset_all_bed:
+    input:
+        subset_all_fun(prefix='subset/', ext='.bed')
 
 rule subset_all_spacemix:
     input:
         subset_all_fun(prefix='spacemix/subset/', ext='.controller')
+
 rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
@@ -152,7 +172,7 @@ rule subset_admixture_k2:
         
 
 # rules that do the data partitioning
-rule subset:
+rule subset_nopca:
     input:
         plink=expand("%s.{ext}"% PLINK_SRC, ext=PLINK_EXT),
         meta=expand("%s.{ext}"% META_SRC, ext=META_EXT),
@@ -161,12 +181,31 @@ rule subset:
         pop_geo='subset/{name}.pop_geo',
         indiv_meta='subset/{name}.indiv_meta',
         polygon='subset/{name}.polygon',
+        bed=temp('subset_nopca/{name}.bed'),
+        bim=temp('subset_nopca/{name}.bim'),
+        fam=temp('subset_nopca/{name}.fam'),
+        incl=temp('subset_nopca/{name}.incl')
+    version: "2"
+    run:
+        snakemake_subsetter(input, output, wildcards.name)
+
+rule subset_pca:
+    input:
+        bed='subset_nopca/{name}.bed',
+        bim='subset_nopca/{name}.bim',
+        fam='subset_nopca/{name}.fam',
+        outliers="subset/{name}_dim10.outlier_snp"
+    output:
         bed='subset/{name}.bed',
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
-    version: "1"
-    run:
-        snakemake_subsetter(input, output, wildcards.name)
+    shell:
+        'plink --bfile subset_nopca/{wildcards.name} '
+        '--exclude {input.outliers} '
+        '--out subset/{wildcards.name} --make-bed'
+
+
+
 
 
 rule install:

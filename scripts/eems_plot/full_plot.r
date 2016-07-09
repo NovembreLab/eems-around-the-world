@@ -1,3 +1,4 @@
+require(dplyr)
 source("scripts/eems_plot/contour.r")
 source("scripts/eems_plot/compute_spatial_posterior.r")
 source("scripts/eems_plot/plot_raw_data.r")
@@ -29,9 +30,25 @@ plot_q <- function(mcmcpath, mode='logmean', standardize=F){
     add.samples(mcmcpath, cex.samples=1.3)
     pts <<- pts
     dimns <<- dimns
-    #plot.empty(dimns)
-    #plot.empty(dimns)
-    #plot.empty(dimns)
+}
+plot_q_summary <- function(mcmcpath,
+                           pop_geo_file,
+                           pop_display_file,
+                           mode='logmean', standardize=F){
+    print(mcmcpath)
+    dimns <- read.dimns(mcmcpath[1], DIMNS, DIMNS)
+    qfiles <- read.qfiles(mcmcpath)
+    pts <- compute.pts(dimns, qfiles, standardize=standardize)
+     
+    plot.eems.contour(dimns, pts, col=default.eems.colors('q'),
+		      mode=mode)
+    
+    #plot.eems.contour.var(dimns, pts, col=cv)
+    add.map(border='grey')
+    #add.grid(mcmcpath)
+    pg <- add.samples_true(pop_geo_file, 
+                     pop_display_file,
+                     cex=1.3)
 }
 
 plot_m <- function(mcmcpath, mode='logmean', standardize=F){
@@ -51,11 +68,30 @@ plot_m <- function(mcmcpath, mode='logmean', standardize=F){
     add.map()
     add.grid(mcmcpath)
     add.samples(mcmcpath, cex.samples=1.3)
-    pts <<- pts
-    dimns <<- dimns
-    #plot.empty(dimns)
-    #plot.empty(dimns)
-    #plot.empty(dimns)
+}
+
+plot_m_summary <- function(mcmcpath,
+                           pop_geo_file,
+                           pop_display_file,
+                           mode='logmean', standardize=F){
+    print(mcmcpath)
+    dimns <- read.dimns(mcmcpath[1], DIMNS, DIMNS)
+    mfiles <- read.mfiles(mcmcpath)
+    pts <- compute.pts(dimns, mfiles, standardize=standardize)
+    if(standardize){
+	col.range=NULL
+    } else {
+	col.range=c(0.1, 1000)
+    }
+    plot.eems.contour(dimns, pts, col=default.eems.colors('m'),
+		      mode=mode, col.range=col.range)
+    
+    #plot.eems.contour.var(dimns, pts, col=cv)
+    add.map(border='grey')
+    #add.grid(mcmcpath)
+    pg <- add.samples_true(pop_geo_file, 
+                     pop_display_file,
+                     cex=1.3)
 }
 
 plot_map <- function(mcmcpath){
@@ -94,6 +130,16 @@ plot.to.pdf <- function( plotf, plotpath='tmp', dimns=NULL, ...){
 	plot.height <- 11
 	ratio = dimns$yspan / dimns$xspan
 	plot.width <- plot.height / ratio 
+    } else if( identical(plotf, plot_m_summary) ){
+	ext = '-mrates'
+	plot.height <- 11
+	ratio = dimns$yspan / dimns$xspan
+	plot.width <- plot.height / ratio 
+    } else if( identical(plotf, plot_q_summary) ){
+	ext = '-qrates'
+	plot.height <- 11
+	ratio = dimns$yspan / dimns$xspan
+	plot.width <- plot.height / ratio 
     } else if( identical(plotf, plot_map)){
 	ext = '-map'
 	plot.height <- 11
@@ -109,8 +155,8 @@ plot.to.pdf <- function( plotf, plotpath='tmp', dimns=NULL, ...){
 	plot.width=11.5
     } else if( identical(plotf, dist.scatterplot) ){
 	ext = '-scatter'
-	plot.height=4
-	plot.width=4
+	plot.height=16
+	plot.width=16
     }
     save.graphics(paste0(plotpath,ext), plot.height, plot.width, out.png=T)
     plotf(...)
@@ -139,14 +185,14 @@ plot.to.png <- function( plotf, plotpath='tmp', dimns=NULL, ...){
 	plot.width=800
     } else if( identical(plotf, dist.scatterplot) ){
 	ext = '-scatter'
-	plot.height=400
-	plot.width=400
+	plot.height=800
+	plot.width=800
     }
     save.graphics(paste0(plotpath,ext), plot.height, plot.width, out.png=T)
     plotf(...)
     dev.off()
 }
-save.graphics <- function(plotpath,plot.height,plot.width,res=100,
+save.graphics <- function(plotpath,plot.height,plot.width,res=300,
 			  out.png=FALSE, ...) {
     if (out.png) {
         bitmap(paste(plotpath,'%02d.png',sep=''),type='png16m',res=res,
@@ -256,7 +302,7 @@ plot.param <- function(mcmcpath, fname, column=1, ...){
     data
 }
 
-dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
+dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=T, outlier_file, ...) {
     print('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -285,10 +331,12 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
         }
     }
     Sizes <- oDemes[,3]
+    Sizes <<- Sizes
     nPops <- length(Sizes)
     matSize <- matrix(Sizes,nPops,nPops)
     minSize <- pmin(matSize,t(matSize))
     JtDobsJ <- matrix(0,nPops,nPops)
+
     JtDhatJ <- matrix(0,nPops,nPops)
     for (path in mcmcpath[1]) {
         print(path)
@@ -296,7 +344,16 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
         JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
     }
     JtDobsJ <- JtDobsJ/nsimnos
+    JtDobsJ[is.nan(JtDobsJ)] <- median(diag(JtDobsJ), na.rm=T) #nan fix
     JtDhatJ <- JtDhatJ/nsimnos
+
+    pop_labels <- get_fit_matrix_abbrev(mcmcpath, indiv_label_file, pop_display_file)
+    pop_ids <- get_fit_matrix_ids(mcmcpath, indiv_label_file, pop_display_file)
+    pop_labels_full<- get_fit_matrix_full(mcmcpath, indiv_label_file, pop_display_file)
+    label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
+    label_mat <<- label_mat
+
+
     if (remove.singletons) {
         remove <- which(Sizes<=1)
         if (length(remove)) {
@@ -305,6 +362,10 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
             minSize <- minSize[-remove,-remove]
             Sizes <- Sizes[-remove]
             nPops <- length(Sizes)
+            label_mat <- label_mat[-remove, -remove]
+            pop_labels <- pop_labels[-remove]
+            pop_labels_full <- pop_labels_full[-remove]
+            pop_ids <- pop_ids[-remove]
         }
     }
     if (nPops<2) {
@@ -325,9 +386,12 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2
     ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
     xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
+    label_mat <- label_mat[upper.tri(label_mat, diag=FALSE)]
+    
+
     cnts <- minSize[upper.tri(minSize,diag=FALSE)]
     par(font.main=1)
-    plot(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)],
+    plot(xpts,ypts,col=NULL,
          xlab=expression(paste("Fitted dissimilarity between demes,  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
          ylab=expression(paste("Observed dissimilarity between demes,  ",D[ab]," - (",D[aa],"+",D[bb],")/2",sep="")), ...)
     if (remove.singletons) {
@@ -335,14 +399,13 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
     } else {
         title(main="Dissimilarities between demes\nGray means a or b has a single individual sampled from")
     }
-    plot(dpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], 
-         ylab=expression(paste("Fitted dissimilarity between demes,  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
-         xlab="Geographic distance (km)", ...)
+    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=label_mat)
+    abline(0, 1, col='grey', lty=2)
 
 
     ypts <- Wobs
     xpts <- What
-    plot(xpts,ypts,col=c("black","gray60")[1+1*(Sizes==1)],
+    plot(xpts,ypts,col=NULL,
          xlab=expression(paste("Fitted dissimilarity within demes,  ",hat(D)[aa],sep="")),
          ylab=expression(paste("Observed dissimilarity within demes,  ",D[aa],sep="")), ...)
     if (remove.singletons) {
@@ -350,9 +413,37 @@ dist.scatterplot <- function(mcmcpath,remove.singletons=TRUE, ...) {
     } else {
         title(main="Dissimilarities within demes\nGray means a has a single individual sampled from")
     }
+    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=pop_labels)
+    abline(0, 1, col='grey', lty=2)
+
+    diag(Bobs) <- 0
+    diag(Bhat) <- 0
+    print(dim(Bobs))
+    Bobs <<- Bobs
+    Bhat <<- Bhat
+    print(dim(Bobs))
+    abs_error <- abs(Bobs-Bhat)                  
+    m <- apply(abs_error, 2, median)             
+    mad <- apply( abs(abs_error -m), 2, median)  
+
+    error_by_pop <- mad / median(mad)
+    o20 <- order(error_by_pop, decreasing=T)[1:min(20, length(error_by_pop))]
+    barplot(error_by_pop[o20], names.arg=pop_labels_full[o20], las=2, cex.names=0.6)
+    title("Median Abs Error of Fitted Dissimilarities (Top 20)")
+    o <- order(error_by_pop, decreasing=T)
+    barplot(error_by_pop[o], names.arg=pop_labels_full[o], las=2, cex.names=0.6
+            )
+    title("Median Abs Error of Fitted Dissimilarities")
+
+    write.table(data.frame(popId=pop_ids, error=error_by_pop), outlier_file, 
+                row.names=F)
+
+    
+
 }
 
-plot.all.posterior.stuff <- function(mcmcpath, datapath=datapath, 
+plot.all.posterior.stuff <- function(pop_display, pop_geo, indiv_label,
+                                     mcmcpath, datapath=datapath, 
 				     plotpath='tmp', grid=100){
     mcmcpath <- check.files.at.path('/mcmcqhyper.txt', mcmcpath)
     dimns <- read.dimns(mcmcpath[1], DIMNS, DIMNS)
@@ -360,15 +451,77 @@ plot.all.posterior.stuff <- function(mcmcpath, datapath=datapath,
 
     plot.to.pdf(plot_map, plotpath=plotpath, mcmcpath=mcmcpath, 
 		dimns=dimns)
-    plot.to.pdf(plot_m, plotpath=plotpath, mcmcpath=mcmcpath, 
-		mode='logmean', dimns=dimns)
+    plot.to.pdf(plot_m_summary, plotpath=plotpath, mcmcpath=mcmcpath, 
+		mode='logmean', dimns=dimns, pop_geo_file=pop_geo,
+                pop_display_file=pop_display)
     print('1')
-    plot.to.pdf(plot_q, plotpath=plotpath, mcmcpath=mcmcpath, 
-		mode='logmean', dimns=dimns)
+    plot.to.pdf(plot_q_summary, plotpath=plotpath, mcmcpath=mcmcpath, 
+		mode='logmean', dimns=dimns, pop_geo_file=pop_geo,
+                pop_display_file=pop_display)
     print('2')
     plot.to.pdf(plot.traces, plotpath=plotpath, mcmcpath=mcmcpath)
     print('3')
     plot.to.pdf(dist.scatterplot, plotpath=plotpath, mcmcpath=mcmcpath,
+                pop_display_file=pop_display,
+                indiv_label_file=indiv_label,
+                outlier_file=paste0(plotpath, "-outlier.txt"),
 		remove.singletons=F)
     print('4')
+}
+
+add.samples_true <- function(pop_geo_file, 
+                             pop_display_file,
+                             pch=16, ...){
+    source("scripts/load_pop_meta.R")
+    pm <- load_pop_meta(pop_geo_file, pop_display_file)
+    text(pm$longitude, pm$latitude, pm$abbrev, pch=pch, ...)
+    pm
+}
+
+
+get_fit_matrix_full <- function(mcmcpath, indiv_label, pop_display){
+    pop_display <- read.csv(pop_display)
+    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    names(o) <- 'grid'
+    o <- cbind(grid=o, grid_order=1:nrow(o))
+    indiv_label <- read.csv(indiv_label)     
+    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+    x <- i2 %>% group_by(grid) %>% 
+        summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a) %>% 
+        mutate(f=paste(as.character(a), as.character(f), sep="_"))
+    return(x$f)
+}
+get_fit_matrix_abbrev <- function(mcmcpath, indiv_label, pop_display){
+    pop_display <- read.csv(pop_display)
+    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    names(o) <- 'grid'
+    o <- cbind(grid=o, grid_order=1:nrow(o))
+    indiv_label <- read.csv(indiv_label)     
+    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+    x <- i2 %>% group_by(grid) %>% 
+        summarize(grid_order=first(grid_order), f=first(abbrev), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a)
+    return(x$f)
+}
+
+get_fit_matrix_ids <- function(mcmcpath, indiv_label, pop_display){
+    pop_display <- read.csv(pop_display)
+    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    names(o) <- 'grid'
+    o <- cbind(grid=o, grid_order=1:nrow(o))
+    indiv_label <- read.csv(indiv_label)     
+    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+    x <- i2 %>% group_by(grid) %>% 
+        summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a)
+    return(x$f)
+}
+
+load_test_data <- function(){
+	mcmcpath <- 'eemsout/0/africa/'               
+	pop_display <- '../meta/pgs/gvar.pop_display' 
+	pop_geo <- 'subset/africa.pop_geo'            
+	indiv_label <- 'subset/africa.indiv_meta'
+	grid <- '100'
 }
