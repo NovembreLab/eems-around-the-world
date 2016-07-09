@@ -47,7 +47,7 @@ rule run_treemix_single:
         llik='treemix/{name}_m{m}_run{run}.llik',
         treeout='treemix/{name}_m{m}_run{run}.treeout.gz',
         vertices='treemix/{name}_m{m}_run{run}.vertices.gz',
-    log: 'treemix.log'
+    log: 'treemix/{name}_m{m}_run{run}.treemix.log'
     run:
         outname = base(base(output.cov))
         seed = params.seed_base * 23 + int(wildcards.m) * 19 + int(wildcards.run)
