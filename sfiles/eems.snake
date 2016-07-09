@@ -17,8 +17,15 @@ rule bed2diffs:
         from subsetter.eems import create_diffs_file, create_ini_file
         infile=base(input.bed)
         outfile=base(output.diffs)
+
+        print(config['eems']['__default__'])
+        try:
+            bed2diffs = config['eems'][wildcards.name]['bed2diffs']
+        except KeyError:
+            bed2diffs = config['eems']['__default__']['bed2diffs']
+	
         create_diffs_file(bedfile=infile,
-                          bed2diffs=config['EXE']['bed2diffs2'],
+                          bed2diffs=config['EXE'][bed2diffs],
                           outname=outfile)
         
 
@@ -87,6 +94,7 @@ rule make_grid:
         intersect(grid2, input.outer, input.coord, out_path)
 
 
+"""
 rule make_ini_file:
     input:
         bim='subset/{name}.bim',
@@ -121,6 +129,7 @@ rule make_ini_file:
         create_ini_file(ini, mcmcpath, datapath,
             meta_data=meta_data,
             n_demes=n_demes, **cfg)
+"""
         
 
 rule run_eems_single_run:
@@ -160,6 +169,175 @@ rule run_eems_single_run:
         s = config['EXE']['eems'] + " --params " + input.inifile 
         shell(s + " 2> {log}")
 
+
+eems_output_files = ['demes.txt', 
+    'edges.txt',
+    'ipmap.txt',
+    'outer.txt',
+    'mcmcmhyper.txt',
+    'mcmcmrates.txt',
+    'mcmcmtiles.txt',
+    'mcmcqhyper.txt',
+    'mcmcqrates.txt',
+    'mcmcqtiles.txt',
+    'mcmcpilogl.txt',
+    'mcmcthetas.txt',
+    'mcmcmxcoord.txt',
+    'mcmcmycoord.txt',
+    'mcmcmzcoord.txt',
+    'mcmcmwcoord.txt']
+eems_last_files = ['demes.txt', 
+    'edges.txt',
+    'ipmap.txt',
+    'outer.txt',
+    'lastdfpars.txt',
+    'lastmeffct.txt',
+    'lastmhyper.txt',
+    'lastmseeds.txt',
+    'lastmtiles.txt',
+    'lastqeffct.txt',
+    'lastqhyper.txt',
+    'lastqseeds.txt',
+    'lastqtiles.txt',
+    'lastpilogl.txt',
+    'lastthetas.txt']
+rule run_eems_single_pilot_run:
+    input:
+        outer='eems/{name}.outer',
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
+        coord='eems/{name}-run{i, \d+}.coord',
+        inifile='eemspilot/{name}-pilot{i, \d+}.ini',
+    log:
+        'eemspilot/{i, \d+}/{name}/log.txt',
+    output:
+        expand("eemspilot/{i}/{name}/{fname}",
+            i=["{i, \d+}"],
+            name=["{name}"],
+            fname=eems_last_files)
+    run:
+        wc = wildcards.name, wildcards.i
+        new_diff = 'eems/%s-run%s.diffs' % wc
+        new_outer = 'eems/%s-run%s.outer' % wc
+        s = 'ln -f %s %s ' % (input.outer, new_outer)
+        shell(s)
+        s = 'ln -f %s %s ' % (input.diffs, new_diff)
+        shell(s)
+        s = config['EXE']['eems'] + " --params " + input.inifile 
+        shell(s + " 2> {log}")
+
+rule make_pilot_ini_file:
+    input:
+        bim='subset/{name}.bim',
+        coord='eems/{name}-run{i, \d+}.coord',
+        outer='eems/{name}.outer',
+        order='eems/{name}.order',
+        diffs='eems/{name}.diffs',
+        edges='eems/{name}-run{i, \d+}.edges',
+        demes='eems/{name}-run{i, \d+}.demes',
+        ipmap='eems/{name}-run{i, \d+}.ipmap'
+    output:
+        inifile='eemspilot/{name}-pilot{i, \d+}.ini'
+    run:
+        from subsetter.eems import create_diffs_file, create_ini_file
+        from subsetter.load import load_pop_geo, load_indiv_meta
+        from subsetter.intersect import intersect
+        import pandas as pd
+        import numpy as np
+        cfg = config['eems']['__default__'].copy()
+        if "pilot" in config['eems']['__default__']:
+            print("updating with default pilot")
+            cfg.update(config['eems']['__default__']['pilot'])
+
+        if wildcards.name in config['eems']:
+            print("updating with name")
+            cfg.update(config['eems'][wildcards.name])
+
+        if "pilot" in config['eems'][wildcards.name]:
+            print("updating with name")
+            cfg.update(config['eems'][wildcards.name]['pilot'])
+        
+        n_demes = cfg.pop('nDemes')
+        n_sites = np.loadtxt(input.bim, str).shape[0]
+        cfg['nSites'] = n_sites
+        mcmcpath='eemspilot/' + wildcards.i + "/" + wildcards.name + '/'
+        datapath = base(input.coord)
+        ini = base(output.inifile)
+        meta_data= pd.read_table(input.coord, header=None)
+
+        cfg['gridpath'] = datapath
+        create_ini_file(ini, mcmcpath, datapath,
+            meta_data=meta_data,
+            n_demes=n_demes, **cfg)
+
+def get_pilot_runs_input(wildcards):
+    name = wildcards.name
+    try:
+        n_pilots = int(config['eems'][name]['n_pilots'])
+    except KeyError:
+        n_pilots = int(config['eems']['__default__']['n_pilots'])
+    l = expand("eemspilot/{i}/{name}/{fname}",
+            i=range(n_pilots),
+            name=[name],
+            fname=['lastpilogl.txt'])
+    return l
+
+
+rule make_post_pilot_ini:
+    input:
+        prevs=get_pilot_runs_input,
+        bim='subset/{name}.bim',
+        coord='eems/{name}-run{i, \d+}.coord',
+        outer='eems/{name}.outer',
+        order='eems/{name}.order',
+        diffs='eems/{name}.diffs',
+        edges='eems/{name}-run{i, \d+}.edges',
+        demes='eems/{name}-run{i, \d+}.demes',
+        ipmap='eems/{name}-run{i, \d+}.ipmap'
+    output:
+        inifile='eems/{name}-run{i, \d+}.ini'
+    run:
+        from subsetter.eems import create_diffs_file, create_ini_file
+        from subsetter.load import load_pop_geo, load_indiv_meta
+        from subsetter.intersect import intersect
+        import pandas as pd
+        import numpy as np
+
+        # first, get best pilot
+        best_posterior = -np.inf
+        best_pilot = ''
+        for infile in input.prevs:
+            pilogl = np.loadtxt(infile)
+            print(pilogl)
+            posterior = pilogl[1] - pilogl[0]
+            if posterior > best_posterior:
+                best_posterior = posterior
+                best_pilot = os.path.dirname(infile)
+
+        best_run_id = best_pilot.split("/")[1]
+
+        # then, do same stuff as for regular ini
+        cfg = config['eems']['__default__'].copy()
+        if wildcards.name in config['eems']:
+            cfg.update(config['eems'][wildcards.name])
+        
+        n_demes = cfg.pop('nDemes')
+        n_sites = np.loadtxt(input.bim, str).shape[0]
+        cfg['nSites'] = n_sites
+        mcmcpath='eemsout/' + wildcards.i + "/" + wildcards.name + '/'
+
+        datapath = 'eems/%s-run%s' % (wildcards.name, best_run_id)
+        coordfile = '%s.coord' % datapath
+        ini = base(output.inifile)
+        meta_data= pd.read_table(coordfile, header=None)
+
+        cfg['gridpath'] = datapath
+        cfg['prevpath'] = best_pilot
+        create_ini_file(ini, mcmcpath, datapath,
+            meta_data=meta_data,
+            n_demes=n_demes, **cfg)
+            
+        
 
 def eemsinfn(wildcards):
         return expand('eemsout/{i}/{n}/mcmcmrates.txt',

@@ -302,7 +302,7 @@ plot.param <- function(mcmcpath, fname, column=1, ...){
     data
 }
 
-dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=T, ...) {
+dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=T, outlier_file, ...) {
     print('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -336,6 +336,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     matSize <- matrix(Sizes,nPops,nPops)
     minSize <- pmin(matSize,t(matSize))
     JtDobsJ <- matrix(0,nPops,nPops)
+
     JtDhatJ <- matrix(0,nPops,nPops)
     for (path in mcmcpath[1]) {
         print(path)
@@ -343,9 +344,11 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
         JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
     }
     JtDobsJ <- JtDobsJ/nsimnos
+    JtDobsJ[is.nan(JtDobsJ)] <- median(diag(JtDobsJ), na.rm=T) #nan fix
     JtDhatJ <- JtDhatJ/nsimnos
 
     pop_labels <- get_fit_matrix_abbrev(mcmcpath, indiv_label_file, pop_display_file)
+    pop_ids <- get_fit_matrix_ids(mcmcpath, indiv_label_file, pop_display_file)
     pop_labels_full<- get_fit_matrix_full(mcmcpath, indiv_label_file, pop_display_file)
     label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
     label_mat <<- label_mat
@@ -362,6 +365,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
             label_mat <- label_mat[-remove, -remove]
             pop_labels <- pop_labels[-remove]
             pop_labels_full <- pop_labels_full[-remove]
+            pop_ids <- pop_ids[-remove]
         }
     }
     if (nPops<2) {
@@ -418,10 +422,23 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     Bobs <<- Bobs
     Bhat <<- Bhat
     print(dim(Bobs))
-    error_by_pop <- colMeans(abs(Bobs-Bhat), na.rm=T)
-    o20 <- order(error_by_pop, decreasing=T)[1:min(40, length(error_by_pop))]
+    abs_error <- abs(Bobs-Bhat)                  
+    m <- apply(abs_error, 2, median)             
+    mad <- apply( abs(abs_error -m), 2, median)  
+
+    error_by_pop <- mad / median(mad)
+    o20 <- order(error_by_pop, decreasing=T)[1:min(20, length(error_by_pop))]
     barplot(error_by_pop[o20], names.arg=pop_labels_full[o20], las=2, cex.names=0.6)
-    title("Mean Abs Error of Fitted Dissimilarities")
+    title("Median Abs Error of Fitted Dissimilarities (Top 20)")
+    o <- order(error_by_pop, decreasing=T)
+    barplot(error_by_pop[o], names.arg=pop_labels_full[o], las=2, cex.names=0.6
+            )
+    title("Median Abs Error of Fitted Dissimilarities")
+
+    write.table(data.frame(popId=pop_ids, error=error_by_pop), outlier_file, 
+                row.names=F)
+
+    
 
 }
 
@@ -447,7 +464,8 @@ plot.all.posterior.stuff <- function(pop_display, pop_geo, indiv_label,
     plot.to.pdf(dist.scatterplot, plotpath=plotpath, mcmcpath=mcmcpath,
                 pop_display_file=pop_display,
                 indiv_label_file=indiv_label,
-		remove.singletons=T)
+                outlier_file=paste0(plotpath, "-outlier.txt"),
+		remove.singletons=F)
     print('4')
 }
 
@@ -487,6 +505,18 @@ get_fit_matrix_abbrev <- function(mcmcpath, indiv_label, pop_display){
     return(x$f)
 }
 
+get_fit_matrix_ids <- function(mcmcpath, indiv_label, pop_display){
+    pop_display <- read.csv(pop_display)
+    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    names(o) <- 'grid'
+    o <- cbind(grid=o, grid_order=1:nrow(o))
+    indiv_label <- read.csv(indiv_label)     
+    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+    x <- i2 %>% group_by(grid) %>% 
+        summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
+        arrange(grid_order) %>% select(f, a)
+    return(x$f)
+}
 
 load_test_data <- function(){
 	mcmcpath <- 'eemsout/0/africa/'               

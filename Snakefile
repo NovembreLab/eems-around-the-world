@@ -83,6 +83,8 @@ def snakemake_subsetter(input, output, name):
         extrema=params['extrema'],
         population=params['population'],
         exclude_pop=params['exclude_pop'],
+        exclude_source=params['exclude_source'],
+        min_area=params['min_area'],
                 _map=input.map)
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
@@ -182,6 +184,7 @@ rule subset_nopca:
         bed=temp('subset_nopca/{name}.bed'),
         bim=temp('subset_nopca/{name}.bim'),
         fam=temp('subset_nopca/{name}.fam'),
+        incl=temp('subset_nopca/{name}.incl')
     version: "2"
     run:
         snakemake_subsetter(input, output, wildcards.name)

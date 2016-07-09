@@ -92,14 +92,15 @@ def get_envelope(meta_data):
     return pts.envelope
 
 
-def get_region_polygon(region, map_file='', rbuffer=0, wrap=True):
+def get_region_polygon(region, map_file='', rbuffer=0, wrap=True,
+                       min_area=0.9):
     if region is None:
         return None
 
     countries = load_countries(map_file, wrap_americas=wrap)
     print('loaded countries', region)
     eems_region = countries[region]
-    polygon = eems_region.get_boundary_polygon(min_area=0.3,
+    polygon = eems_region.get_boundary_polygon(min_area=min_area,
                                                buffer_lvl=rbuffer,
                                                return_type="polygon")
     print('got boundary polygon')
@@ -115,10 +116,12 @@ def get_polygon_from_extrema(extrema):
 
 def _get_subset_area(meta_data, population=None,
                      exclude_pop=None,
+                     exclude_source=None,
                      polygon=None, region=None,
                      extrema=None,
                      convex_hull=False, envelope=False, map_projection=None,
                      _map=None, region_buffer=2, sample_buffer=2,
+                     min_area=0.9,
                      wrap=True):
     """_get_subset_area
 
@@ -185,7 +188,7 @@ def _get_subset_area(meta_data, population=None,
         meta_data.index = range(len(meta_data))
 
     if exclude_pop is not None:
-        print("excluding")
+        print("excluding pop")
         print("before:", meta_data.shape)
         to_keep = [s not in exclude_pop
                    for s in meta_data.popId]
@@ -193,6 +196,14 @@ def _get_subset_area(meta_data, population=None,
         meta_data.index = range(len(meta_data))
         print("after: ", meta_data.shape)
 
+    if exclude_source is not None:
+        print("excluding source")
+        print("before:", meta_data.shape)
+        to_keep = [s not in exclude_source
+                   for s in meta_data.wasDerivedFrom]
+        meta_data = meta_data[to_keep]
+        meta_data.index = range(len(meta_data))
+        print("after: ", meta_data.shape)
 
     create_points(meta_data)
     poly1 = None
@@ -205,17 +216,21 @@ def _get_subset_area(meta_data, population=None,
 
     if region is not None and poly1 is None:
         unbuffered_poly = get_region_polygon(region, _map,
-                                   rbuffer=0.2, wrap=wrap)
+                                   rbuffer=0.2, wrap=wrap, 
+                                             min_area=min_area)
         poly1 = get_region_polygon(region, _map,
-                                   rbuffer=region_buffer, wrap=wrap)
+                                   rbuffer=region_buffer, wrap=wrap,
+                                             min_area=min_area)
         meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
         print("case3")
 
     elif region is not None and poly1 is not None:
         unbuffered_poly = get_region_polygon(region, _map,
-                                   rbuffer=0.2, wrap=wrap)
+                                   rbuffer=0.2, wrap=wrap,
+                                             min_area=min_area)
         poly_region = get_region_polygon(region, _map,
-                                         rbuffer=region_buffer, wrap=wrap)
+                                         rbuffer=region_buffer, wrap=wrap,
+                                         min_area=min_area)
         meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
         poly1 = poly_region.intersection(poly1)
         print("case4")
