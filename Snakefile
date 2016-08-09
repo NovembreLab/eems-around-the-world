@@ -101,7 +101,6 @@ def snakemake_subsetter(input, output, name):
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
         subsets = config['subset'].keys()
-        subsets = [s for s in subsets if "2" not in s and "3" not in s]
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
@@ -124,9 +123,9 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
        
 
 # rules that run important stuff for all subsets
-rule subset_all_bed:
+rule subset_all_diffs:
     input:
-        subset_all_fun(prefix='subset/', ext='.bed')
+        subset_all_fun(prefix='eems/', ext='.diffs')
 
 rule subset_all_spacemix:
     input:

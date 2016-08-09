@@ -45,7 +45,10 @@ rule get_pca_outliers:
         region_bp=100000
     output:
         outliers="subset/{name}_dim{ndims}.outlier_snp"
-    script: "../" + input.__script__
+    shell:
+        "Rscript {input.__script__} {input.loadings} {input.bimfile} "
+        "{params.region_bp} {params.abs_cutoff} {output.outliers} "
+    #script: "../" + input.__script__
 
 rule make_pc_plots:
     input:

@@ -38,15 +38,26 @@ is_in_window <- function(pos, bim, region_bp=100000){
     unique(do.call(c, x))
 }
 
-
-loadings <- snakemake@input$loadings
-bimfile <- snakemake@input$bim
-region_bp <- snakemake@params$region_bp
-abs_cutoff <- snakemake@params$abs_cutoff
-g <- get_outlier_snp(loadings,
-		     bimfile,
-		     region_bp=region_bp,
-		     abs_cutoff=abs_cutoff)
-write.table(g, snakemake@output$outliers, row.names=F, col.names=F, quote=F)
-save.image("QQQ.RData")
+args <- commandArgs(T)
+if(length(args) >= 5){
+	loadings <- args[1]
+	bimfile <- args[2]
+	region_bp <- as.numeric(args[3])
+	abs_cutoff <- as.numeric(args[4])
+	g <- get_outlier_snp(loadings,
+			     bimfile,
+			     region_bp=region_bp,
+			     abs_cutoff=abs_cutoff)
+	write.table(g, args[5], row.names=F, col.names=F, quote=F)
+} else if(exists("snakemake")){
+	loadings <- snakemake@input$loadings
+	bimfile <- snakemake@input$bim
+	region_bp <- snakemake@params$region_bp
+	abs_cutoff <- snakemake@params$abs_cutoff
+	g <- get_outlier_snp(loadings,
+			     bimfile,
+			     region_bp=region_bp,
+			     abs_cutoff=abs_cutoff)
+	write.table(g, snakemake@output$outliers, row.names=F, col.names=F, quote=F)
+}
 

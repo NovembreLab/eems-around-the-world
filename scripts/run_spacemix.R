@@ -16,9 +16,9 @@ run.spacemix.analysis(
                         loci = ncol(cts),
 
 			###production option set
-                        ngen = 5e7,
-                        samplefreq = 5e4,
-                        fast.MCMC.ngen = 1e6,
+                        ngen = 1e7,
+                        samplefreq = 1e4,
+                        fast.MCMC.ngen = 5e5,
                         savefreq = 1e6,
 			n.fast.reps = 10,
 
