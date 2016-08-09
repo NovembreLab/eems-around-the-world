@@ -79,11 +79,7 @@ rule make_grid:
         demes='eems/{name}-run{i, \d+}.demes',
         ipmap='eems/{name}-run{i, \d+}.ipmap'
     run:
-        from subsetter.eems import create_diffs_file, create_ini_file
-        from subsetter.load import load_pop_geo, load_indiv_meta
         from subsetter.intersect import intersect
-        import pandas as pd
-        import numpy as np
         name = wildcards.name
         if 'grid' in config['eems'][name]:
             grid2 = GRID_PATH % config['eems'][name]['grid']

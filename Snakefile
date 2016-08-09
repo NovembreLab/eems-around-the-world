@@ -10,6 +10,7 @@ include: 'sfiles/pca.snake'
 include: 'sfiles/spacemix.snake'
 include: 'sfiles/paintings.snake'
 include: 'sfiles/tess.snake'
+include: 'sfiles/fst.snake'
 
 
 PLINK_EXT = ['bed', 'bim', 'fam']
@@ -127,6 +128,10 @@ rule subset_all_diffs:
     input:
         subset_all_fun(prefix='eems/', ext='.diffs')
 
+rule subset_all_fst:
+    input:
+        subset_all_fun(prefix='figures/fst/', ext='.fst.png')
+
 rule subset_all_spacemix:
     input:
         subset_all_fun(prefix='spacemix/subset/', ext='.controller')
@@ -141,8 +146,11 @@ rule subset_all_eems_plot:
 
 rule subset_all_pca:
     input:
-        subset_all_fun(ext='_dim20_pc2.png', prefix='figures/pca/'),
-         subset_all_fun(ext='_dim20_pc1.png', prefix='figures/pca/')
+        subset_all_fun(ext='_pc20.png', prefix='figures/pca/pc1d_'),
+
+rule subset_all_pca_wdf:
+    input:
+        subset_all_fun(ext='_pc19_wdf.png', prefix='figures/pca/pc2d_'),
 
 rule subset_all_pong:
     input: subset_all_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
