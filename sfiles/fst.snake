@@ -1,0 +1,56 @@
+rule make_within_file:
+    input:
+        indiv_meta='{name}.indiv_meta'
+    output:
+        within='{name}.within'
+    run:
+        import pandas as pd
+        indiv_meta = pd.read_csv(input.indiv_meta)
+        within = indiv_meta[['sampleId', 'sampleId', 'popId']]
+        within.to_csv(output.within, sep=" ", header=False, index=False)
+
+"""
+rule plink_fst:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+        within='{name}.within'
+    output:
+        fst='{name}.fst'
+    run:
+        name = wildcards.name
+        s = [PLINK_EXE, '--bfile',  name, '--fst --out', name,  
+            '--within', input.within]
+        shell(" ".join(s))
+"""
+
+rule makefrqstrat:
+    input:
+        bed='{name}.bed',
+        bim='{name}.bim',
+        fam='{name}.fam',
+        within='{name}.within'
+    output:
+        frqstrat="{name}.frq.strat.gz"
+    run:
+        name = wildcards.name
+        s = [PLINK_EXE, '--bfile',  name, '--freq gz --out', name,  
+            '--within', input.within]
+        shell(" ".join(s))
+
+rule fstmat:
+    input:
+        frqstrat="{name}.frq.strat.gz"
+    output:
+        fstmat="{name}.pw.fst"
+    script: '../scripts/get_pi_mat.py'
+
+
+rule plot_fst:
+    input:
+        fstmat="subset/{name}.pw.fst",
+        pop_display=config['DATA']['meta'] + ".pop_display"
+    output:
+        png="figures/fst/{name}.fst.png"
+    script: "../scripts/plot_fst_mat.R"
