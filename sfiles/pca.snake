@@ -47,6 +47,25 @@ rule get_pca_outliers:
         outliers="subset/{name}_dim{ndims}.outlier_snp"
     script: "../" + input.__script__
 
+rule make_pc_plots_wdf:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__='scripts/ggpca.R'
+    params:
+        wdf=True
+    output:
+        pc1=expand('figures/pca/pc1d_{name}_pc{PC}_wdf.png', 
+            PC=range(1,21), name=['{name}']),
+        pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png', 
+            PC=range(1,21,2), name=['{name}']),
+    script: "../" +input.__script__
+    #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
+    #    " {input.indiv_meta} {input.pop_display} "
+    #    " {output.pc1} {output.pc2} 20"
+
 rule make_pc_plots:
     input:
         pc='pca/flash_{name}_dim20.pc',
@@ -54,15 +73,14 @@ rule make_pc_plots:
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/ggpca.R'
+    params:
+        wdf=False
     output:
         pc1=expand('figures/pca/pc1d_{name}_pc{PC}.png', 
             PC=range(1,21), name=['{name}']),
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}']),
     script: "../" +input.__script__
-    #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
-    #    " {input.indiv_meta} {input.pop_display} "
-    #    " {output.pc1} {output.pc2} 20"
 
 rule make_loadings_plots:
     input:

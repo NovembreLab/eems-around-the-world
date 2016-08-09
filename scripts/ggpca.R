@@ -17,15 +17,23 @@ makePC <- function(data, n, col, field='abbrev'){
     g
 }
 
-make2PC <- function(data, i, j, col){
+make2PC <- function(data, i, j, col, wdf=F){
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
     
     data2 <- data[sample.int(nrow(data), nrow(data)),]
-    g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
-        geom_text() + col
+
+    if(wdf){
+        g <- ggplot(data2,aes_string(id1, id2, colour='wasDerivedFrom', label='abbrev')) +
+            geom_text() + col
+    }
+    else {
+        g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
+            geom_text() + col
+        g <- g + theme(legend.position='none')
+    }
+
     g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
-    g + theme(legend.position='none')
 }
 
 
@@ -33,10 +41,10 @@ means <- function(data){
     means <- aggregate(data[,-1], list(data$POP), mean)
 }
 
-makePlots <- function(data, col, output1, output2){
+makePlots <- function(data, col, output1, output2, wdf){
     nmax <- sum(substr(names(data),1,2) == 'PC') 
     p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
-    p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col))
+    p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col, wdf=wdf))
     l = list(PC1=p1, PC2=p2)
     #png(file=output1, width=3200, height=1600)
     #multiplot(plotlist=p1, file=output, cols=4)
@@ -67,38 +75,37 @@ load.data <- function(pc, fam,
     return(m)
 }
 
-# Multiple plot function
-#
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-# from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_%28ggplot2%29/
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
+    # Multiple plot function
+    #
+    # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+    # - cols:   Number of columns in layout
+    # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+    #
+    # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+    # then plot 1 will go in the upper left, 2 will go in the upper right, and
+    # 3 will go all the way across the bottom.
+    #
+    # from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_%28ggplot2%29/
+      library(grid)
 
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
+      # Make a list from the ... arguments and plotlist
+      plots <- c(list(...), plotlist)
 
-  numPlots = length(plots)
+      numPlots = length(plots)
 
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
+      # If layout is NULL, then use 'cols' to determine layout
+      if (is.null(layout)) {
+        # Make the panel
+        # ncol: Number of columns of plots
+        # nrow: Number of rows needed, calculated from # of cols
     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
+    }
 
- if (numPlots==1) {
-    print(plots[[1]])
-
-  } else {
+     if (numPlots==1) {
+        print(plots[[1]])
+      } else {
     # Set up the page
     grid.newpage()
     pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
@@ -111,8 +118,10 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
       print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
                                       layout.pos.col = matchidx$col))
     }
-  }
+    }
 }
+
+wdf <- F
 args <- commandArgs(T)
 if(exists('snakemake')){
     pc <- snakemake@input[['pc']]
@@ -121,17 +130,27 @@ if(exists('snakemake')){
     pop_display <- snakemake@input[['pop_display']]
     output <- snakemake@output[['pc1']]
     output2 <- snakemake@output[['pc2']]
+    wdf <- snakemake@params[['wdf']]
     data <- load.data(pc, fam, indiv_meta, pop_display)
-    col_list <- data %>% group_by(abbrev) %>% 
-        summarize(color=first(color), order=mean(order)) %>% 
-        arrange(order)
-    data$abbrev <- factor(data$abbrev, levels=col_list$abbrev)
-    print(names(col_list))
-    cv <- as.character(col_list$color)
-    names(cv) <- col_list$abbrev
-    col <- list(scale_color_manual(values=cv),
-                scale_fill_manual(values=cv))
-    makePlots(data, col, output, output2)
+    if(wdf==T){
+        col_list <- data %>% group_by(wasDerivedFrom) %>% 
+            summarize(color=first(color), order=mean(order)) %>% 
+            arrange(order)
+        data$wasDerivedFrom <- factor(data$wasDerivedFrom, levels=col_list$wasDerivedFrom)
+        cv <- as.character(col_list$color)
+        names(cv) <- col_list$wasDerivedFrom
+        col <- list()
+    } else {
+        col_list <- data %>% group_by(abbrev) %>% 
+            summarize(color=first(color), order=mean(order)) %>% 
+            arrange(order)
+        data$abbrev <- factor(data$abbrev, levels=col_list$abbrev)
+        cv <- as.character(col_list$color)
+        names(cv) <- col_list$abbrev
+        col <- list(scale_color_manual(values=cv),
+                    scale_fill_manual(values=cv))
+    }
+    makePlots(data, col, output, output2, wdf)
     save.image('.Rsnakemakedebug')
 } else if(length(args)>5){
     args <- commandArgs(T)
@@ -145,17 +164,10 @@ if(exists('snakemake')){
     col_list <- data %>% group_by(abbrev) %>% summarize(first(color))
     col <- list(scale_color_manual(name=col_list$abbrev, values=col_list$color),
                 scale_fill_manual(name=col_list$abbrev, values=col_list$color))
-    makePlots(data, col, output, output2)
+    makePlots(data, col, output, output2, wdf)
 }
 
 
-#col <- col[names(col) %in% w$eusplit]    
-
-
-
-
-#g1 <- makePC(pc)
-#ggsave(opt, g1)
 
 
 
