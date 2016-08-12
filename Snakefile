@@ -1,6 +1,7 @@
 configfile: "config/subset.json"
 configfile: "config/eems.json"
 configfile: "config/config.json"
+configfile: "config/data.json"
 
 include: 'sfiles/utils.snake'
 include: 'sfiles/treemix.snake'
@@ -53,7 +54,7 @@ def snakemake_subsetter(input, output, name):
 
     params = config['subset']['__default__']
     params.update(config['subset'][name])
-    location_data = load_pop_geo(input.meta[0])
+    location_data = load_pop_geo(input.meta[0], wrap=False)
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
 
@@ -86,6 +87,7 @@ def snakemake_subsetter(input, output, name):
         exclude_pop=params['exclude_pop'],
         exclude_source=params['exclude_source'],
         min_area=params['min_area'],
+	add_pop = params['add_pop'],
                 _map=input.map)
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,

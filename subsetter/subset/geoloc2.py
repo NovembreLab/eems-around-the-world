@@ -49,7 +49,8 @@ class CountryContainer(object):
 
         self.regions[c.name.lower()].append(c)
 
-        if c.continent not in ['Oceania', 'Antarctica']:
+        if c.continent not in ['Oceania', 'Antarctica'] and \
+                c.name not in ['Greenland', 'Madagascar', 'Argentina', 'Chile']:
             self.regions['world'].append(c)
             self.regions['World'].append(c)
 

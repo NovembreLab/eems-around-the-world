@@ -40,7 +40,7 @@ def get_polygon(polygon, wrap=True):
         return Polygon(polygon)
 
 
-def filter_individuals_based_on_location(meta_data, polygon):
+def filter_individuals_based_on_location(meta_data, polygon, add_pop=[], wrap=True):
     """filter_individuals
     only retains individuals that are inside the polygon
     
@@ -56,17 +56,24 @@ def filter_individuals_based_on_location(meta_data, polygon):
     filtered_meta_data : pd.DataFrmae
         a data frame only with individuals used for analysis
     """
+    if add_pop is None: add_pop = []
+    if wrap:
+        meta_data.longitude = wrap_america(meta_data.longitude)
     create_points(meta_data)
     to_keep = [polygon.contains(pt) for pt in meta_data['POINTS']]
+    to_add = [pt in add_pop for pt in meta_data.popId]
+    print(sum(to_keep))
+    to_keep = np.logical_or(to_keep, to_add)
+    print(sum(to_add))
+    print(sum(to_keep))
         
     return meta_data[to_keep]
 
 
 def create_points(meta_data):
     """ adds a point object for meta data """
-    if 'POINTS' not in meta_data:
-        meta_data['POINTS'] = [Point(a[1]['longitude'], a[1]['latitude']) for a in
-                               meta_data.iterrows()]
+    meta_data['POINTS'] = [Point(a[1]['longitude'], a[1]['latitude']) for a in
+                           meta_data.iterrows()]
     return meta_data
 
 
@@ -116,6 +123,7 @@ def get_polygon_from_extrema(extrema):
 
 def _get_subset_area(meta_data, population=None,
                      exclude_pop=None,
+                     add_pop=None,
                      exclude_source=None,
                      polygon=None, region=None,
                      extrema=None,
@@ -143,6 +151,8 @@ def _get_subset_area(meta_data, population=None,
             meta_data.POP column (popLabel in PGS framework).
             Samples not having an ID are removed.
             If None, all samples are retained
+    add_pop : list or None
+        A list of populations to keep no matter what
     polygon : str or None
         A Polygon with samples to be kept.
         if None, this filter is ignored
@@ -216,29 +226,34 @@ def _get_subset_area(meta_data, population=None,
 
     if region is not None and poly1 is None:
         unbuffered_poly = get_region_polygon(region, _map,
-                                   rbuffer=0.2, wrap=wrap, 
+                                   rbuffer=2.2, wrap=wrap, 
                                              min_area=min_area)
         poly1 = get_region_polygon(region, _map,
                                    rbuffer=region_buffer, wrap=wrap,
                                              min_area=min_area)
-        meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
+        meta_data = filter_individuals_based_on_location(meta_data,
+                                                         unbuffered_poly,
+                                                         add_pop)
         print("case3")
 
     elif region is not None and poly1 is not None:
         unbuffered_poly = get_region_polygon(region, _map,
-                                   rbuffer=0.2, wrap=wrap,
+                                   rbuffer=2.2, wrap=wrap,
                                              min_area=min_area)
         poly_region = get_region_polygon(region, _map,
                                          rbuffer=region_buffer, wrap=wrap,
                                          min_area=min_area)
-        meta_data = filter_individuals_based_on_location(meta_data, unbuffered_poly)
+        meta_data = filter_individuals_based_on_location(meta_data,
+                                                         unbuffered_poly,
+                                                         add_pop)
         poly1 = poly_region.intersection(poly1)
         print("case4")
     print("loaded polygons")
 
     # hulls depend on the data
     if poly1 is not None:
-        meta_data = filter_individuals_based_on_location(meta_data, poly1)
+        meta_data = filter_individuals_based_on_location(meta_data, poly1,
+                                                         add_pop)
         print("META DATA:", meta_data.shape)
         poly1 = poly1.buffer(region_buffer)
 
