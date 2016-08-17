@@ -87,8 +87,9 @@ def snakemake_subsetter(input, output, name):
         exclude_pop=params['exclude_pop'],
         exclude_source=params['exclude_source'],
         min_area=params['min_area'],
-	add_pop = params['add_pop'],
+        add_pop = params['add_pop'],
                 _map=input.map)
+
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
