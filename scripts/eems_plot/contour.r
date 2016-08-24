@@ -22,13 +22,19 @@ log.seq <- function(x,...){
 
 plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=length(col), mode='logmean', add=F){
     mat <- matrix(NA, nrow=dimns$nxmrks, ncol=dimns$nymrks) 
-    if(mode=='mean'){
+    if(mode[1]=='mean'){
     mat[dimns$filter] <- colMeans(pts)
-    } else if(mode =='logmean'){
+    } else if(mode[1] =='logmean'){
     mat[dimns$filter] <- exp(colMeans(log(pts)))
-    } else if(mode =='median'){
+    } else if(mode[1] =='median'){
     mat[dimns$filter] <- apply(pts, 2, median)
+    } else if(mode[1] =='cutoff'){
+        spts <- log(pts) - mean(log(pts))
+        mat[dimns$filter] <- 0
+        mat[dimns$filter][colMeans(spts < 0) > mode[2] ] <- -1
+        mat[dimns$filter][colMeans(spts > 0) > mode[2] ] <- 1
     } else {
+        stop(mode)
     stop('mode not known')
     }
 
@@ -41,6 +47,7 @@ plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=leng
      xaxs='i', yaxs='i', asp=1) 
     }
 
+    if(mode[1] != 'cutoff'){
     if(is.null(col.range)){
     sq <- log.seq(range(mat,na.rm=T),length.out=n.levels+1)
     } else{
@@ -51,13 +58,16 @@ plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=leng
     #sq <- seq(min(mat,na.rm=T),max(mat,na.rm=T),length.out=n.levels+1)
     print(sq)
     .filled.contour(dimns$xmrks, dimns$ymrks, mat, levels=sq, col=col)
+    } else{
+    .filled.contour(dimns$xmrks, dimns$ymrks, mat, levels=0:3-1.5, col=c(col[1], NA, col[2]))
+    }
 }
 
 whiteout_filter <- function(dimns){
     .filled.contour(dimns$xmrks, dimns$ymrks,
                    matrix(dimns$filter, nrow=dimns$nxmrks),
                    levels=c(-1,.5, 2),
-                   col=c(rgb(1,1,1, .6), rgb(0,0,.12, 0)))
+                   col=c(rgb(.8,.8,.8, .8), rgb(0,0,.12, 0)))
 
 }
 
@@ -108,7 +118,7 @@ add.grid <- function(mcmcpath, col='grey', lwd=2, ...){
     g <- read.output.graph(mcmcpath[1])
     s1 <- g$demes[g$edges[,1],]                           
     s2 <- g$demes[g$edges[,2],]                           
-    segments(s1[,1], s1[,2], s2[,1], s2[,2], col=col, lwd=lwd)  
+    segments(s1[,1], s1[,2], s2[,1], s2[,2], col=col, lwd=lwd, ...)  
 
 }
 

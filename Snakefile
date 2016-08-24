@@ -14,6 +14,7 @@ include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
 
 
+
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
@@ -104,13 +105,14 @@ def snakemake_subsetter(input, output, name):
 
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
+        #print('subset_all_fun called')
         subsets = config['subset'].keys()
+        #print(subsets)
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
     return ss
     
-include: 'sfiles/paper_figures.snake'
 
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
@@ -121,12 +123,22 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     return ss
     
 
+include: 'sfiles/paper_figures.snake'
 
 
 
        
 
 # rules that run important stuff for all subsets
+rule subset_all_poly:
+    input:
+        subset_all_fun(prefix='subset/', ext='.polygon')
+rule subset_all_bed1:
+    input:
+        subset_all_fun(prefix='subset_nopca/', ext='.bim'),
+        subset_all_fun(prefix='subset_nopca/', ext='.fam'),
+        subset_all_fun(prefix='subset_nopca/', ext='.bed')
+
 rule subset_all_diffs:
     input:
         subset_all_fun(prefix='eems/', ext='.diffs')

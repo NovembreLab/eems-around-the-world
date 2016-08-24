@@ -1,7 +1,10 @@
+print("asdfa")
+
 rule subset_all_polygon_plot:
     input:
         polys=subset_all_fun(prefix='subset/', ext='.polygon'),
         pop_geo=subset_all_fun(prefix='subset/', ext='.pop_geo'),
+        excluded='subset/excluded.txt',
         __script__="scripts/poly_overview.R"
     output:
         png="paper/polygon_plot.pdf"
