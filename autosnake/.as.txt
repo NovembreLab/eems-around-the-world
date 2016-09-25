@@ -1,2 +1,0 @@
-file to make sure autosnake folder is in github repo; 
-so jobs don't fail because they can't write logs
