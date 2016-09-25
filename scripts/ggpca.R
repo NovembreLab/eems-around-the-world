@@ -128,10 +128,12 @@ if(exists('snakemake')){
     fam <- snakemake@input[['fam']]
     indiv_meta <- snakemake@input[['indiv_meta']]
     pop_display <- snakemake@input[['pop_display']]
+    pop_order <- snakemake@input[['pop_order']]
     output <- snakemake@output[['pc1']]
     output2 <- snakemake@output[['pc2']]
     wdf <- snakemake@params[['wdf']]
     data <- load.data(pc, fam, indiv_meta, pop_display)
+    data <- data %>% select(-order) %>% left_join(read.csv(pop_order))
     if(wdf==T){
         col_list <- data %>% group_by(wasDerivedFrom) %>% 
             summarize(color=first(color), order=mean(order)) %>% 

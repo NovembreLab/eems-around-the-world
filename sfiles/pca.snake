@@ -56,6 +56,7 @@ rule make_pc_plots_wdf:
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_order="subset/{name}.pop_order",
         __script__='scripts/ggpca.R'
     params:
         wdf=True
@@ -75,6 +76,7 @@ rule make_pc_plots:
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_order="subset/{name}.pop_order",
         __script__='scripts/ggpca.R'
     params:
         wdf=False
@@ -97,3 +99,15 @@ rule make_loadings_plots:
     #shell:
     #    config['EXE']['R'] + " {input.__script__} {input.load} "
     #    "{input.bim} {output.fig}"
+
+
+rule get_pca_derived_order:
+    input:
+        pc="subset_nopca/flash_{name}_dim10.pc", #hard code to 10 for now
+        inds="subset_nopca/{name}.fam",
+        pop="subset/{name}.indiv_meta",
+        __script__="scripts/pca_derived_order.R"
+    output:
+        pop_order="subset/{name}.pop_order",
+    script:
+        "../" + input.__script__

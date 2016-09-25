@@ -155,6 +155,10 @@ rule subset_all_eems:
     input:
         subset_all_fun(prefix='eemsout/', ext='_runs4.controller')
 
+rule subset_all_eems_ggplot:
+    input:
+        subset_all_fun(prefix='eemsout_gg/', ext='_nruns10-mrates01.png')
+
 rule subset_all_eems_plot:
     input:
         subset_all_fun(prefix='eemsout/', ext='_nruns4-mrates01.png')
