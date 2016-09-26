@@ -75,6 +75,7 @@ rule create_ind2pop:
         indiv_meta= 'subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_geo=config['DATA']['meta'] + '.pop_geo',
+        pop_order='subset/{name}.pop_order',
     output:
         ind2pop='pong/{name}.ind2pop',
         pop_names='pong/{name}.pop_names',
@@ -83,6 +84,9 @@ rule create_ind2pop:
         pop_display = pd.read_csv(input.pop_display)
         pop_geo = pd.read_csv(input.pop_geo)
         indiv_meta = pd.read_csv(input.indiv_meta)    
+        indiv_meta.drop('order', 1)
+        pop_order = pd.read_csv(input.pop_order)    
+        indiv_meta = pd.merge(indiv_meta, pop_order, how='left')
         indiv = pd.merge(indiv_meta, pop_display, how='left')        
         indiv = pd.merge(indiv, pop_geo, how='left')        
         assert all(indiv.sampleId == indiv_meta.sampleId)
