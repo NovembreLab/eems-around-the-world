@@ -84,18 +84,18 @@ rule create_ind2pop:
         pop_display = pd.read_csv(input.pop_display)
         pop_geo = pd.read_csv(input.pop_geo)
         indiv_meta = pd.read_csv(input.indiv_meta)    
-        indiv_meta.drop('order', 1)
+        pop_display = pop_display.drop('order', 1)
         pop_order = pd.read_csv(input.pop_order)    
-        indiv_meta = pd.merge(indiv_meta, pop_order, how='left')
+        pop_display = pd.merge(pop_display, pop_order, how='left')
         indiv = pd.merge(indiv_meta, pop_display, how='left')        
         indiv = pd.merge(indiv, pop_geo, how='left')        
         assert all(indiv.sampleId == indiv_meta.sampleId)
         indiv.to_csv(output.ind2pop, columns=['popId'], index=None,
             header=False)
-        indiv0 =indiv[['popId', 'name', 'latitude', 'longitude']]
+        indiv0 =indiv[['popId', 'name', 'latitude', 'longitude', 'order']]
         indiv0.drop_duplicates(inplace=True)
-        indiv0.sort_index(by=['latitude', 'longitude'],
-            ascending=[False, True], inplace=True)
+        indiv0.sort_index(by=['order'],
+            ascending=[True], inplace=True)
         indiv0.to_csv(output.pop_names, sep="\t",
             columns=['popId', 'name'], 
             index=None, header=False)

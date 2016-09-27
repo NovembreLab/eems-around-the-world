@@ -207,10 +207,10 @@ rule subset_nopca:
         pop_geo='subset/{name}.pop_geo',
         indiv_meta='subset/{name}.indiv_meta',
         polygon='subset/{name}.polygon',
-        bed=temp('subset_nopca/{name}.bed'),
-        bim=temp('subset_nopca/{name}.bim'),
-        fam=temp('subset_nopca/{name}.fam'),
-        incl=temp('subset_nopca/{name}.incl')
+        bed='subset_nopca/{name}.bed',
+        bim='subset_nopca/{name}.bim',
+        fam='subset_nopca/{name}.fam',
+        incl='subset_nopca/{name}.incl'
     version: "2"
     run:
         snakemake_subsetter(input, output, wildcards.name)
