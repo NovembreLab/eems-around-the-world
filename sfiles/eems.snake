@@ -401,9 +401,8 @@ rule ggplot_eems:
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"
     run:
-        grid = config['eems'][wildcards.name]['grid'] 
         s =  "%s scripts/ggeems/run.R" % config['EXE']['R']
-        s +=   " {wildcards.nruns} {wildcards.name} {grid}"
+        s +=   " {wildcards.nruns} {wildcards.name} "
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
         s += " {params.RES} {params.ZOOM}"
         shell(s)
