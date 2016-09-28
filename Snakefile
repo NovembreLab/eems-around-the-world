@@ -157,7 +157,7 @@ rule subset_all_eems:
 
 rule subset_all_eems_ggplot:
     input:
-        subset_all_fun(prefix='eemsout_gg/', ext='_nruns10-mrates01.png')
+        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
 
 rule subset_all_eems_plot:
     input:
