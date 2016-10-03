@@ -396,7 +396,7 @@ rule ggplot_eems:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=400,
+        RES=40,
         ZOOM=4,
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"

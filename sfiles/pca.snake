@@ -87,6 +87,24 @@ rule make_pc_plots:
             PC=range(1,21,2), name=['{name}']),
     script: "../" +input.__script__
 
+rule make_pc_plots_highlight_excluded:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        exfam='subset/{exname}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_order="subset/{name}.pop_order",
+        __script__='scripts/ggpca.R'
+    params:
+        wdf=False
+    output:
+        pc1=expand('figures/pcaex/pc1d_{name}_ex:{exname}_pc{PC}.png', 
+            PC=range(1,21), name=['{name}'], exname=['{exname}']),
+        pc2=expand('figures/pcaex/pc2d_{name}_ex:{exname}_pc{PC}.png', 
+            PC=range(1,21,2), name=['{name}'], exname=['{exname}']),
+    script: "../" +input.__script__
+
 rule make_loadings_plots:
     input:
         load='pca/flash_{name}_dim20.load',

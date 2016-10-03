@@ -134,6 +134,7 @@ if(exists('snakemake')){
     wdf <- snakemake@params[['wdf']]
     data <- load.data(pc, fam, indiv_meta, pop_display)
     data <- data %>% select(-order) %>% left_join(read.csv(pop_order))
+    save.image("TMP.RDATA")
     if(wdf==T){
         col_list <- data %>% group_by(wasDerivedFrom) %>% 
             summarize(color=first(color), order=mean(order)) %>% 
@@ -143,10 +144,23 @@ if(exists('snakemake')){
         names(cv) <- col_list$wasDerivedFrom
         col <- list()
     } else {
-        col_list <- data %>% group_by(abbrev) %>% 
+
+
+        col_list <- data %>% group_by(abbrev, popId) %>% 
             summarize(color=first(color), order=mean(order)) %>% 
             arrange(order)
+    	col_list$color <- as.character(col_list$color)
         data$abbrev <- factor(data$abbrev, levels=col_list$abbrev)
+
+	# if we have a set of excluded guys
+	if(!is.null(snakemake@input$exfam)){
+		exfam <- read.table(snakemake@input$exfam)
+		excluded <- data$sampleId %>% setdiff(exfam[,1])
+		expops <- data %>% filter(sampleId %in% excluded) %>% 
+			select(popId) %>% unique() 
+		col_list[col_list$popId %in% expops,'color'] <- 'red'
+	}
+
         cv <- as.character(col_list$color)
         names(cv) <- col_list$abbrev
         col <- list(scale_color_manual(values=cv),

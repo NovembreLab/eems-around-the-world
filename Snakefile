@@ -29,6 +29,32 @@ META_SRC = config['DATA']['meta']
 
 base = lambda x: os.path.splitext(x)[0]
 
+def load_subset_config(config, name, verbose=True):
+    """ recursively load subset info """
+    if verbose:
+        print("loading subset %s" % name)
+
+    params = config['__default__'].copy()
+
+    if 'subsets' in config[name]:
+        parent_dataset = load_subset_config(config, config[name]['subsets'])
+        params.update(parent_dataset)
+    params.update(config[name])
+
+    # this bit modifies lists, etc
+    if 'modify_parent' in config[name]:
+        for k, v in config[name]['modify_parent'].items():
+            if k in params:
+                params[k] = params[k] + v
+            else: 
+                params[k] = v
+            if verbose:
+                print("modifying key %s to value %s" % (k, v))
+
+        
+    return params
+
+
 def snakemake_subsetter(input, output, name):
     """ creates a subset of data based on a geographical region
         see the rule `subset` for an example.
@@ -53,8 +79,7 @@ def snakemake_subsetter(input, output, name):
 
     outname = base(output.bed)
 
-    params = config['subset']['__default__']
-    params.update(config['subset'][name])
+    params = load_subset_config(config['subset'], name)
     location_data = load_pop_geo(input.meta[0], wrap=False)
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
