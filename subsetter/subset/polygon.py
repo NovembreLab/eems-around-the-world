@@ -217,7 +217,7 @@ def _get_subset_area(meta_data, population=None,
 
     create_points(meta_data)
     poly1 = None
-    if extrema  is not None:
+    if extrema  is not None and extrema is not False:
         poly1 = get_polygon_from_extrema(extrema)
         print("case1")
     elif polygon is not None:
