@@ -23,7 +23,6 @@ rule bed2diffs:
             bed2diffs = config['eems'][wildcards.name]['bed2diffs']
         except KeyError:
             bed2diffs = config['eems']['__default__']['bed2diffs']
-	
         create_diffs_file(bedfile=infile,
                           bed2diffs=config['EXE'][bed2diffs],
                           outname=outfile)
@@ -396,7 +395,7 @@ rule ggplot_eems:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=40,
+        RES=200,
         ZOOM=4,
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"
@@ -405,4 +404,41 @@ rule ggplot_eems:
         s +=   " {wildcards.nruns} {wildcards.name} "
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
         s += " {params.RES} {params.ZOOM}"
+        shell(s)
+
+rule ggeems_scatter:
+    input:
+        eemsin,
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo='subset/{name}.pop_geo',
+        indiv_label='subset/{name}.indiv_meta',
+    output:
+        p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter01.png",
+        p2="eemsout_gg/{name}_nruns{nruns, \d+}-scatter02.png",
+        p3="eemsout_gg/{name}_nruns{nruns, \d+}-scatter03.png",
+        p4="eemsout_gg/{name}_nruns{nruns, \d+}-scatter04.png",
+    run:
+        s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
+        s +=   " {wildcards.nruns} {wildcards.name} "
+        s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
+        shell(s)
+
+rule ggeems_scatter_hlex:
+    input:
+        eemsin,
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo='subset/{name}.pop_geo',
+        indiv_label='subset/{name}.indiv_meta',
+        exfam='subset/{exname}.fam',
+    output:
+        p1="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter01.png",
+        p2="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter02.png",
+        p3="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter03.png",
+        p4="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter04.png",
+    run:
+        s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
+        s +=   " {wildcards.nruns} {wildcards.name} "
+        s += " {input.pop_display} {input.pop_geo} {input.indiv_label} "
+        s += " {input.exfam} {wildcards.exname}"
+
         shell(s)
