@@ -56,8 +56,6 @@ plot_pw <- function(df, outlier_id){
         ylab("Fitted dissimilarity") + cm
 }
 plot_vs_true <- function(df){
-    print("__________________")
-    print(names(df))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     ll <- lm(Bobs ~ dist, data=df)
     P <- ggplot(df) + geom_point(aes(x=dist, y=Bobs, 
@@ -142,8 +140,8 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo,
         indiv_label <- read.csv(indiv_label_file)
 		exfam <- read.table(exfam)
 		excluded <- i2$sampleId %>% setdiff(exfam[,1])
-        outlier_pop <- indiv_label %>% filter(sampleId %in% excluded) %>% 
-            dplyr::select(popId) %>% unique()
+        outlier_pop <- i2 %>% filter(sampleId %in% excluded) %>% 
+            dplyr::select(grid, popId) %>% unique()
     }
 
 
@@ -181,7 +179,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo,
            plot_within(within))
     ggsave(outnames[4], 
            plot_median_error(grid_error))
-
+    
     l <- get_pop_mats(mcmcpath, diffs, order, 
                       pop_display_file, indiv_label_file,
                       pop_geo_file)
@@ -194,7 +192,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo,
            plot_median_error(l$error))
     ggsave(outnames[6], 
            plot_pw(l$pw))
-    ggsave(outnames[6], 
+    ggsave(outnames[7], 
            plot_vs_true(l$pw))
 }
 
