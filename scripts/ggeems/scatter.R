@@ -23,13 +23,15 @@ get_fit_matrix_full <- function(i2){
 }
 get_fit_matrix_abbrev <- function(i2){
     x <- i2 %>% group_by(grid) %>% 
-        summarize(grid_order=first(grid_order), f=first(abbrev), a=first(name)) %>% 
+        summarize(grid_order=first(grid_order), f=paste(unique(abbrev), collapse="|"), a=first(name)) %>% 
+#        summarize(grid_order=first(grid_order), f=first(abbrev), a=first(name)) %>% 
         arrange(grid_order) %>% dplyr::select(f, a)
     return(x$f)
 }
 get_fit_matrix_ids <- function(i2){
     x <- i2 %>% group_by(grid) %>% 
-        summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
+        summarize(grid_order=first(grid_order), f=paste(unique(popId), collapse="|"), a=first(name)) %>% 
+        #summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
         arrange(grid_order) %>% dplyr::select(f, a)
     return(x$f)
 }
@@ -75,6 +77,7 @@ plot_median_error <- function(grid_error, nmax=50){
         P <- ggplot(grid_error) + geom_bar(aes(y=nrmse, x=popId, 
                                           fill=is_outlier), stat='identity') 
     } else {
+        nmax <- pmin(nmax, nrow(grid_error))
         P <- ggplot(grid_error[1:nmax,]) + geom_bar(aes(y=nrmse, x=popId, 
                                           fill=is_outlier), stat='identity') 
     }
@@ -237,7 +240,7 @@ get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_f
     diag(ssJmat) <- diag(ssJmat) - ssJ
 
     K <- matrix(0, nrow=n, ncol=length(unique(i2$popId)))       
-    K[cbind(1:n, v[i2$popId])] <- 1#/i2$popn
+    K[cbind(1:n, v[as.character(i2$popId)])] <- 1#/i2$popn
     ssK <- colSums(K)
     ssK <- pmax(ssK, 1)
     ssKmat <- ssK %*% t(ssK)
