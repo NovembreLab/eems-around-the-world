@@ -86,7 +86,7 @@ plot_median_error <- function(grid_error, nmax=50){
     P <- P + cm
 }
 
-ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo, 
+ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file, 
                       indiv_label_file, outnames,
                       exfam=NULL){
 
@@ -197,7 +197,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo,
 }
 
 
-if(T){
+if(F){
     mcmcpath <- 'eemsout/9/world/'
     diffs <- 'eems/world.diffs'
     order <- 'eems/world.order'

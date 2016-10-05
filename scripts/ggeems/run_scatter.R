@@ -7,7 +7,7 @@ name <- args[2]
 mcmcpath <- sprintf('eemsout/%d/%s/', 0:(nruns-1), name)
 
 pop_display <- args[3]
-pop_geo <- args[4]
+pop_geo_file <- args[4]
 indiv_label <- args[5]
 
 diffs <- args[6]
@@ -24,4 +24,4 @@ if(is.null(exfam)){
 
 print(outnames)
 
-ggscatter(mcmcpath, diffs, order, pop_display, pop_geo, indiv_label, outnames, exfam)
+ggscatter(mcmcpath, diffs, order, pop_display, pop_geo_file, indiv_label, outnames, exfam)
