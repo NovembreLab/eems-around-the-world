@@ -1,44 +1,36 @@
 library(ggplot2)
+library(MASS)
 library(dplyr)
 library(fields)
 library(reshape2)
 source("scripts/eems_plot/load_output.r")
 
-get_fit_matrix_full <- function(mcmcpath, indiv_label, pop_display){
-    pop_display <- read.csv(pop_display)
+get_grid_info <- function(mcmcpath, indiv_label_file, pop_display_file){
+    pop_display <- read.csv(pop_display_file)
     o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
     names(o) <- 'grid'
     o <- cbind(grid=o, grid_order=1:nrow(o))
-    indiv_label <- read.csv(indiv_label)     
+    indiv_label <- read.csv(indiv_label_file)     
     i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+}
+
+get_fit_matrix_full <- function(i2){
     x <- i2 %>% group_by(grid) %>% 
         summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
-        arrange(grid_order) %>% select(f, a) %>% 
+        arrange(grid_order) %>% dplyr::select(f, a) %>% 
         mutate(f=paste(as.character(a), as.character(f), sep="_"))
     return(x$f)
 }
-get_fit_matrix_abbrev <- function(mcmcpath, indiv_label, pop_display){
-    pop_display <- read.csv(pop_display)
-    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
-    names(o) <- 'grid'
-    o <- cbind(grid=o, grid_order=1:nrow(o))
-    indiv_label <- read.csv(indiv_label)     
-    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+get_fit_matrix_abbrev <- function(i2){
     x <- i2 %>% group_by(grid) %>% 
         summarize(grid_order=first(grid_order), f=first(abbrev), a=first(name)) %>% 
-        arrange(grid_order) %>% select(f, a)
+        arrange(grid_order) %>% dplyr::select(f, a)
     return(x$f)
 }
-get_fit_matrix_ids <- function(mcmcpath, indiv_label, pop_display){
-    pop_display <- read.csv(pop_display)
-    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
-    names(o) <- 'grid'
-    o <- cbind(grid=o, grid_order=1:nrow(o))
-    indiv_label <- read.csv(indiv_label)     
-    i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
+get_fit_matrix_ids <- function(i2){
     x <- i2 %>% group_by(grid) %>% 
         summarize(grid_order=first(grid_order), f=first(popId), a=first(name)) %>% 
-        arrange(grid_order) %>% select(f, a)
+        arrange(grid_order) %>% dplyr::select(f, a)
     return(x$f)
 }
 
@@ -56,28 +48,38 @@ plot_within <- function(within){
 plot_pw <- function(df, outlier_id){
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(df) + geom_point(aes(x=Bobs, y=Bhat, 
-                                  color=Var1 %in% outlier_id))  +
+                  color=is_outlier))  +
         theme_classic() + 
         geom_abline(intercept=0) +
         theme(legend.position=0) +
         xlab("Genetic dissimilarity") +
         ylab("Fitted dissimilarity") + cm
 }
-plot_vs_true <- function(df, outlier_id){
+plot_vs_true <- function(df){
+    print("__________________")
+    print(names(df))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     ll <- lm(Bobs ~ dist, data=df)
     P <- ggplot(df) + geom_point(aes(x=dist, y=Bobs, 
-                                  color=Var1 %in% outlier_id))  +
+                                  color=is_outlier))  +
+#            geom_text(aes(x=dist, y=Bobs, label=label), data=df[df$is_outlier,]) + 
         theme_classic() + 
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
         theme(legend.position=0) + cm + 
         xlab("Geographic distance (km)") +
         ylab("Genetic dissimilarity")
 }
-plot_median_error <- function(pop_error){
+plot_median_error <- function(grid_error, nmax=50){
+    grid_error <- grid_error %>% arrange(-nrmse)
+    grid_error$popId <- factor(grid_error$popId, levels=grid_error$popId)
     cm <- scale_fill_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
-    P <- ggplot(pop_error) + geom_bar(aes(y=pop_error, x=label, 
+    if(is.null(nmax)){
+        P <- ggplot(grid_error) + geom_bar(aes(y=nrmse, x=popId, 
                                           fill=is_outlier), stat='identity') 
+    } else {
+        P <- ggplot(grid_error[1:nmax,]) + geom_bar(aes(y=nrmse, x=popId, 
+                                          fill=is_outlier), stat='identity') 
+    }
     P <- P + theme_classic()
     P <- P + xlab("") + ylab("Normalized Median Absolute Error")
 #        P <- P + ggtitle("Error by Population")
@@ -86,8 +88,12 @@ plot_median_error <- function(pop_error){
     P <- P + cm
 }
 
-ggscatter <- function(mcmcpath, pop_display_file, indiv_label_file, outnames,
-                      outliers=NULL){
+ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo, 
+                      indiv_label_file, outnames,
+                      exfam=NULL){
+
+
+
     oDemes <- read.table(sprintf("%s/rdistoDemes.txt", mcmcpath[1]))
     sizes <- oDemes[,3]
     coords <- oDemes[,1:2]
@@ -107,10 +113,11 @@ ggscatter <- function(mcmcpath, pop_display_file, indiv_label_file, outnames,
     JtDobsJ[is.nan(JtDobsJ)] <- median(diag(JtDobsJ), na.rm=T) #nan fix
     JtDhatJ <- JtDhatJ/n_reps
 
-    pop_labels <- get_fit_matrix_abbrev(mcmcpath, indiv_label_file, pop_display_file)
-    pop_ids <- get_fit_matrix_ids(mcmcpath, indiv_label_file, pop_display_file)
-    pop_labels_full<- get_fit_matrix_full(mcmcpath, indiv_label_file, pop_display_file)
-    label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
+    i2 <- get_grid_info(mcmcpath, indiv_label_file, pop_display_file)
+    pop_labels <- get_fit_matrix_abbrev(i2)
+    pop_ids <- get_fit_matrix_ids(i2)
+    pop_labels_full<- get_fit_matrix_full(i2)
+    label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="|")
 
     g <- read.output.graph(mcmcpath[1])
 
@@ -130,41 +137,154 @@ ggscatter <- function(mcmcpath, pop_display_file, indiv_label_file, outnames,
 
 
     if(is.null(exfam)){
-        outlier_pop <- c()
+        outlier_pop <- data.frame(popId=c(), grid=c())
     }else{
         indiv_label <- read.csv(indiv_label_file)
 		exfam <- read.table(exfam)
-		excluded <- indiv_label$sampleId %>% setdiff(exfam[,1])
+		excluded <- i2$sampleId %>% setdiff(exfam[,1])
         outlier_pop <- indiv_label %>% filter(sampleId %in% excluded) %>% 
-            select(popId) %>% unique()
+            dplyr::select(popId) %>% unique()
     }
-    outlier_id <- which(pop_ids %in% outlier_pop)
 
+
+    #errors based on grid cells
     df <- inner_join(Bobs, Bhat) %>% inner_join(labels)  %>% inner_join(dists)
     df$error <- abs(df$Bobs - df$Bhat)
+    df$is_outlier <- df$Var1 %in% outlier_pop$grid | 
+        df$Var2 %in% outlier_pop$grid
+
 
     
 
-    pop_error <- df %>% group_by(Var1) %>% summarize(pop_error=median(error))
-    pop_error <- pop_error %>% cbind(label=pop_labels) %>% 
-        arrange(-pop_error) %>%
-        mutate(pop_error=pop_error/median(pop_error))
+    #per-grid error
+    grid_error <- df %>% group_by(Var1) %>% 
+        summarize(rmse=sqrt(mean(error^2)), mae=mean(abs(error)),
+                  med=median(abs(error)))  %>%
+        mutate(nrmse=rmse/mean(rmse)) 
+    grid_error <- grid_error %>% cbind(label=pop_labels, popId=pop_ids) %>% 
+        arrange(-nrmse)
 
-    pop_error$label <- factor(pop_error$label, levels=pop_error$label)                       
-    pop_error <- pop_error %>% mutate(is_outlier=Var1 %in% outlier_id)
+    grid_error$label <- factor(grid_error$label, levels=unique(grid_error$label))
+    grid_error <- grid_error %>% mutate(is_outlier=Var1 %in% outlier_pop$grid)
     
+
+    #df for within grid error
     within <- data.frame(label=as.character(pop_labels), Wobs=Wobs, What=What,
-                         popId=pop_ids, is_outlier=pop_ids %in% outlier_pop)
+                         popId=pop_ids, is_outlier=F)
+    within$is_outlier[outlier_pop$grid] <- T
     
     df <- df %>% filter(Var1 < Var2)
 
-    ggsave(outnames[1], 
-           plot_pw(df, outlier_id))
-    ggsave(outnames[2], 
-           plot_vs_true(df, outlier_id))
+    ggsave(outnames[1], plot_pw(df))
+    ggsave(outnames[2], plot_vs_true(df))
     ggsave(outnames[3], 
            plot_within(within))
     ggsave(outnames[4], 
-           plot_median_error(pop_error))
+           plot_median_error(grid_error))
 
+    l <- get_pop_mats(mcmcpath, diffs, order, 
+                      pop_display_file, indiv_label_file,
+                      pop_geo_file)
+
+    l$error$is_outlier <- l$error$popId %in% outlier_pop$popId
+    l$pw$is_outlier <- l$pw$popId.x %in% outlier_pop$popId |
+                       l$pw$popId.y %in% outlier_pop$popId
+
+    ggsave(outnames[5], 
+           plot_median_error(l$error))
+    ggsave(outnames[6], 
+           plot_pw(l$pw))
+    ggsave(outnames[6], 
+           plot_vs_true(l$pw))
+}
+
+
+if(T){
+    mcmcpath <- 'eemsout/9/world/'
+    diffs <- 'eems/world.diffs'
+    order <- 'eems/world.order'
+    pop_display <- '../../meta/EuropeAllData.pop_display'
+    indiv_label_file <- 'subset/world.indiv_meta'
+    pop_display_file <- pop_display
+    pop_geo_file <- 'subset/world.pop_geo'
+}
+
+get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_file,
+                         pop_geo_file){
+    d <- as.matrix(read.table(diffs)       )
+    ord <- as.matrix(read.table(order)       )
+    odf <- data.frame(sampleId=ord[,1], v=1:nrow(ord))
+
+    pop_geo <- read.csv(pop_geo_file)
+    dmat <- rdist.earth(pop_geo[,c('longitude', 'latitude')]) 
+    rownames(dmat) <- pop_geo$popId
+    colnames(dmat) <- pop_geo$popId
+    d3 <- melt(dmat, value.name="dist")
+    names(d3) <- c('popId.x', 'popId.y', 'dist')
+
+    i2 <- get_grid_info(mcmcpath, indiv_label_file, pop_display_file)
+    idpop <- data.frame(popId=pop_geo$popId, id=1:nrow(pop_geo))
+     v <- idpop$id          
+     names(v) <- idpop$popId
+
+
+
+
+    n <- nrow(i2)
+    n_pops <- max(i2$grid)
+    J <- matrix(0, nrow=n, ncol=n_pops)       
+    J[cbind(1:n, i2$grid)] <- 1 #/i2$n
+    ssJ <- colSums(J)
+    ssJmat <- ssJ %*% t(ssJ)
+    diag(ssJmat) <- diag(ssJmat) - ssJ
+
+    K <- matrix(0, nrow=n, ncol=length(unique(i2$popId)))       
+    K[cbind(1:n, v[i2$popId])] <- 1#/i2$popn
+    ssK <- colSums(K)
+    ssK <- pmax(ssK, 1)
+    ssKmat <- ssK %*% t(ssK)
+    diag(ssKmat) <- diag(ssKmat) - ssK
+    ssKmat <- pmax(ssKmat, 1)
+
+    d1 <- (t(K) %*% d %*% K)/ssKmat
+    d1[is.nan(d1)] <- 0
+
+    JtDhatJ <- matrix(0,n_pops,n_pops)
+    for (path in mcmcpath) {
+        JtDhatJ <- JtDhatJ + 
+            as.matrix(read.table(sprintf('%s/rdistJtDhatJ.txt',path)),header=F)
+    }
+    n_reps <- length(mcmcpath)
+    JtDhatJ <- JtDhatJ/n_reps
+    diag_hat <- diag(JtDhatJ) * ssJ * (ssJ-1)
+    hat <- JtDhatJ * ssJ %o% ssJ
+    diag(hat) <- diag_hat
+    d2 <- (t(K) %*% ginv(t(J)) %*% hat %*% ginv(J) %*% K) / ssKmat
+
+    #ones <- matrix(1, nrow(d2),1)                               
+    #n2 <-  (diag(d2)%*%t(ones) + ones%*%t(diag(d2)))/2   
+    #n1 <-  (diag(d1)%*%t(ones) + ones%*%t(diag(d1)))/2   
+
+    d1 <- melt(d1, value.name="Bobs")
+    d2 <- melt(d2, value.name="Bhat")
+    d2[is.nan(d2[,3]),3] <- 0
+    err <- inner_join(d1, d2)
+
+
+
+    e <- err %>% mutate(error = Bobs-Bhat) %>% group_by(Var1) %>% 
+        summarize(rmse=sqrt(mean(error^2)), mae=mean(abs(error)),
+                  med=median(abs(error)))  %>%
+        arrange(-rmse)  %>%
+        mutate(nrmse=rmse/mean(rmse)) %>%
+        left_join(idpop, by=c("Var1"="id"))
+    e$is_outlier <- F
+
+    pw <- err %>% filter(Var1 > Var2) %>% 
+        left_join(idpop, by=c("Var1"="id")) %>%
+        left_join(idpop, by=c("Var2"="id"))
+    pw$is_outlier <- F
+    pw <- pw %>% left_join(d3)
+
+    return(list(error=e, pw=pw ))
 }
