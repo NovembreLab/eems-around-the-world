@@ -95,7 +95,7 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     tiles <- P + geom_tile(data=df, aes(x=y, y=x, fill=Zmean, alpha=alpha) ) +
 	eems_colors + alpha_scale 
     tiles <- tiles + geom_tile(data=dff, aes(x=y, y=x),
-			       alpha=0.6, fill='black', color=NA)
+			       alpha=0.6, fill='white', color=NA)
 			    
     return(tiles)
 }

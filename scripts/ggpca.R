@@ -161,7 +161,7 @@ if(exists('snakemake')){
 		exfam <- read.table(snakemake@input$exfam)
 		excluded <- data$sampleId %>% setdiff(exfam[,1])
 		expops <- data %>% filter(sampleId %in% excluded) %>% 
-			select(popId) %>% unique() 
+            select(popId) %>% unique()  %>% unlist() %>% c()
 		col_list[col_list$popId %in% expops,'color'] <- 'red'
 	}
 

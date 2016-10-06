@@ -412,8 +412,8 @@ rule ggeems_scatter:
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
-	diffs='eems/{name}.diffs',
-	order='eems/{name}.order',
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
     output:
         p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter01.png",
         p2="eemsout_gg/{name}_nruns{nruns, \d+}-scatter02.png",
@@ -433,8 +433,8 @@ rule ggeems_scatter_hlex:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
         exfam='subset/{exname}.fam',
-	diffs='eems/{name}.diffs',
-	order='eems/{name}.order',
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
     output:
         p1="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter01.png",
         p2="eemsout_gg/{name}_nruns{nruns}_ex:{exname}-scatter02.png",

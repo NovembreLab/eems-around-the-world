@@ -14,7 +14,10 @@ diffs <- args[6]
 order <- args[7]
 
 exfam <- args[8]
+if(is.na(exfam))exfam <- NULL
 exname <- args[9]
+
+print(exfam)
 
 if(is.null(exfam)){
     outnames <- sprintf("eemsout_gg/%s_nruns%s-scatter0%d.png", name, nruns, 1:7)
