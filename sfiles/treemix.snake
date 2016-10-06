@@ -6,26 +6,36 @@ def plink2treemix(inname, outname):
     """this is a condensed version of Joe Pickrell's script
         plink2treemix.py, which is distributed with treemix
     """
-    pop2rs = defaultdict(dict)                                                                  
+    snpdict = dict()
     pops = set()                                                                     
+    
+    last_rs = ""
+    wrote_header= False
                                                                                      
     with open(inname) as infile:
-        line = infile.readline()                                                         
-        for line in infile:
-            line = line.strip().split()                                                  
-            _, rs, pop, _, _, _, mc, total = line
-            pop2rs[rs][pop] = int(mc), int(total) - int(mc)
-            pops.add(pop)
+        with gzip.open(outname, 'wt') as outfile:
+            line = infile.readline()                                                         
+            for line in infile:
+                line = line.strip().split()                                                  
+                _, rs, pop, _, _, _, mc, total = line
+                pops.add(pop)
 
-    pops = list(pops)
-
-    with gzip.open(outname, 'wt') as outfile:
-        outfile.write(" ".join(pops) + "\n")
+                if last_rs != rs:
+                    if last_rs == "": #first line
+                        last_rs = rs
+                    else: #new snp
+                        if not wrote_header:
+                            lpops = list(pops)
+                            outfile.write(" ".join(lpops) + "\n")
+                            wrote_header = True
                                                                                      
-        for rs in pop2rs:                                                                   
-            l = ["%d,%d" % pop2rs[rs][pop] for pop in pops]
-            s = " ".join(l) + "\n"
-            outfile.write(s)
+                        l = ["%d,%d" % snpdict[pop] for pop in lpops]
+                        s = " ".join(l) + "\n"
+                        outfile.write(s)
+                        snpdict = dict()
+
+                last_rs = rs
+                snpdict[pop] = int(mc), int(total) - int(mc)
 
 rule make_treemix_input:
     input:
