@@ -8,13 +8,15 @@ library(dplyr)
 makePC <- function(data, n, col, field='abbrev'){
     f = sprintf('%s' , field)
     id <- sprintf('PC%d', n)
-    g <- ggplot(data, aes_string(f, id, fill=field, color=field))
-    g <- g + geom_violin(adjust=.2) + col
-    g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1),
+    G <- ggplot(data, aes_string(f, id, fill=field, color=field))
+    G <- G + geom_violin(adjust=.2) + col
+    G <- G + theme_classic()
+    G <- G + theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
               axis.title.x = element_blank(),
-              legend.position="none"
+              legend.position=0
               )
-    g
+    G <- G + theme(legend.position=0)
+    G
 }
 
 make2PC <- function(data, i, j, col, wdf=F){
@@ -25,11 +27,13 @@ make2PC <- function(data, i, j, col, wdf=F){
 
     if(wdf){
         g <- ggplot(data2,aes_string(id1, id2, colour='wasDerivedFrom', label='abbrev')) +
+            theme_classic() + 
             geom_text() + col
     }
     else {
         g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
             geom_text() + col
+        g <- g + theme_classic()
         g <- g + theme(legend.position='none')
     }
 
@@ -49,7 +53,7 @@ makePlots <- function(data, col, output1, output2, wdf){
     #png(file=output1, width=3200, height=1600)
     #multiplot(plotlist=p1, file=output, cols=4)
     for(i in 1:20){
-        ggsave(output1[i], p1[[i]], width=7, height=4)
+        ggsave(output1[i], p1[[i]], width=7, height=3)
     }
     for(i in 1:10){
         ggsave(output2[i], p2[[i]], width=6, height=6)

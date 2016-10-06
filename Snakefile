@@ -14,7 +14,6 @@ include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
 
 
-
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
@@ -28,32 +27,6 @@ META_SRC = config['DATA']['meta']
 
 
 base = lambda x: os.path.splitext(x)[0]
-
-def load_subset_config(config, name, verbose=True):
-    """ recursively load subset info """
-    if verbose:
-        print("loading subset %s" % name)
-
-    params = config['__default__'].copy()
-
-    if 'subsets' in config[name]:
-        parent_dataset = load_subset_config(config, config[name]['subsets'])
-        params.update(parent_dataset)
-    params.update(config[name])
-
-    # this bit modifies lists, etc
-    if 'modify_parent' in config[name]:
-        for k, v in config[name]['modify_parent'].items():
-            if k in params:
-                params[k] = params[k] + v
-            else: 
-                params[k] = v
-            if verbose:
-                print("modifying key %s to value %s" % (k, v))
-
-        
-    return params
-
 
 def snakemake_subsetter(input, output, name):
     """ creates a subset of data based on a geographical region
@@ -79,7 +52,8 @@ def snakemake_subsetter(input, output, name):
 
     outname = base(output.bed)
 
-    params = load_subset_config(config['subset'], name)
+    params = config['subset']['__default__']
+    params.update(config['subset'][name])
     location_data = load_pop_geo(input.meta[0], wrap=False)
     sample_data = load_indiv_meta(input.meta[1])
     meta_data = sample_data.merge(location_data)
@@ -113,9 +87,8 @@ def snakemake_subsetter(input, output, name):
         exclude_pop=params['exclude_pop'],
         exclude_source=params['exclude_source'],
         min_area=params['min_area'],
-        add_pop = params['add_pop'],
+	add_pop = params['add_pop'],
                 _map=input.map)
-
     bed = os.path.splitext(input.plink[0])[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
@@ -130,14 +103,13 @@ def snakemake_subsetter(input, output, name):
 
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
-        #print('subset_all_fun called')
         subsets = config['subset'].keys()
-        #print(subsets)
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
     return ss
     
+include: 'sfiles/paper_figures.snake'
 
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
@@ -148,22 +120,12 @@ def subset_all_fun_reps(ext, prefix='', nreps=10):
     return ss
     
 
-include: 'sfiles/paper_figures.snake'
 
 
 
        
 
 # rules that run important stuff for all subsets
-rule subset_all_poly:
-    input:
-        subset_all_fun(prefix='subset/', ext='.polygon')
-rule subset_all_bed1:
-    input:
-        subset_all_fun(prefix='subset_nopca/', ext='.bim'),
-        subset_all_fun(prefix='subset_nopca/', ext='.fam'),
-        subset_all_fun(prefix='subset_nopca/', ext='.bed')
-
 rule subset_all_diffs:
     input:
         subset_all_fun(prefix='eems/', ext='.diffs')
@@ -178,15 +140,11 @@ rule subset_all_spacemix:
 
 rule subset_all_eems:
     input:
-        subset_all_fun(prefix='eemsout/', ext='_runs4.controller')
-
-rule subset_all_eems_ggplot:
-    input:
-        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+        subset_all_fun(prefix='eemsout/', ext='_runs10.controller')
 
 rule subset_all_eems_plot:
     input:
-        subset_all_fun(prefix='eemsout/', ext='_nruns4-mrates01.png')
+        subset_all_fun(prefix='eemsout/', ext='_nruns10-mrates01.png')
 
 rule subset_all_pca:
     input:
@@ -232,10 +190,10 @@ rule subset_nopca:
         pop_geo='subset/{name}.pop_geo',
         indiv_meta='subset/{name}.indiv_meta',
         polygon='subset/{name}.polygon',
-        bed='subset_nopca/{name}.bed',
-        bim='subset_nopca/{name}.bim',
-        fam='subset_nopca/{name}.fam',
-        incl='subset_nopca/{name}.incl'
+        bed=temp('subset_nopca/{name}.bed'),
+        bim=temp('subset_nopca/{name}.bim'),
+        fam=temp('subset_nopca/{name}.fam'),
+        incl=temp('subset_nopca/{name}.incl')
     version: "2"
     run:
         snakemake_subsetter(input, output, wildcards.name)
