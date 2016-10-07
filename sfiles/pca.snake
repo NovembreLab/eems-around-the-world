@@ -129,3 +129,20 @@ rule get_pca_derived_order:
         pop_order="subset/{name}.pop_order",
     script:
         "../" + input.__script__
+
+
+rule pca_vs_gen:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_order="subset/{name}.pop_order",
+        pop_geo='subset/{name}.pop_geo',
+        diffs='eems/{name}.diffs',
+        order='eems/{name}.order',
+        __script__='scripts/pca_vs_geo.R',
+    output:
+        pcvsdist='figures/pcvsdist/{name}_pc1-{npcs, \d+}.png'
+    script: "../" +input.__script__
+

@@ -56,12 +56,13 @@ shifted_map <- function(bbox, zoom=6){
 }
 
 
-make_map <- function(mcmcpath, zoom=6, is.mrates=T){
+make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
     bbox['top'] <- pmin(bbox['top'], 80)
 
+    if(!fancy_proj){
     if(bbox['right'] > 180 && bbox['left'] > 180){
         print("shifted map")
         a = shifted_map(bbox, zoom)
@@ -73,6 +74,9 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T){
         print("done loading  map")
         a=ggmap(map)                                                                            
     }
+    } else {
+        a = ggplot()
+    }
 
     #FORMAT axis                                                                            
     a=a+scale_x_continuous("Longitude",limits = bbox[c('left', 'right')],
@@ -83,12 +87,23 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T){
     a=a+theme(axis.text.x=element_text(size=25),axis.title.x=element_text(size=25))         
     a=a+theme(axis.text.y=element_text(size=25),axis.title.y=element_text(size=25))         
 
-    a = add_eems_overlay(a, mcmcpath, is.mrates)
-
     require(maps)
-    m = map_data("world")
+    m = map_data("world") %>% filter(region!='Antarctica')
     m$long[m$long< -30] <- m$long[m$long< -30] +360   
-    a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+    lower_boundary <- m$lat < -38
+    m$lat[m$lat< -38] <- -38
+
+    if(fancy_proj){
+        a = a + geom_polygon(data=m, aes(x=long, y=lat, group=group),  color='black',
+                             fill='#dddddd')
+        a = add_eems_overlay(a, mcmcpath, is.mrates)
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+        a = a + coord_map("mollweide",orientation=c(90,40, 110)) + theme_classic()
+    } else {
+        a = add_eems_overlay(a, mcmcpath, is.mrates)
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+    }
+
     #a=a+gg_add_samples(mcmcpath)
     #a=a+scale_size_identity(guide="none")
     #a=a+coord_fixed()

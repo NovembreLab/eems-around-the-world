@@ -395,15 +395,16 @@ rule ggplot_eems:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=200,
+        RES=500,
         ZOOM=4,
+        fancy=1
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"
     run:
         s =  "%s scripts/ggeems/run.R" % config['EXE']['R']
         s +=   " {wildcards.nruns} {wildcards.name} "
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
-        s += " {params.RES} {params.ZOOM}"
+        s += " {params.RES} {params.ZOOM} {params.fancy}"
         shell(s)
 
 rule ggeems_scatter:

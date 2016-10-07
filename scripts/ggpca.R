@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
 library(ggplot2)
 library(data.table)
 library(dplyr)
+source("scripts/load_pop_meta.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
 
@@ -60,71 +61,6 @@ makePlots <- function(data, col, output1, output2, wdf){
     }
 }
 
-load.data <- function(pc, fam,
-                      indiv_meta, pop_display){
-    indiv_meta <- read.csv(indiv_meta)
-    pop_display <- read.csv(pop_display)
-    indiv <- merge(indiv_meta, pop_display, all.x=T)
-
-    fam <- read.table(fam)[,1]
-
-    data <- data.frame(fread(pc))
-    names(data) <- paste0("PC", 1:ncol(data))
-
-    data <- cbind(fam, data, n=1:length(fam)) 
-    names(data)[1] <- 'sampleId'
-    m <- merge(indiv, data, all.y=T)
-    m <- m[order(m$n),]
-
-    return(m)
-}
-
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-    # Multiple plot function
-    #
-    # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-    # - cols:   Number of columns in layout
-    # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-    #
-    # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-    # then plot 1 will go in the upper left, 2 will go in the upper right, and
-    # 3 will go all the way across the bottom.
-    #
-    # from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_%28ggplot2%29/
-      library(grid)
-
-      # Make a list from the ... arguments and plotlist
-      plots <- c(list(...), plotlist)
-
-      numPlots = length(plots)
-
-      # If layout is NULL, then use 'cols' to determine layout
-      if (is.null(layout)) {
-        # Make the panel
-        # ncol: Number of columns of plots
-        # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                    ncol = cols, nrow = ceiling(numPlots/cols))
-    }
-
-     if (numPlots==1) {
-        print(plots[[1]])
-      } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-    }
-}
-
 wdf <- F
 args <- commandArgs(T)
 if(exists('snakemake')){
@@ -136,7 +72,7 @@ if(exists('snakemake')){
     output <- snakemake@output[['pc1']]
     output2 <- snakemake@output[['pc2']]
     wdf <- snakemake@params[['wdf']]
-    data <- load.data(pc, fam, indiv_meta, pop_display)
+    data <- load_pca_data(pc, fam, indiv_meta, pop_display)
     data <- data %>% select(-order) %>% left_join(read.csv(pop_order))
     save.image("TMP.RDATA")
     if(wdf==T){
@@ -180,7 +116,7 @@ if(exists('snakemake')){
     pop_display <- args[4]
     output <- args[5]
     output2 <- args[6]
-    data <- load.data(pc, fam, indiv_meta, pop_display)
+    data <- load_pca_data(pc, fam, indiv_meta, pop_display)
     col_list <- data %>% group_by(abbrev) %>% summarize(first(color))
     col <- list(scale_color_manual(name=col_list$abbrev, values=col_list$color),
                 scale_fill_manual(name=col_list$abbrev, values=col_list$color))

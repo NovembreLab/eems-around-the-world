@@ -37,6 +37,7 @@ get_fit_matrix_ids <- function(i2){
 }
 
 plot_within <- function(within){
+    ll <- lm(Wobs ~ What, data=within)
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(within) + geom_text(aes(x=Wobs, y=What, label=label,
                                         color=is_outlier)) +
@@ -44,19 +45,42 @@ plot_within <- function(within){
         geom_abline(intercept=0) + 
         theme(legend.position=0) +
         xlab("Observed within-population dissimilarity") +
-        ylab("Fitted within-population dissimilarity") 
+        ylab("Fitted within-population dissimilarity") +
+	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0))
 }
 
-plot_pw <- function(df, outlier_id){
+plot_pw <- function(df){
+    ll <- lm(Bobs ~ Bhat, data=df)
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
-    P <- ggplot(df) + geom_point(aes(x=Bobs, y=Bhat, 
+    P <- ggplot(df) + geom_point(aes(y=Bobs, x=Bhat, 
                   color=is_outlier))  +
         theme_classic() + 
         geom_abline(intercept=0) +
         theme(legend.position=0) +
-        xlab("Genetic dissimilarity") +
-        ylab("Fitted dissimilarity") + cm
+        ylab("Genetic dissimilarity") +
+        xlab("Fitted dissimilarity") + cm +
+	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0))
 }
+plot_vs_pc <- function(df, n=1){
+    if(n==1){pclab <- 'Dissimilarity based on PC1'}
+    else{
+	pclab <- sprintf("Dissimilarity based on PC1-%s", n)
+    }
+    ll <- lm(Bobs ~ pcdist, data=df)
+    cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
+    P <- ggplot(df) + geom_point(aes(x=pcdist, y=Bobs, 
+                  color=is_outlier))  +
+        theme_classic() + 
+        geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
+        theme(legend.position=0) +
+        ylab("Genetic dissimilarity") +
+        xlab(pclab) + cm + 
+	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0))
+}
+
 plot_vs_true <- function(df){
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     ll <- lm(Bobs ~ dist, data=df)
@@ -67,7 +91,9 @@ plot_vs_true <- function(df){
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
         theme(legend.position=0) + cm + 
         xlab("Geographic distance (km)") +
-        ylab("Genetic dissimilarity")
+        ylab("Genetic dissimilarity") +
+	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0))
 }
 plot_median_error <- function(grid_error, nmax=50){
     grid_error <- grid_error %>% arrange(-nrmse)

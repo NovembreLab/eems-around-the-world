@@ -75,7 +75,7 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     df <- df[df$filter,]
     df$Zmean <- df$Zmean - mean(df$Zmean)
 
-    df$alpha <- cut(df$Zmean, 13)
+    df$alpha <- cut(df$Zmean, 101)
     alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), values=alpha, guide='none')
 
     #rescaling for debug
@@ -338,8 +338,8 @@ read.edges <- function(mcmcpath) {
 }
 
 f <- function(x, alpha) adjustcolor(x, alpha.f=alpha)
-alpha = c(seq(.8, .2, length.out=6),
+alpha = c(seq(.8, .2, length.out=50),
 	  rep(0, 1),
-	  seq(.2, .8, length.out=6))
+	  seq(.2, .8, length.out=50))
 	    
 
