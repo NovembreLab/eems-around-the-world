@@ -1,6 +1,5 @@
-library(ggmapcustom)
-library(rgdal)
-library(jpeg)
+#library(rgdal)
+#library(jpeg)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 
@@ -63,17 +62,18 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     bbox['top'] <- pmin(bbox['top'], 80)
 
     if(!fancy_proj){
-    if(bbox['right'] > 180 && bbox['left'] > 180){
-        print("shifted map")
-        a = shifted_map(bbox, zoom)
-    } else if(bbox['right'] > 180 ){
-        print("combined map")
-        a = combine_map(bbox, zoom)
-    } else {
-        map <- get_stamenmap(bbox=bbox, zoom=zoom);                     
-        print("done loading  map")
-        a=ggmap(map)                                                                            
-    }
+	library(ggmapcustom)
+	if(bbox['right'] > 180 && bbox['left'] > 180){
+	    print("shifted map")
+	    a = shifted_map(bbox, zoom)
+	} else if(bbox['right'] > 180 ){
+	    print("combined map")
+	    a = combine_map(bbox, zoom)
+	} else {
+	    map <- get_stamenmap(bbox=bbox, zoom=zoom);                     
+	    print("done loading  map")
+	    a=ggmap(map)                                                                            
+	}
     } else {
         a = ggplot()
     }
