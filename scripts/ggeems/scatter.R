@@ -3,7 +3,9 @@ library(MASS)
 library(dplyr)
 library(fields)
 library(reshape2)
+library(Cairo)
 source("scripts/eems_plot/load_output.r")
+
 
 get_grid_info <- function(mcmcpath, indiv_label_file, pop_display_file){
     pop_display <- read.csv(pop_display_file)
