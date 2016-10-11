@@ -251,7 +251,7 @@ rule subset_pca:
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
     shell:
-        'plink --bfile subset_nopca/{wildcards.name} '
+        '{PLINK_EXE} --bfile subset_nopca/{wildcards.name} '
         '--exclude {input.outliers} '
         '--out subset/{wildcards.name} --make-bed'
 
