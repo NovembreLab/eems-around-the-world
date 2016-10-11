@@ -98,7 +98,9 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
                              fill='#dddddd')
         a = add_eems_overlay(a, mcmcpath, is.mrates)
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
-        a = a + coord_map("mollweide",orientation=c(90,40, 110)) + theme_classic()
+        a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
+        a = a + theme_classic()
+        #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
         a = add_eems_overlay(a, mcmcpath, is.mrates)
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
