@@ -395,9 +395,9 @@ rule ggplot_eems:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=500,
+        RES=200,
         ZOOM=4,
-        fancy=1
+        fancy=0
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"
     run:
@@ -449,3 +449,15 @@ rule ggeems_scatter_hlex:
         s += " {input.exfam} {wildcards.exname}"
 
         shell(s)
+
+rule all_figs:
+    input:
+        "eemsout_gg/{name}_nruns4-mrates01.png",
+        "eemsout/{name}_nruns4-mrates01.png",
+        "eemsout_gg/{name}_nruns4-scatter01.png",
+        "figures/pcvsdist/{name}_pc1-10.png",
+        "figures/pcvsdist/{name}_pc1-2.png",
+        "figures/pca/pc1d_{name}_pc1.png",
+    output:
+        "{name}.figs"
+
