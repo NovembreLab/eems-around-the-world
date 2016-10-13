@@ -1,8 +1,7 @@
-
-
 require(ggplot2)
 require(fields)
 require(mapdata)
+options(bitmapType='cairo')
 
 
 RES <- 40 #the number of tiles along each axis.

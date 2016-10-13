@@ -396,6 +396,7 @@ rule ggplot_eems:
         indiv_label='subset/{name}.indiv_meta'
     params:
         RES=200,
+        RES=100,
         ZOOM=4,
         fancy=0
     output:

@@ -65,7 +65,7 @@ rule run_treemix_single:
         s += '-m {wildcards.m} '
         s += '-o {outname} '
         s += '-seed {seed} '
-        s += '2> treemix.log '
+        s += '2> {log} '
         shell(s)
 
 def treemix_setfun(wildcards):

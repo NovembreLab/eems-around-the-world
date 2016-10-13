@@ -143,6 +143,6 @@ rule pca_vs_gen:
         order='eems/{name}.order',
         __script__='scripts/pca_vs_geo.R',
     output:
-        pcvsdist='figures/pcvsdist/{name}_pc1-{npcs, \d+}.png'
+        pcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.png'
     script: "../" +input.__script__
 
