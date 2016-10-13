@@ -1,5 +1,6 @@
 #library(rgdal)
 #library(jpeg)
+require(fields)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 
@@ -98,7 +99,10 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
                              fill='#dddddd')
         a = add_eems_overlay(a, mcmcpath, is.mrates)
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
-        a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
+        a = a + coord_map("mollweide",orientation=c(90,10, 40)) 
+        a = a + xlim(-20, 195) + ylim(-40, 80)
+        a= a+ scale_y_continuous("Latitude",limits = c(-40, 80), 
+                                expand = c(0, 0))                
         a = a + theme_classic()
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
@@ -184,7 +188,6 @@ ggscatterplot <- function(mcmcpath,pop_display_file, indiv_label_file,
         return (0)
     }
 
-    require(fields)
     dmat <- as.matrix(rdist.earth(oDemes[,1:2]))
     dpts <- dmat[upper.tri(dmat, diag=FALSE)]
 
@@ -274,6 +277,23 @@ read.output.graph <- function(path) {
     alpha <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
     return(list(ipmap=ipmap,demes=demes,edges=edges,alpha=alpha,sizes=sizes,outer=outer))
+}
+
+ggadd.graph <- function(g){
+    xstart <- g$demes[g$edges[,1],1]
+    xend <- g$demes[g$edges[,2],1]
+    ystart <- g$demes[g$edges[,1],2]
+    yend <- g$demes[g$edges[,2],2]
+    grid <- data.frame(xstart, xend, ystart, yend)
+    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee')
+}
+ggadd.pts <- function(g){
+    tbl <- table(g$ipmap)
+    ind <- as.numeric(names(tbl))
+    sizes <- as.vector(tbl)
+    df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
+    geom_point(aes(x=x, y=y, size=sizes), data=df)
+                      
 }
 
 read.edges <- function(mcmcpath) {
