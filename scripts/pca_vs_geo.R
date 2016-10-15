@@ -50,6 +50,7 @@ if(exists('snakemake')){
     mcmcpath <- sprintf('eemsout/0/%s/', snakemake@wildcards$name)
 
     output <- snakemake@output[['pcvsdist']]
+    output2 <- snakemake@output[['pcvsgrid']]
 
 
 
@@ -87,9 +88,20 @@ if(exists('snakemake')){
 
     pcd <- get_pc_dist(data, npcs)
     data <- inner_join(err, pcd)
+    i2 <- get_grid_info(mcmcpath, indiv_meta, pop_display)
+    idgrid <- i2 %>% dplyr::select(popId, grid) %>% unique()
+    data <- data %>% left_join(idgrid, by=c("popId.x"="popId")) %>% 
+        left_join(idgrid, by=c("popId.y"="popId"))
+
+
 
     pcplot <- plot_vs_pc(data, n=npcs)
     ggsave(output, pcplot)
+
+    data2 <- data %>% group_by(grid.x, grid.y) %>% 
+        summarize(Bobs=mean(Bobs), pcdist=mean(pcdist), is_outlier=any(is_outlier))
+    pcplot <- plot_vs_pc(data2, n=npcs)
+    ggsave(output2, pcplot)
     save.image('.Rsnakemakedebug')
 } 
 

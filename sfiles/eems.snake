@@ -455,8 +455,8 @@ rule all_figs:
         "eemsout_gg/{name}_nruns4-mrates01.png",
         "eemsout/{name}_nruns4-mrates01.png",
         "eemsout_gg/{name}_nruns4-scatter01.png",
-        "figures/pcvsdist/{name}_pc1-10.png",
-        "figures/pcvsdist/{name}_pc1-2.png",
+        "figures/pcvsgrid/{name}_pc1-10.png",
+        "figures/pcvsgrid/{name}_pc1-2.png",
         "figures/pca/pc1d_{name}_pc1.png",
     output:
         "{name}.figs"
