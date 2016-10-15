@@ -285,7 +285,7 @@ ggadd.graph <- function(g){
     ystart <- g$demes[g$edges[,1],2]
     yend <- g$demes[g$edges[,2],2]
     grid <- data.frame(xstart, xend, ystart, yend)
-    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee')
+    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee80')
 }
 ggadd.pts <- function(g){
     tbl <- table(g$ipmap)

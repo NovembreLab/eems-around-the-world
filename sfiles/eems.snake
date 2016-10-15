@@ -395,7 +395,7 @@ rule ggplot_eems:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=100,
+        RES=200,
         ZOOM=4,
         fancy=1
     output:
