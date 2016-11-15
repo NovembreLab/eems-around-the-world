@@ -16,8 +16,12 @@ load_snakemake <- function(){
     pop_geo <<- lapply(pop_geo_files, read.csv)
 
     pops <- do.call(rbind, pop_geo)
-    pops <- pops %>% left_join(e2)             
+
+#    pops <- read.csv("/data/meta/pgs/gvar.pop_geo")
+    pops <- pops %>% left_join(e2) 
     pops$excluded[is.na(pops$excluded)] = F       
+
+    pops <- pops %>% arrange(desc(excluded))
 
     pops <<- unique(cbind(pops$longitude, pops$latitude, pops$excluded))
     out_png <<- snakemake@output$png

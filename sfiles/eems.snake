@@ -399,7 +399,8 @@ rule ggplot_eems:
         ZOOM=4,
         fancy=0
     output:
-        mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png"
+        mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
+        m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png"
     run:
         s =  "%s scripts/ggeems/run.R" % config['EXE']['R']
         s +=   " {wildcards.nruns} {wildcards.name} "
@@ -458,6 +459,9 @@ rule all_figs:
         "figures/pcvsgrid/{name}_pc1-10.png",
         "figures/pcvsgrid/{name}_pc1-2.png",
         "figures/pca/pc1d_{name}_pc1.png",
+	"figures/pca/loadings_{name}_pc20.png"
     output:
         "{name}.figs"
+    shell:
+        "touch {output}"
 

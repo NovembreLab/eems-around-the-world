@@ -14,6 +14,28 @@ include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
 
 
+subsets_paper = ['africa3', 
+    'medi3',
+    'europe3', 
+    'centralasia2',
+    'eastasia1',
+    'seasiaB'
+#    'southafrica2',
+#    "ncasia0",
+#    "northasia1",
+#    "ncasia1",
+]
+subsets0 = ['africa0', 
+    'medi0',
+    'europe0', 
+    'centralasia0',
+    'eastasia0',
+    'seasia0'
+#    'southafrica0'
+#    "ncasia0",
+#    "northasia0",
+#    "ncasia0",
+]
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
@@ -127,6 +149,16 @@ def snakemake_subsetter(input, output, name):
     meta_data[INDIV_META_COLS].to_csv(output.indiv_meta, index=False)
     create_polygon_file(polygon, output.polygon, add_outer=False)
 
+def subset_paper_fun(ext, prefix='', subset0=False):
+    def ss(wildcards):
+        #print('subset_all_fun called')
+        subsets = subsets_paper
+        if subset0: subsets=subsets0
+        infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
+            if not s == '__default__']
+        return infiles
+    return ss
+    
 
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):
