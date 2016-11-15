@@ -110,7 +110,7 @@ plot_median_error <- function(grid_error, nmax=50){
                                           fill=is_outlier), stat='identity') 
     }
     P <- P + theme_classic()
-    P <- P + xlab("") + ylab("Normalized Median Absolute Error")
+    P <- P + xlab("") + ylab("Root Mean Sqared Error")
 #        P <- P + ggtitle("Error by Population")
     P <- P + theme(axis.text.x = element_text(size = rel(1), angle = 90))
     P <- P + theme(legend.position=0)
@@ -147,6 +147,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     pop_ids <- get_fit_matrix_ids(i2)
     pop_labels_full<- get_fit_matrix_full(i2)
     label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="|")
+
 
     g <- read.output.graph(mcmcpath[1])
 
@@ -190,8 +191,13 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
         summarize(rmse=sqrt(mean(error^2)), mae=mean(abs(error)),
                   med=median(abs(error)))  %>%
         mutate(nrmse=rmse/mean(rmse)) 
-    grid_error <- grid_error %>% cbind(label=pop_labels, popId=pop_ids) %>% 
+
+
+    pop_labels <- paste(toupper(substr(pop_labels, 1, 2)), substr(pop_ids, 1,3), sep="-")
+    grid_error <- grid_error %>% cbind(label=pop_labels, popId=pop_labels) %>% 
         arrange(-nrmse)
+#    grid_error <- grid_error %>% cbind(label=pop_labels, popId=pop_ids) %>% 
+#        arrange(-nrmse)
 
     grid_error$label <- factor(grid_error$label, levels=unique(grid_error$label))
     grid_error <- grid_error %>% mutate(is_outlier=Var1 %in% outlier_pop$grid)
@@ -209,7 +215,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     ggsave(outnames[3], 
            plot_within(within))
     ggsave(outnames[4], 
-           plot_median_error(grid_error))
+           plot_median_error(grid_error), width=7, height=3)
     
     l <- get_pop_mats(mcmcpath, diffs, order, 
                       pop_display_file, indiv_label_file,
@@ -228,14 +234,14 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
 }
 
 
-if(F){
-    mcmcpath <- 'eemsout/9/world/'
-    diffs <- 'eems/world.diffs'
-    order <- 'eems/world.order'
-    pop_display <- '../../meta/EuropeAllData.pop_display'
-    indiv_label_file <- 'subset/world.indiv_meta'
+if(T){
+    mcmcpath <- 'eemsout/3/medi2/'
+    diffs <- 'eems/medi2.diffs'
+    order <- 'eems/medi2.order'
+    pop_display <- '../meta/pgs/gvar.pop_display'
+    indiv_label_file <- 'subset/medi2.indiv_meta'
     pop_display_file <- pop_display
-    pop_geo_file <- 'subset/world.pop_geo'
+    pop_geo_file <- 'subset/medi2.pop_geo'
 }
 
 get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_file,

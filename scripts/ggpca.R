@@ -6,6 +6,19 @@ source("scripts/load_pop_meta.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
 
+make_pve_plot <- function(pc, output){
+    pve_file <- sprintf("%s.pve", substr(pc, 1, nchar(pc)-3))
+    pve <- read.table(pve_file)
+    df <- data.frame(PC=1:nrow(pve), pve=pve$V1) 
+    G <- ggplot(df, aes(y=pve, x=PC)) + geom_bar(stat="identity")  +
+	    theme_classic() +
+	     theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
+              axis.title.x = element_blank(),
+              legend.position=0)
+    ggsave(output, G, width=7, height=3)
+
+}
+
 makePC <- function(data, n, col, field='abbrev'){
     f = sprintf('%s' , field)
     id <- sprintf('PC%d', n)
@@ -70,6 +83,7 @@ if(exists('snakemake')){
     pop_display <- snakemake@input[['pop_display']]
     pop_order <- snakemake@input[['pop_order']]
     output <- snakemake@output[['pc1']]
+    outputpve <- snakemake@output[['pve']]
     output2 <- snakemake@output[['pc2']]
     wdf <- snakemake@params[['wdf']]
     data <- load_pca_data(pc, fam, indiv_meta, pop_display)
@@ -107,6 +121,7 @@ if(exists('snakemake')){
                     scale_fill_manual(values=cv))
     }
     makePlots(data, col, output, output2, wdf)
+    make_pve_plot(pc, outputpve)
     save.image('.Rsnakemakedebug')
 } else if(length(args)>5){
     args <- commandArgs(T)
@@ -116,11 +131,13 @@ if(exists('snakemake')){
     pop_display <- args[4]
     output <- args[5]
     output2 <- args[6]
+    outputpve <- args[7]
     data <- load_pca_data(pc, fam, indiv_meta, pop_display)
     col_list <- data %>% group_by(abbrev) %>% summarize(first(color))
     col <- list(scale_color_manual(name=col_list$abbrev, values=col_list$color),
                 scale_fill_manual(name=col_list$abbrev, values=col_list$color))
     makePlots(data, col, output, output2, wdf)
+    make_pve_plot(pc, outputpve)
 }
 
 

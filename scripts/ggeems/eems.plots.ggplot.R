@@ -226,7 +226,7 @@ standardize.rates <- function(mcmcpath,dimns,longlat,is.mrates) {
     xseed <- voronoi$xseed
     yseed <- voronoi$yseed
     Zvals <- matrix(0,dimns$nxmrks,dimns$nymrks)
-    niter <- 100#length(tiles)
+    niter <- min(100, length(tiles))
     count <- 0
     for (i in 1:niter) {
         now.tiles <- tiles[i]
@@ -247,7 +247,7 @@ standardize.rates.var <- function(mcmcpath,dimns,Zmean,longlat,is.mrates) {
     xseed <- voronoi$xseed
     yseed <- voronoi$yseed
     Zvar <- matrix(0,dimns$nxmrks,dimns$nymrks)
-    niter <- 100#length(tiles)
+    niter <- min(100, length(tiles))
     count <- 0
     for (i in 1:niter) {
         now.tiles <- tiles[i]

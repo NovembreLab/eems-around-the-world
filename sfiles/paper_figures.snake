@@ -2,8 +2,8 @@ print("asdfa")
 
 rule subset_all_polygon_plot:
     input:
-        polys=subset_all_fun(prefix='subset/', ext='.polygon'),
-        pop_geo=subset_all_fun(prefix='subset/', ext='.pop_geo'),
+        polys=subset_paper_fun(prefix='subset/', ext='.polygon'),
+        pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=True),
         excluded='subset/excluded.txt',
         __script__="scripts/poly_overview.R"
     output:
@@ -12,17 +12,19 @@ rule subset_all_polygon_plot:
 
 rule table_panels:
     input:
-        indiv_meta=subset_all_fun(prefix='subset/', ext='.indiv_meta'),
-        bim=subset_all_fun(prefix='subset/', ext='.bim'),
+        indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
+        bim=subset_paper_fun(prefix='subset/', ext='.bim'),
         subset_file = "config/subset.json",
         __script__="scripts/table_panels.R"
+    params:
+        panels=subsets_paper
     output:
         csv="paper/table_panel.csv"
     script: "../" + input.__script__
 
 rule table_sources:
     input:
-        indiv_meta=subset_all_fun(prefix='subset/', ext='.indiv_meta'),
+        indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         __script__="scripts/table_sources.R"
     output:
         csv='paper/table_sources.csv'
@@ -30,10 +32,110 @@ rule table_sources:
 
 rule table_locations:
     input:
-        indiv_meta=subset_all_fun(prefix='subset/', ext='.indiv_meta'),
+        indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         pop_geo="../meta/pgs/gvar.pop_geo",
         pop_display ="../meta/pgs/gvar.pop_display",
         __script__="scripts/table_loc.R"
     output:
         csv='paper/table_loc.csv'
     script: "../" + input.__script__
+
+rule tex_blurb:
+    output: "blurbs/{name}.tex",
+    shell: "touch {output}"
+
+
+reportshell=r"""
+\documentclass[10pt,a4paper]{{article}}
+\usepackage[margin=0.5in]{{geometry}}
+
+\textwidth=18cm
+
+\usepackage[utf8]{{inputenc}}
+\usepackage{{amsmath}}
+\usepackage{{amsfonts}}
+\usepackage{{amssymb}}
+\usepackage{{graphicx}}
+\author{{Benjamin Peter}}
+\begin{{document}}
+
+\subsubsection*{{Results for {name}}}
+\input{{blurbs/{name}/results.tex}}
+\subsubsection*{{Discussion for {name}}}
+\input{{blurbs/{name}/discussion.tex}}
+\newpage
+%s
+\end{{document}}
+"""
+
+figuretex = r"""\begin{{figure}}
+\includegraphics[width=\textwidth]{{eemsout_gg/{name}_nruns3-mrates02.png}}
+\end{{figure}}
+
+
+\begin{{figure}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc1.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc3.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc5.png}}
+\end{{figure}}
+
+\begin{{figure}}
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc1.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc2.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc3.png}}\\
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc4.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc5.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/loadings_{name}_pc6.png}}
+\end{{figure}}
+
+\begin{{figure}}
+\includegraphics[width=0.3\textwidth]{{eemsout_gg/{name}_nruns3-scatter02.png}}
+\includegraphics[width=0.3\textwidth]{{eemsout_gg/{name}_nruns3-scatter01.png}}
+\includegraphics[width=.3\textwidth]{{figures/pcvsgrid/{name}_pc1-2.png}}\\
+\includegraphics[width=0.3\textwidth]{{eemsout_gg/{name}_nruns3-scatter04.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pve_{name}.png}}
+\includegraphics[width=.3\textwidth]{{figures/rsq/{name}_pc1-20.png}}
+\end{{figure}}
+
+\begin{{figure}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc1_wdf.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc3_wdf.png}}
+\includegraphics[width=.3\textwidth]{{figures/pca/pc2d_{name}_pc5_wdf.png}}
+\end{{figure}}
+"""
+rule report:
+    input:
+        "eemsout_gg/{name}_nruns3-scatter01.png",
+        "eemsout_gg/{name}_nruns3-scatter02.png",
+        "eemsout_gg/{name}_nruns3-scatter04.png",
+        "figures/pcvsgrid/{name}_pc1-2.png",
+        "figures/rsq/{name}_pc1-20.png",
+        "eemsout_gg/{name}_nruns3-mrates02.png",
+        "figures/pca/pc2d_{name}_pc1.png",
+        "figures/pca/pc2d_{name}_pc3.png",
+        "figures/pca/pc2d_{name}_pc5.png",
+        "figures/pca/pc2d_{name}_pc1_wdf.png",
+        "figures/pca/pc2d_{name}_pc3_wdf.png",
+        "figures/pca/pc2d_{name}_pc5_wdf.png",
+        "figures/pca/loadings_{name}_pc1.png",
+        "figures/pca/loadings_{name}_pc2.png",
+        "figures/pca/loadings_{name}_pc3.png",
+        "figures/pca/loadings_{name}_pc4.png",
+        "figures/pca/loadings_{name}_pc5.png",
+        "figures/pca/loadings_{name}_pc6.png",
+        "blurbs/{name}/discussion.tex",
+        "blurbs/{name}/results.tex",
+    output:
+        pdf="reports/report_{name}.pdf",
+        tex="reports/report_{name}.tex"
+    run:
+        rs = reportshell % figuretex
+        rs= rs.format(name=wildcards.name)
+        with open(output.tex, 'w') as f:
+            f.write(rs)
+        shell("pdflatex -aux-directory=reports -output-directory=reports  {output.tex}")
+        
+
+rule all_reports:
+    input:
+        reps=subset_paper_fun(prefix='reports/report_', ext='.pdf'),
