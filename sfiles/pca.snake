@@ -65,7 +65,8 @@ rule make_pc_plots_wdf:
             PC=range(1,21), name=['{name}']),
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png', 
             PC=range(1,21,2), name=['{name}']),
-        pve="figures/pca/pve_{name}_wdf.png"
+        pve="figures/pca/pve_{name}_wdf.png",
+        rdsname="figures/pca/pc2d_{name}_wdf.rds"
     script: "../" +input.__script__
     #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
     #    " {input.indiv_meta} {input.pop_display} "
@@ -87,6 +88,8 @@ rule make_pc_plots:
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}']),
         pve="figures/pca/pve_{name}.png",
+        rdsname="figures/pca/pc2d_{name}.rds",
+        rdspvename="figures/pca/pve_{name}.rds"
     script: "../" +input.__script__
 
 rule make_pc_plots_highlight_excluded:
@@ -147,6 +150,9 @@ rule pca_vs_gen:
     output:
         pcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.png',
         pcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.png',
-	rsq='figures/rsq/{name}_pc1-{npcs}.png'
+	rsq='figures/rsq/{name}_pc1-{npcs}.png',
+        ggpcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.rds',
+        ggpcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.rds',
+	ggrsq='figures/rsq/{name}_pc1-{npcs}.rds',
     script: "../" +input.__script__
 

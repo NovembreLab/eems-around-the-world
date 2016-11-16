@@ -7,6 +7,32 @@ library(Cairo)
 source("scripts/eems_plot/load_output.r")
 
 
+library(gridExtra)
+
+layout_mat=cbind(c(1,1), c(2,2), c(3,3), c(4,5))
+
+FOR_PAPER=T
+EXPLOR=!FOR_PAPER
+
+if(FOR_PAPER){
+    global_theme = theme(text=element_text(size=7), 
+                         plot.title=element_text(size=10, face="bold", hjust=-.3),
+                         axis.title=element_text(size=7),
+                         axis.text=element_text(size=rel(.8)),
+                         panel.margin=unit(c(0,rep(0, 3)), "inches"),
+                         plot.margin=unit(c(0,rep(0, 3)), "inches")#unit(rep(0, 4), "inches") +
+
+                         )
+    PT_SIZE=0.3
+    out_width=7/4
+    out_h1=7/4
+    out_h2=3.5/4
+} else {
+    global_theme = list()
+    PT_SIZE=1
+}
+
+
 get_grid_info <- function(mcmcpath, indiv_label_file, pop_display_file){
     pop_display <- read.csv(pop_display_file)
     o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
@@ -48,22 +74,26 @@ plot_within <- function(within){
         theme(legend.position=0) +
         xlab("Observed within-population dissimilarity") +
         ylab("Fitted within-population dissimilarity") +
-	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	labs(title = paste("r² = ",signif(summary(ll)$adj.r.squared, 3))) + 
 	theme(plot.title = element_text(size = rel(.5), hjust=0))
 }
 
 plot_pw <- function(df){
     ll <- lm(Bobs ~ Bhat, data=df)
+        r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(df) + geom_point(aes(y=Bobs, x=Bhat, 
-                  color=is_outlier))  +
+                  color=is_outlier), size=PT_SIZE)  +
         theme_classic() + 
         geom_abline(intercept=0) +
         theme(legend.position=0) +
         ylab("Genetic dissimilarity") +
-        xlab("Fitted dissimilarity") + cm +
-	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
-	theme(plot.title = element_text(size = rel(.5), hjust=0))
+        xlab("Fitted dissimilarity") + cm 
+    if(FOR_PAPER) P <- P+ 
+        labs(title = r2) + 
+        theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+        annotate("text", Inf, -Inf, label = r2, hjust = 1, vjust = -0.3, size=2)
+    return(P)
 }
 plot_vs_pc <- function(df, n=1){
     if(n==1){pclab <- 'Dissimilarity based on PC1'}
@@ -71,31 +101,35 @@ plot_vs_pc <- function(df, n=1){
 	pclab <- sprintf("Dissimilarity based on PC1-%s", n)
     }
     ll <- lm(Bobs ~ pcdist, data=df)
+        r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(df) + geom_point(aes(x=pcdist, y=Bobs, 
-                  color=is_outlier))  +
+                  color=is_outlier), size=PT_SIZE)  +
         theme_classic() + 
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
         theme(legend.position=0) +
         ylab("Genetic dissimilarity") +
         xlab(pclab) + cm + 
-	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
-	theme(plot.title = element_text(size = rel(.5), hjust=0))
+	labs(title = paste("r² = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+        annotate("text", Inf, -Inf, label = r2, hjust = 1, vjust = -0.3, size=2)
 }
 
 plot_vs_true <- function(df){
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     ll <- lm(Bobs ~ dist, data=df)
+        r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     P <- ggplot(df) + geom_point(aes(x=dist, y=Bobs, 
-                                  color=is_outlier))  +
+                                  color=is_outlier), size=PT_SIZE)  +
 #            geom_text(aes(x=dist, y=Bobs, label=label), data=df[df$is_outlier,]) + 
         theme_classic() + 
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
         theme(legend.position=0) + cm + 
         xlab("Geographic distance (km)") +
         ylab("Genetic dissimilarity") +
-	labs(title = paste("Adj R2 = ",signif(summary(ll)$adj.r.squared, 3))) + 
-	theme(plot.title = element_text(size = rel(.5), hjust=0))
+	labs(title = paste("r² = ",signif(summary(ll)$adj.r.squared, 3))) + 
+	theme(plot.title = element_text(size = rel(.5), hjust=0)) + 
+        annotate("text", Inf, -Inf, label = r2, hjust = 1, vjust = -0.3, size=2)
 }
 plot_median_error <- function(grid_error, nmax=50){
     grid_error <- grid_error %>% arrange(-nrmse)
@@ -110,10 +144,13 @@ plot_median_error <- function(grid_error, nmax=50){
                                           fill=is_outlier), stat='identity') 
     }
     P <- P + theme_classic()
-    P <- P + xlab("") + ylab("Root Mean Sqared Error")
+    P <- P + xlab("") + ylab("RMSE")
 #        P <- P + ggtitle("Error by Population")
     P <- P + theme(axis.text.x = element_text(size = rel(1), angle = 90))
-    P <- P + theme(legend.position=0)
+    P <- P + theme(legend.position=0) 
+    library(scales)
+    P <- P + scale_y_continuous(labels=function(i)sprintf("%.2f", i))
+#    P <- P + scale_y_continuous(labels=comma_format(digits=2))
     P <- P + cm
 }
 
@@ -156,7 +193,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     ones <- matrix(1,n_pops,1)                               
     Bobs <- JtDobsJ - (Wobs%*%t(ones) + ones%*%t(Wobs))/2   
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2   
-    dists <- rdist.earth(coords)
+    dists <- rdist.earth(coords, miles=F)
     dists <- melt(dists, value.name='dist')
     colnames(Bobs) <- NULL
     colnames(Bhat) <- NULL
@@ -210,6 +247,29 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     
     df <- df %>% filter(Var1 < Var2)
 
+    p1 <- plot_pw(df) + global_theme +  ggtitle( "B")  
+    p2 <- plot_vs_true(df) + global_theme+  ggtitle( "A") 
+    p4 <- plot_median_error(grid_error, nmax=10) + global_theme+  ggtitle( "D") + 
+        theme(axis.text.x=element_text(size=rel(.6)), plot.margin=unit(c(0,0,-0.4,0), "cm"))
+
+
+    panel=strsplit(mcmcpath, "/")[[1]][3]
+    panel <<- panel
+    RDS1 <- sprintf("figures/pcvsgrid/%s_pc1-2.rds", panel)
+    RDS2 <- sprintf("figures/rsq/%s_pc1-10.rds", panel)
+    out_grid <- sprintf("figures/paper/scatter_%s_nruns%d.png", panel, length(mcmcpath))
+
+    p5 <- readRDS(RDS1) + global_theme+  ggtitle( "C") 
+    p6 <- readRDS(RDS2) + global_theme+  ggtitle( "E")  + 
+        theme(plot.margin=unit(c(-0.5,0,0,0), "cm"), 
+         plot.title=element_text(size=10, face="bold", hjust=-.3, vjust=1.4))
+
+    DPI = 300
+    png(filename=out_grid, width=7*DPI, height=1.5*DPI, res=DPI)
+    grid.arrange(p2, p1, p5, p4, p6, ncol = 4, 
+                              layout_matrix = layout_mat)
+    dev.off()
+
     ggsave(outnames[1], plot_pw(df))
     ggsave(outnames[2], plot_vs_true(df))
     ggsave(outnames[3], 
@@ -235,13 +295,13 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
 
 
 if(T){
-    mcmcpath <- 'eemsout/3/medi2/'
-    diffs <- 'eems/medi2.diffs'
-    order <- 'eems/medi2.order'
+    mcmcpath <- 'eemsout/3/medi4/'
+    diffs <- 'eems/medi4.diffs'
+    order <- 'eems/medi4.order'
     pop_display <- '../meta/pgs/gvar.pop_display'
-    indiv_label_file <- 'subset/medi2.indiv_meta'
+    indiv_label_file <- 'subset/medi4.indiv_meta'
     pop_display_file <- pop_display
-    pop_geo_file <- 'subset/medi2.pop_geo'
+    pop_geo_file <- 'subset/medi4.pop_geo'
 }
 
 get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_file,
@@ -251,7 +311,7 @@ get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_f
     odf <- data.frame(sampleId=ord[,1], v=1:nrow(ord))
 
     pop_geo <- read.csv(pop_geo_file)
-    dmat <- rdist.earth(pop_geo[,c('longitude', 'latitude')]) 
+    dmat <- rdist.earth(pop_geo[,c('longitude', 'latitude')], miles=F) 
     rownames(dmat) <- pop_geo$popId
     colnames(dmat) <- pop_geo$popId
     d3 <- melt(dmat, value.name="dist")
