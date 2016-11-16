@@ -15,12 +15,13 @@ include: 'sfiles/fst.snake'
 
 
 subsets_paper = ['africa3', 
-    'medi3',
+    'medi4',
     'europe3', 
-    'centralasia2',
-    'eastasia1',
-    'seasiaB'
-#    'southafrica2',
+    'centralasia3',
+    'eastasia2',
+    'seasiaB',
+    'southafrica2',
+    'india0'
 #    "ncasia0",
 #    "northasia1",
 #    "ncasia1",
@@ -31,11 +32,18 @@ subsets0 = ['africa0',
     'centralasia0',
     'eastasia0',
     'seasia0'
+    'southafrica2',
+    'india0'
 #    'southafrica0'
 #    "ncasia0",
 #    "northasia0",
 #    "ncasia0",
 ]
+
+#subsets_paper.extend(subsets0)
+#with open("ss_paper.txt", 'w') as f:
+#    for s in subsets_paper:
+#        f.write("%s\n" % s)
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']

@@ -7,15 +7,19 @@ library(dplyr)
 load_snakemake <- function(){
     poly_files <<- snakemake@input$polys
     pop_geo_files <<- snakemake@input$pop_geo
+    pop_display_file <<- snakemake@input$pop_display
     excluded <<- snakemake@input$excluded
 
     ex <- read.table(excluded)[,1]
     e2 <- data.frame(popId=ex, excluded=T)
 
     polys <<- lapply(poly_files, read.table)
+    disp <<- read.csv(pop_display_file, as.is=T)
     pop_geo <<- lapply(pop_geo_files, read.csv)
 
     pops <- do.call(rbind, pop_geo)
+
+    pops <- pops %>% left_join(disp)
 
 #    pops <- read.csv("/data/meta/pgs/gvar.pop_geo")
     pops <- pops %>% left_join(e2) 
@@ -23,7 +27,8 @@ load_snakemake <- function(){
 
     pops <- pops %>% arrange(desc(excluded))
 
-    pops <<- unique(cbind(pops$longitude, pops$latitude, pops$excluded))
+    pops <<- unique(cbind(pops$longitude, pops$latitude, pops$excluded, pops$color))
+    print(names(pops))
     out_png <<- snakemake@output$png
 }
 
@@ -44,8 +49,10 @@ plot_polys <- function(){
     m <- map(add=T, col='black')
     m$x <- m$x+360
     lines(m, col='black')
-    cv <- c('black', 'red')[pops[,3]+1]
-    points(pops[,1:2], asp=1, xlab="", ylab="", axes=F, pch=16, col=cv)
+    cv <- pops[,4]
+    cv[pops[,3] == T] <- 'red'
+    points(pops[,1:2], cex=1.5, asp=1, xlab="", ylab="", axes=F, pch=16, col=cv)
+    points(pops[,1:2], cex=1.5, pch=1, col='black')
     dev.off()
 }
 

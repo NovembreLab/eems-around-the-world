@@ -26,7 +26,7 @@ get_err_mat <- function(mcmcpath){
     
     demes <- as.matrix(read.table(sprintf('%s/demes.txt',path)),header=F)
     obs.demes <- demes[1:n_pops,]
-    dist.geo <- rdist.earth(obs.demes)
+    dist.geo <- rdist.earth(obs.demes, miles=F)
 
     err <- melt(dist.geo, value.name="dist") %>%
 	left_join( melt(JtDobsJ, value.name="Bobs") ) %>%
@@ -104,6 +104,9 @@ if(exists('snakemake')){
     output2 <- snakemake@output[['pcvsgrid']]
     out_rsq <- snakemake@output$rsq
 
+    rds_names <- c(snakemake@output$ggpcvsdist,
+		   snakemake@output$ggpcvsgrid,
+		   snakemake@output$ggrsq)
     save.image('.Rsnakemakedebug')
 
     data <- load_pca_data(pc, fam, indiv_meta, pop_display)
@@ -152,6 +155,7 @@ if(exists('snakemake')){
 
     pcplot <- plot_vs_pc(data.pop, n=npcs)
     ggsave(output, pcplot)
+    saveRDS(pcplot, file=rds_names[1])
 
     pcd.grid <- get_pc_dist_diagnorm(data, npcs, annotation="grid")
     err.grid <- get_err_mat(mcmcpath)
@@ -162,10 +166,10 @@ if(exists('snakemake')){
     #    summarize(Bobs=mean(Bobs), pcdist=mean(pcdist), is_outlier=any(is_outlier))
     pcplot <- plot_vs_pc(data.grid, n=npcs)
     ggsave(output2, pcplot)
+    saveRDS(pcplot, file=rds_names[2])
 
 
     save.image('.Rsnakemakedebug')
-    print("PCGIR")
     pcd.all.grid <- lapply(1:npcs, function(i){
                        get_pc_dist_diagnorm(data, i, annotation="grid");})
     pcd.all.grid <- join_all(pcd.all.grid, by=c("Var1", "Var2"), type='inner')
@@ -181,13 +185,15 @@ if(exists('snakemake')){
     pc_str <- sprintf("%s", 1:npcs)
     pc_str <- factor(pc_str, levels=pc_str)
     df <- data.frame(x=pc_str, y=grid.rsqs)
+    df$intercept <- eems.rsq
     P <- ggplot(df) + geom_bar(aes(x=x, y=y), stat="identity", fill='lightgray') +       
-        geom_hline(aes(yintercept=eems.rsq), color='red') +
+        geom_hline(aes(yintercept=intercept), color='red') +
         theme_classic() + 
         xlab("Number of PCs") +
-        ylab("Correlation between model and data")
+        ylab("r² fit") + ylim(0,1)
 #         theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1))
     ggsave(out_rsq, P, width=7, height=3)
+    saveRDS(P, file=rds_names[3])
 
 
 } 

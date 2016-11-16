@@ -84,8 +84,8 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     a=a+ scale_y_continuous("Latitude",limits = bbox[c('bottom', 'top')], 
                             expand = c(0, 0))                
                                                                                         
-    a=a+theme(axis.text.x=element_text(size=25),axis.title.x=element_text(size=25))         
-    a=a+theme(axis.text.y=element_text(size=25),axis.title.y=element_text(size=25))         
+    a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
+    a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
 
     require(maps)
     m = map_data("world") %>% filter(region!='Antarctica')
