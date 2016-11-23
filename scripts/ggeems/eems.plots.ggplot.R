@@ -74,6 +74,9 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     df <- df[df$filter,]
     df$Zmean <- df$Zmean - mean(df$Zmean)
 
+    df$Zmean[df$Zmean > 2] <- 2
+    df$Zmean[df$Zmean < (-2)] <- -2
+
     df$alpha <- cut(df$Zmean, 101)
     alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), values=alpha, guide='none')
 

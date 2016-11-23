@@ -458,7 +458,7 @@ rule ggeems_scatter_hlex:
 
         shell(s)
 
-rule all_figs:
+rule panel_figs:
     input:
         "eemsout_gg/{name}_nruns4-mrates01.png",
         "eemsout/{name}_nruns4-mrates01.png",
@@ -471,4 +471,9 @@ rule all_figs:
         "{name}.figs"
     shell:
         "touch {output}"
+
+rule all_figs:
+    input:
+        subset_paper_fun(prefix="", ext=".figs")
+
 

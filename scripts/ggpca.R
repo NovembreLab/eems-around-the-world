@@ -34,7 +34,7 @@ makePC <- function(data, n, col, field='abbrev'){
     G
 }
 
-make2PC <- function(data, i, j, col, wdf=F, small=F){
+make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL){
     size <- ifelse(small, 1, 4)
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
@@ -47,13 +47,65 @@ make2PC <- function(data, i, j, col, wdf=F, small=F){
             geom_text(size=size) + col
     }
     else {
-        g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
-            geom_text(size=size) + col
+        g <- ggplot(data2,aes_string(id1, id2,  label='abbrev'), color='lightgray') +
+        #g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
+            geom_text(size=size, color='lightgray') + col
         g <- g + theme_classic()
         g <- g + theme(legend.position='none')
     }
 
     g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
+
+    if(for_paper){
+        medians <- data %>% group_by(popId) %>% 
+            summarize(MX=median(PC1), MY=median(PC2), abbrev=first(abbrev),
+                      latitude=median(latitude), longitude=median(longitude))
+        print(head(medians))
+        g <- g + geom_point(data=medians, aes(x=MX, y=MY, col=abbrev), size=3) +
+            geom_text(data=medians, aes(x=MX, y=MY), col='white', size=3/4*1.5) 
+	#g <- g + geom_text(data=medians, aes(x=MX, y=MY, col=abbrev), size=2) 
+
+
+        if(!is.null(maptoken)){
+        TOL=3
+        require(maps)
+        m = map_data("world") %>% filter(region!='Antarctica')
+        m$long[m$long< -30] <- m$long[m$long< -30] +360   
+        lower_boundary <- m$lat < -38
+        m$lat[m$lat< -38] <- -38
+
+        m$lat <- pmin(m$lat, TOL+max(data$latitude))
+        m$lat <- pmax(m$lat, -TOL+min(data$latitude))
+        m$long <- pmin(m$long, TOL+max(data$longitude))
+        m$long <- pmax(m$long, -TOL+min(data$longitude))
+        map_bit <- ggplot() +
+            geom_path(data=m, aes(x=long, y=lat, group=group), size=0.3 ,color='#222222dd') +
+            geom_polygon(data=m, aes(x=long, y=lat, group=group), fill='#eeeeee') +
+            geom_point(data=medians, aes(x=longitude, y=latitude,
+                                            color=abbrev), size=1) + 
+            col +
+            coord_fixed() + 
+            xlim(range(data$longitude)+ c(-TOL, TOL)) + 
+            ylim(range(data$latitude) + c(-TOL, TOL)) +
+            scale_x_continuous(expand = c(-.02, -.02))+
+            scale_y_continuous(expand = c(-.02, -.02)) +
+            theme_classic() +
+            theme(axis.line=element_blank(),axis.text.x=element_blank(),
+                axis.text.y=element_blank(),axis.ticks=element_blank(),
+                axis.title.x=element_blank(),
+                axis.title.y=element_blank(),legend.position="none",
+                panel.background=element_blank(),
+                panel.border=element_blank(),
+                panel.grid.major=element_blank(),
+                panel.grid.minor=element_blank(),
+                plot.background=element_blank()) +
+            theme(legend.position='none')
+        ggsave(sprintf('figures/paper/map_%s.png', maptoken), map_bit, width=1.5, height=1.5, dpi=300)
+        }
+    }
+
+
+    g
 }
 
 
@@ -62,6 +114,10 @@ means <- function(data){
 }
 
 makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
+    token=strsplit(strsplit(output, "/")[[1]][3], "_")[[1]][2]
+    p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token)
+    saveRDS(p_summary, rdsname)
+
     nmax <- sum(substr(names(data),1,2) == 'PC') 
     p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col, wdf=wdf))
@@ -87,6 +143,7 @@ if(exists('snakemake')){
     indiv_meta <- snakemake@input[['indiv_meta']]
     pop_display <- snakemake@input[['pop_display']]
     pop_order <- snakemake@input[['pop_order']]
+    pop_geo <- snakemake@input[['pop_geo']]
     output <- snakemake@output[['pc1']]
     outputpve <- snakemake@output[['pve']]
     output2 <- snakemake@output[['pc2']]
@@ -94,6 +151,19 @@ if(exists('snakemake')){
     rdsname <- snakemake@output$rdsname
     rdspvename <- snakemake@output$rdspvename
     data <- load_pca_data(pc, fam, indiv_meta, pop_display)
+
+    # for paper color
+    data <- data %>% left_join(read.csv(pop_geo))
+
+    #2 lines
+    require(stringr)
+    data$abbrev <- str_replace(data$abbrev, "-" ,"\n")
+
+
+    source("scripts/assign_color_by_coord.R")
+    data$color <- get_cols_wrap(data)
+
+
     data <- data %>% select(-order) %>% left_join(read.csv(pop_order))
     save.image("TMP.RDATA")
     if(wdf==T){
@@ -146,6 +216,7 @@ if(exists('snakemake')){
                 scale_fill_manual(name=col_list$abbrev, values=col_list$color))
     makePlots(data, col, output, output2, wdf)
     make_pve_plot(pc, outputpve, rdspvename)
+    save.image('.Rsnakemakedebug')
 }
 
 
