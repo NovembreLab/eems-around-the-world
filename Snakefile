@@ -5,7 +5,6 @@ configfile: "config/data.json"
 
 include: 'sfiles/utils.snake'
 include: 'sfiles/treemix.snake'
-include: 'sfiles/eems.snake'
 include: 'sfiles/pong.snake'
 include: 'sfiles/pca.snake'
 include: 'sfiles/spacemix.snake'
@@ -17,11 +16,19 @@ include: 'sfiles/fst.snake'
 subsets_paper = ['africa3', 
     'medi4',
     'europe3', 
-    'centralasia3',
+    'centralasia1',
     'eastasia2',
+    'eastasia1',
     'seasiaB',
     'southafrica2',
-    'india0'
+    'india1',
+
+    'ncasia3',
+    'medi5',
+    'medi6',
+    'africa4',
+    'africa5',
+    'centralasia2'
 #    "ncasia0",
 #    "northasia1",
 #    "ncasia1",
@@ -167,6 +174,8 @@ def subset_paper_fun(ext, prefix='', subset0=False):
         return infiles
     return ss
     
+include: 'sfiles/eems.snake'
+include: 'sfiles/eems0.snake'
 
 def subset_all_fun(ext, prefix=''):
     def ss(wildcards):

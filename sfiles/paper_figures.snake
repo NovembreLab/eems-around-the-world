@@ -1,4 +1,3 @@
-print("asdfa")
 
 rule subset_all_polygon_plot:
     input:
@@ -146,12 +145,12 @@ rule pca_fig:
         subset_paper_fun(prefix="figures/pca/pc2d_", ext=".rds"),
         __script__="scripts/pca_panels.R",
     output:
-        "pca_test.png"
+        "figures/paper/pca2.png"
     script: "../" + input.__script__
 
 
 rule paper_fig:
     input: 
-        subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns3.png"),
+        subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns4.png"),
 #        subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns3.png", subset0=True )
 	

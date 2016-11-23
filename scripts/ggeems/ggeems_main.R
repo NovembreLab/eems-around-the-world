@@ -97,13 +97,13 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
         a = a + geom_polygon(data=m, aes(x=long, y=lat, group=group),  color='black',
                              fill='#dddddd')
         a = add_eems_overlay(a, mcmcpath, is.mrates)
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
         a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
         a = a + theme_classic()
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
         a = add_eems_overlay(a, mcmcpath, is.mrates)
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
     }
 
     #a=a+gg_add_samples(mcmcpath)
@@ -119,7 +119,8 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
     pm <- pm[!is.na(pm$longitude),]                                          
     pm$longitude[pm$longitude < -30] <- pm$longitude[pm$longitude< -30]+360  
 
-    map + geom_text(data=pm, aes(label=abbrev, x=longitude, y=latitude)) 
+    map + geom_text(data=pm, aes(label=abbrev, x=longitude, y=latitude),
+		    color='#222222dd') 
 }
 
 
@@ -282,14 +283,14 @@ ggadd.graph <- function(g){
     ystart <- g$demes[g$edges[,1],2]
     yend <- g$demes[g$edges[,2],2]
     grid <- data.frame(xstart, xend, ystart, yend)
-    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee80')
+    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee50')
 }
 ggadd.pts <- function(g){
     tbl <- table(g$ipmap)
     ind <- as.numeric(names(tbl))
     sizes <- as.vector(tbl)
     df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
-    geom_point(aes(x=x, y=y, size=sizes), data=df)
+    geom_point(aes(x=x, y=y, size=sizes), data=df, color='#222222dd')
 }
 
 read.edges <- function(mcmcpath) {
