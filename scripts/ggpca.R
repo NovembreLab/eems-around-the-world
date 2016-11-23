@@ -74,7 +74,8 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
     for(i in 1:10){
         ggsave(output2[i], p2[[i]], width=6, height=6)
     }
-    p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T)
+    p_summary <- list(make2PC(data, 1, 2, col, wdf=wdf, small=T),
+    	make2PC(data, 3, 4, col, wdf=wdf, small=T))
     saveRDS(p_summary, rdsname)
 }
 

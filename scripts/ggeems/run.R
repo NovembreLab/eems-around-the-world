@@ -1,5 +1,9 @@
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/ggeems_main.R")
+
+W=11 * 1.5
+H=8 * 1.5 
+
 args <- commandArgs(T)
 nruns <- as.integer(args[1])
 name <- args[2]
@@ -20,25 +24,26 @@ g <- read.output.graph(mcmcpath[1])
 m = make_map(mcmcpath, ZOOM, is.mrates=T, fancy_proj=fancy)
 m2 = gg_add_samples_true(m, pop_geo, pop_display)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.png", name, nruns), m2,
-       width=11, height=8)
+       width=W, height=H)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.pdf", name, nruns), m2,
-       width=11, height=8)
+       width=W, height=H)
 m3 = m + ggadd.graph(g) + ggadd.pts(g)
+saveRDS(m3, sprintf("eemsout_gg/%s_nruns%s-mrates02.rds", name, nruns))
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates02.png", name, nruns), m3,
-       width=11, height=8)
+       width=W, height=H)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates02.pdf", name, nruns), m3,
-       width=11, height=8)
+       width=W, height=H)
 
 
 m = make_map(mcmcpath, ZOOM, is.mrates=F, fancy_proj=fancy)
 m2 = gg_add_samples_true(m, pop_geo, pop_display)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates01.png", name, nruns), m2,
-       width=11, height=8)
+       width=W, height=H)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates01.pdf", name, nruns), m2,
-       width=11, height=8)
+       width=W, height=H)
 m3 = m + ggadd.graph(g) + ggadd.pts(g)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates02.png", name, nruns), m3,
-       width=11, height=8)
+       width=W, height=H)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates02.pdf", name, nruns), m3,
-       width=11, height=8)
+       width=W, height=H)
 

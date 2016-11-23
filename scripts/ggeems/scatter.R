@@ -253,6 +253,7 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
         theme(axis.text.x=element_text(size=rel(.6)), plot.margin=unit(c(0,0,-0.4,0), "cm"))
 
 
+
     panel=strsplit(mcmcpath, "/")[[1]][3]
     panel <<- panel
     RDS1 <- sprintf("figures/pcvsgrid/%s_pc1-2.rds", panel)
@@ -263,6 +264,8 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     p6 <- readRDS(RDS2) + global_theme+  ggtitle( "E")  + 
         theme(plot.margin=unit(c(-0.5,0,0,0), "cm"), 
          plot.title=element_text(size=10, face="bold", hjust=-.3, vjust=1.4))
+
+    saveRDS(list(p2,p1, p5, p4, p6), 'scatterplots.rds')
 
     DPI = 300
     png(filename=out_grid, width=7*DPI, height=1.5*DPI, res=DPI)
