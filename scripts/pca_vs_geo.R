@@ -154,7 +154,7 @@ if(exists('snakemake')){
 
 
     pcplot <- plot_vs_pc(data.pop, n=npcs)
-    ggsave(output, pcplot)
+    ggsave(output, pcplot, width=3, height=3)
     saveRDS(pcplot, file=rds_names[1])
 
     pcd.grid <- get_pc_dist_diagnorm(data, npcs, annotation="grid")
@@ -165,7 +165,7 @@ if(exists('snakemake')){
     #data2 <- data %>% group_by(grid.x, grid.y) %>% 
     #    summarize(Bobs=mean(Bobs), pcdist=mean(pcdist), is_outlier=any(is_outlier))
     pcplot <- plot_vs_pc(data.grid, n=npcs)
-    ggsave(output2, pcplot)
+    ggsave(output2, pcplot, width=3, height=3)
     saveRDS(pcplot, file=rds_names[2])
 
 

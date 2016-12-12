@@ -273,8 +273,8 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
                               layout_matrix = layout_mat)
     dev.off()
 
-    ggsave(outnames[1], plot_pw(df))
-    ggsave(outnames[2], plot_vs_true(df))
+    ggsave(outnames[1], plot_pw(df), width=3, height=3)
+    ggsave(outnames[2], plot_vs_true(df), width=3, height=3)
     ggsave(outnames[3], 
            plot_within(within))
     ggsave(outnames[4], 
