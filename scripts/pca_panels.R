@@ -11,7 +11,7 @@ global_theme = theme(text=element_text(size=7),
 panels<-c("africa3",
 "medi4",
 "europe3",
-"centralasia3",
+"centralasia2",
 "eastasia2",
 "seasiaB")
 
@@ -41,7 +41,7 @@ layout_matrix <- do.call(rbind, layout_list)
 fnames <-  sprintf("figures/pca/pc2d_%s.rds", panels)
 fnames_pve <-  sprintf("figures/pca/pve_%s.rds", panels)
 plots <- lapply(fnames, readRDS)
-plots <- lapply(1:length(plots), function(i)plots[[i]]+ggtitle(titles[i]) + global_theme)
+plots <- lapply(1:length(plots), function(i)plots[[i]][[1]]+ggtitle(titles[i]) + global_theme)
 pve <- lapply(fnames_pve, readRDS)
 pve <- lapply(1:length(pve), function(i)pve[[i]]+ggtitle(titles[i+6]) + 
               global_theme + xlab("PC") + 

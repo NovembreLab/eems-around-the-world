@@ -477,3 +477,23 @@ rule all_figs:
         subset_paper_fun(prefix="", ext=".figs")
 
 
+rule ggeems_map:
+    input:
+        eemsin,
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo='subset/{name}.pop_geo',
+        indiv_label='subset/{name}.indiv_meta'
+    params:
+        RES=200,
+        ZOOM=4,
+        fancy=0
+    output:
+        mplot="eemsout_gg/{name}_nruns{nruns}-map01.png",
+        m2plot="eemsout_gg/{name}_nruns{nruns}-map02.png"
+    run:
+        s =  "%s scripts/ggeems/run_just_map.R" % config['EXE']['R']
+        s +=   " {wildcards.nruns} {wildcards.name} "
+        s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
+        s += " {params.RES} {params.ZOOM} {params.fancy}"
+        shell(s)
+
