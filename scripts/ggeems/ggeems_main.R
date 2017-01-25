@@ -59,7 +59,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
-    bbox['top'] <- pmin(bbox['top'], 80)
+    bbox['top'] <- pmin(bbox['top'], 83)
 
     if(!fancy_proj){
 	library(ggmapcustom)
@@ -82,7 +82,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     a=a+scale_x_continuous("Longitude",limits = bbox[c('left', 'right')],
                            expand = c(0, 0))               
     a=a+ scale_y_continuous("Latitude",limits = bbox[c('bottom', 'top')], 
-                            expand = c(0, 0))                
+                            expand = c(0, .50))                
                                                                                         
     a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
     a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
@@ -99,6 +99,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
         a = add_eems_overlay(a, mcmcpath, is.mrates)
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
         a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
+	a = a + ylim(-38, 80)
         a = a + theme_classic()
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
