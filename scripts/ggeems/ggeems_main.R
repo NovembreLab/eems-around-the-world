@@ -55,7 +55,7 @@ shifted_map <- function(bbox, zoom=6){
 }
 
 
-make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
+make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F){
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
@@ -96,13 +96,17 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     if(fancy_proj){
         a = a + geom_polygon(data=m, aes(x=long, y=lat, group=group),  color='black',
                              fill='#dddddd')
-        a = add_eems_overlay(a, mcmcpath, is.mrates)
+    	if(!just_map){
+	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	}
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
         a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
         a = a + theme_classic()
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
-        a = add_eems_overlay(a, mcmcpath, is.mrates)
+    	if(!just_map){
+	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	}
         a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
     }
 
@@ -277,20 +281,20 @@ read.output.graph <- function(path) {
     return(list(ipmap=ipmap,demes=demes,edges=edges,alpha=alpha,sizes=sizes,outer=outer))
 }
 
-ggadd.graph <- function(g){
+ggadd.graph <- function(g, color="#eeeeee50"){
     xstart <- g$demes[g$edges[,1],1]
     xend <- g$demes[g$edges[,2],1]
     ystart <- g$demes[g$edges[,1],2]
     yend <- g$demes[g$edges[,2],2]
     grid <- data.frame(xstart, xend, ystart, yend)
-    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color='#eeeeee50')
+    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color=color)
 }
-ggadd.pts <- function(g){
+ggadd.pts <- function(g, color="#222222dd"){
     tbl <- table(g$ipmap)
     ind <- as.numeric(names(tbl))
     sizes <- as.vector(tbl)
     df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
-    geom_point(aes(x=x, y=y, size=sizes), data=df, color='#222222dd')
+    geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
 }
 
 read.edges <- function(mcmcpath) {

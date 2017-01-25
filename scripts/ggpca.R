@@ -47,9 +47,10 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
             geom_text(size=size) + col
     }
     else {
-        g <- ggplot(data2,aes_string(id1, id2,  label='abbrev'), color='lightgray') +
-        #g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
-            geom_text(size=size, color='lightgray') + col
+#        g <- ggplot(data2,aes_string(id1, id2,  label='abbrev'), color='lightgray') +
+#            geom_text(size=size, color='lightgray') + col
+        g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
+            geom_text(size=size, alpha=0.3) + col
         g <- g + theme_classic()
         g <- g + theme(legend.position='none')
     }
@@ -61,8 +62,8 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
             summarize(MX=median(PC1), MY=median(PC2), abbrev=first(abbrev),
                       latitude=median(latitude), longitude=median(longitude))
         print(head(medians))
-        g <- g + geom_point(data=medians, aes(x=MX, y=MY, col=abbrev), size=3) +
-            geom_text(data=medians, aes(x=MX, y=MY), col='white', size=3/4*1.5) 
+        g <- g + geom_point(data=medians, aes(x=MX, y=MY, col=abbrev), size=3*2) +
+            geom_text(data=medians, aes(x=MX, y=MY), col='white', size=3/4*1.5*1.2 ) 
 	#g <- g + geom_text(data=medians, aes(x=MX, y=MY, col=abbrev), size=2) 
 
 
@@ -115,8 +116,8 @@ means <- function(data){
 
 makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
     token=strsplit(strsplit(output, "/")[[1]][3], "_")[[1]][2]
-    p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token)
-    saveRDS(p_summary, rdsname)
+    #p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token)
+    #saveRDS(p_summary, rdsname)
 
     nmax <- sum(substr(names(data),1,2) == 'PC') 
     p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
@@ -128,9 +129,9 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
         ggsave(output1[i], p1[[i]], width=7, height=3)
     }
     for(i in 1:10){
-        ggsave(output2[i], p2[[i]], width=6, height=6)
+        ggsave(output2[i], p2[[i]], width=3, height=3)
     }
-    p_summary <- list(make2PC(data, 1, 2, col, wdf=wdf, small=T),
+    p_summary <- list(make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token),
     	make2PC(data, 3, 4, col, wdf=wdf, small=T))
     saveRDS(p_summary, rdsname)
 }
