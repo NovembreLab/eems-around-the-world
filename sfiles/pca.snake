@@ -92,6 +92,8 @@ rule make_pc_plots:
             PC=range(1,21,2), name=['{name}']),
         pve="figures/pca/pve_{name}.png",
         rdsname="figures/pca/pc2d_{name}.rds",
+        map_bit="figures/paper/map_{name}.rds",
+        map_bit_png="figures/paper/map_{name}.png",
         rdspvename="figures/pca/pve_{name}.rds"
     script: "../" +input.__script__
 

@@ -1,5 +1,6 @@
 #library(rgdal)
 #library(jpeg)
+require(maps)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 
@@ -87,7 +88,6 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F){
     a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
     a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
 
-    require(maps)
     m = map_data("world") %>% filter(region!='Antarctica')
     m$long[m$long< -30] <- m$long[m$long< -30] +360   
     lower_boundary <- m$lat < -38

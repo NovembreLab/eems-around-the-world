@@ -59,15 +59,15 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
 
     if(for_paper){
         medians <- data %>% group_by(popId) %>% 
-            summarize(M1=median(PC1), M3=median(PC3),
+            summarize(M1=median(PC1), M2=median(PC2),
 		      M3=median(PC3), M4=median(PC4),abbrev=first(abbrev),
                       latitude=median(latitude), longitude=median(longitude))
     	if(id1=="PC1"){
-        g <- g + geom_point(data=medians, aes(x=M1, y=M2, col=abbrev), size=3*2) +
+        g <- g + geom_point(data=medians, aes(x=M1, y=M2, col=abbrev), size=3) +
             geom_text(data=medians, aes(x=M1, y=M2), col='white', size=3/4*1.5*1.2 ) 
 	} else {
-        g <- g + geom_point(data=medians, aes(x=M3, y=M4, col=abbrev), size=3*2) +
-            geom_text(data=medians, aes(x=M4, y=M4), col='white', size=3/4*1.5*1.2 ) 
+        g <- g + geom_point(data=medians, aes(x=M3, y=M4, col=abbrev), size=3) +
+            geom_text(data=medians, aes(x=M3, y=M4), col='white', size=3/4*1.5*1.2 ) 
 	}
 
 
@@ -106,7 +106,7 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
                 plot.background=element_blank()) +
             theme(legend.position='none')
         ggsave(sprintf('figures/paper/map_%s.png', maptoken), map_bit, width=1.5, height=1.5, dpi=300)
-        saveRDS(sprintf('figures/paper/map_%s.rds', maptoken), map_bit)
+        saveRDS(map_bit, sprintf('figures/paper/map_%s.rds', maptoken))
         }
     }
 
