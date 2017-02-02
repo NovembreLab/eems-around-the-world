@@ -106,6 +106,7 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
                 plot.background=element_blank()) +
             theme(legend.position='none')
         ggsave(sprintf('figures/paper/map_%s.png', maptoken), map_bit, width=1.5, height=1.5, dpi=300)
+        saveRDS(sprintf('figures/paper/map_%s.rds', maptoken), map_bit)
         }
     }
 
@@ -119,7 +120,7 @@ means <- function(data){
 }
 
 makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
-    token=strsplit(strsplit(output, "/")[[1]][3], "_")[[1]][2]
+    token=strsplit(strsplit(output1, "/")[[1]][3], "_")[[1]][2]
     #p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token)
     #saveRDS(p_summary, rdsname)
 
