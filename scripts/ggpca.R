@@ -59,12 +59,16 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
 
     if(for_paper){
         medians <- data %>% group_by(popId) %>% 
-            summarize(MX=median(PC1), MY=median(PC2), abbrev=first(abbrev),
+            summarize(M1=median(PC1), M3=median(PC3),
+		      M3=median(PC3), M4=median(PC4),abbrev=first(abbrev),
                       latitude=median(latitude), longitude=median(longitude))
-        print(head(medians))
-        g <- g + geom_point(data=medians, aes(x=MX, y=MY, col=abbrev), size=3*2) +
-            geom_text(data=medians, aes(x=MX, y=MY), col='white', size=3/4*1.5*1.2 ) 
-	#g <- g + geom_text(data=medians, aes(x=MX, y=MY, col=abbrev), size=2) 
+    	if(id1=="PC1"){
+        g <- g + geom_point(data=medians, aes(x=M1, y=M2, col=abbrev), size=3*2) +
+            geom_text(data=medians, aes(x=M1, y=M2), col='white', size=3/4*1.5*1.2 ) 
+	} else {
+        g <- g + geom_point(data=medians, aes(x=M3, y=M4, col=abbrev), size=3*2) +
+            geom_text(data=medians, aes(x=M4, y=M4), col='white', size=3/4*1.5*1.2 ) 
+	}
 
 
         if(!is.null(maptoken)){
@@ -132,7 +136,7 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
         ggsave(output2[i], p2[[i]], width=3, height=3)
     }
     p_summary <- list(make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token),
-    	make2PC(data, 3, 4, col, wdf=wdf, small=T))
+	make2PC(data, 3, 4, col, wdf=wdf, small=T, for_paper=T, maptoken=token))
     saveRDS(p_summary, rdsname)
 }
 

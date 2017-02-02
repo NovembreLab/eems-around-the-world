@@ -69,5 +69,5 @@ rule sample_plot:
     output:
         plot="subset/{name}_sample_map.pdf"
     shell:
-        "/data/tools/R_latest/bin/Rscript scripts/sample_plot.R {wildcards.name}"
+        "Rscript scripts/sample_plot.R {wildcards.name}"
 
