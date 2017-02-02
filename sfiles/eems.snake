@@ -416,8 +416,8 @@ rule ggeems_scatter:
         indiv_label='subset/{name}.indiv_meta',
         diffs='eems/{name}.diffs',
         order='eems/{name}.order',
-	ggpcvsgrid='figures/pcvsgrid/{name}_pc1-2.rds',
-	ggrsq='figures/rsq/{name}_pc1-10.rds',
+        ggpcvsgrid='figures/pcvsgrid/{name}_pc1-2.rds',
+        ggrsq='figures/rsq/{name}_pc1-10.rds',
         script='scripts/ggeems/scatter.R'
     output:
         p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter01.png",
@@ -428,6 +428,7 @@ rule ggeems_scatter:
         p6="eemsout_gg/{name}_nruns{nruns, \d+}-scatter06.png",
         p7="eemsout_gg/{name}_nruns{nruns, \d+}-scatter07.png",
         paperfig="figures/paper/scatter_{name}_nruns{nruns, \d+}.png",
+        paperrds="figures/paper/scatter_{name}_nruns{nruns, \d+}.rds"
     run:
         s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
         s +=   " {wildcards.nruns} {wildcards.name} "
@@ -466,7 +467,7 @@ rule panel_figs:
         "figures/pcvsgrid/{name}_pc1-10.png",
         "figures/pcvsgrid/{name}_pc1-2.png",
         "figures/pca/pc1d_{name}_pc1.png",
-	"figures/pca/loadings_{name}_pc20.png"
+        "figures/pca/loadings_{name}_pc20.png"
     output:
         "{name}.figs"
     shell:

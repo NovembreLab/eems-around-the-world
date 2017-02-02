@@ -21,14 +21,14 @@ subsets_paper = ['africa3',
     'eastasia1',
     'seasiaB',
     'southafrica2',
-    'india1',
+    'india1'
 
-    'ncasia3',
-    'medi5',
-    'medi6',
-    'africa4',
-    'africa5',
-    'centralasia2'
+#    'ncasia3',
+#    'medi5',
+#    'medi6',
+#    'africa4',
+#    'africa5',
+#    'centralasia2'
 #    "ncasia0",
 #    "northasia1",
 #    "ncasia1",
@@ -38,7 +38,7 @@ subsets0 = ['africa0',
     'europe0', 
     'centralasia0',
     'eastasia0',
-    'seasia0'
+    'seasia0',
     'southafrica2',
     'india0'
 #    'southafrica0'
