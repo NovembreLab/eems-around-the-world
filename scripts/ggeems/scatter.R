@@ -16,6 +16,7 @@ EXPLOR=!FOR_PAPER
 
 if(FOR_PAPER){
     global_theme = theme(text=element_text(size=7), 
+                         axis.line=element_blank(),
                          plot.title=element_text(size=10, face="bold", hjust=-.3),
                          axis.title=element_text(size=7),
                          axis.text=element_text(size=rel(.8)),
@@ -83,7 +84,7 @@ plot_pw <- function(df){
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(df) + geom_point(aes(y=Bobs, x=Bhat, 
-                  color=is_outlier), size=PT_SIZE)  +
+                  color=is_outlier), size=PT_SIZE, alpha=0.6)  +
         theme_classic() + 
         geom_abline(intercept=0) +
         theme(legend.position=0) +
@@ -104,7 +105,7 @@ plot_vs_pc <- function(df, n=1){
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
     P <- ggplot(df) + geom_point(aes(x=pcdist, y=Bobs, 
-                  color=is_outlier), size=PT_SIZE)  +
+                  color=is_outlier), size=PT_SIZE, alpha=0.6)  +
         theme_classic() + 
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
         theme(legend.position=0) +
@@ -120,7 +121,7 @@ plot_vs_true <- function(df){
     ll <- lm(Bobs ~ dist, data=df)
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     P <- ggplot(df) + geom_point(aes(x=dist, y=Bobs, 
-                                  color=is_outlier), size=PT_SIZE)  +
+                                  color=is_outlier), alpha=0.6, size=PT_SIZE)  +
 #            geom_text(aes(x=dist, y=Bobs, label=label), data=df[df$is_outlier,]) + 
         theme_classic() + 
         geom_abline(intercept=ll$coefficients[1], slope=ll$coefficients[2]) +
@@ -259,13 +260,14 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     RDS1 <- sprintf("figures/pcvsgrid/%s_pc1-2.rds", panel)
     RDS2 <- sprintf("figures/rsq/%s_pc1-10.rds", panel)
     out_grid <- sprintf("figures/paper/scatter_%s_nruns%d.png", panel, length(mcmcpath))
+    out_rds <- sprintf("figures/paper/scatter_%s_nruns%d.rds", panel, length(mcmcpath))
 
     p5 <- readRDS(RDS1) + global_theme+  ggtitle( "C") 
     p6 <- readRDS(RDS2) + global_theme+  ggtitle( "E")  + 
         theme(plot.margin=unit(c(-0.5,0,0,0), "cm"), 
          plot.title=element_text(size=10, face="bold", hjust=-.3, vjust=1.4))
 
-    saveRDS(list(p2,p1, p5, p4, p6), 'scatterplots.rds')
+    saveRDS(list(p2,p1, p5, p4, p6), out_rds)
 
     DPI = 300
     png(filename=out_grid, width=7*DPI, height=1.5*DPI, res=DPI)

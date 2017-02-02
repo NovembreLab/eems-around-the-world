@@ -10,7 +10,7 @@ load_snakemake <- function(){
     pop_display_file <<- snakemake@input$pop_display
     excluded <<- snakemake@input$excluded
 
-    ex <- read.table(excluded)[,1]
+    ex <- read.csv(excluded)[,1]
     e2 <- data.frame(popId=ex, excluded=T)
 
     polys <<- lapply(poly_files, read.table)
@@ -19,25 +19,33 @@ load_snakemake <- function(){
 
     pops <- do.call(rbind, pop_geo)
 
+    pops$popId <- as.character(pops$popId)
+    disp$popId <- as.character(disp$popId)
+    e2$popId <- as.character(e2$popId)
     pops <- pops %>% left_join(disp)
 
 #    pops <- read.csv("/data/meta/pgs/gvar.pop_geo")
+    print(names(e2))
     pops <- pops %>% left_join(e2) 
+    print(sum(pops$excluded, na.rm=T))
     pops$excluded[is.na(pops$excluded)] = F       
 
     pops <- pops %>% arrange(desc(excluded))
 
     pops <<- unique(cbind(pops$longitude, pops$latitude, pops$excluded, pops$color))
-    print(names(pops))
     out_png <<- snakemake@output$png
+    return(pops)
 }
 
 
-plot_polys <- function(){
+plot_polys <- function(pops){
+	COORDS=c("longitude", "latitude")
+	print(dim(pops))
     pdf(file=out_png, width=16, height=7)
     palette(brewer.pal(12,"Set3"))
     par(mar=c(0,0,0,0))
-    plot(pops[,1:2], asp=1, xlab="", ylab="", axes=F, pch=16, col=NULL)
+    print(range(pops[,1]))
+    plot(pops[,COORDS], asp=1, xlab="", ylab="", axes=F, pch=16, col=NULL)
 
     n <- length(polys)
     for(i in 1:n){
@@ -49,15 +57,22 @@ plot_polys <- function(){
     m <- map(add=T, col='black')
     m$x <- m$x+360
     lines(m, col='black')
-    cv <- pops[,4]
-    cv[pops[,3] == T] <- 'red'
-    points(pops[,1:2], cex=1.5, asp=1, xlab="", ylab="", axes=F, pch=16, col=cv)
-    points(pops[,1:2], cex=1.5, pch=1, col='black')
+    cv <- pops$color
+    cv[pops[,"excluded"] == T] <- 'red'
+    cv <- adjustcolor(cv, alpha.f=0.7)
+    pch <-  rep(16,nrow(pops))
+    pch[pops[,"excluded"] == T] <- 15
+    print(table(pch))
+    pch_around <-  rep(1,nrow(pops))
+    pch_around[pops$excluded == T] <- 22
+    points(pops[,COORDS], cex=1.5, asp=1, xlab="", ylab="", axes=F, pch=pch, col=cv)
+    points(pops[,COORDS], cex=1.5, pch=pch_around, col='black')
+    #points(pops[,COORDS], col="red")
     dev.off()
 }
 
-load_snakemake()
-plot_polys()
+pops <- load_snakemake()
+plot_polys(pops)
 save.image("QQQ.RData")
 
 
