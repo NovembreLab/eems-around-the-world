@@ -1,5 +1,6 @@
 #library(rgdal)
 #library(jpeg)
+require(maps)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 
@@ -55,11 +56,11 @@ shifted_map <- function(bbox, zoom=6){
 }
 
 
-make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
+make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F){
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
-    bbox['top'] <- pmin(bbox['top'], 80)
+    bbox['top'] <- pmin(bbox['top'], 83)
 
     if(!fancy_proj){
 	library(ggmapcustom)
@@ -82,12 +83,11 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     a=a+scale_x_continuous("Longitude",limits = bbox[c('left', 'right')],
                            expand = c(0, 0))               
     a=a+ scale_y_continuous("Latitude",limits = bbox[c('bottom', 'top')], 
-                            expand = c(0, 0))                
+                            expand = c(0, .50))                
                                                                                         
-    a=a+theme(axis.text.x=element_text(size=25),axis.title.x=element_text(size=25))         
-    a=a+theme(axis.text.y=element_text(size=25),axis.title.y=element_text(size=25))         
+    a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
+    a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
 
-    require(maps)
     m = map_data("world") %>% filter(region!='Antarctica')
     m$long[m$long< -30] <- m$long[m$long< -30] +360   
     lower_boundary <- m$lat < -38
@@ -96,14 +96,19 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F){
     if(fancy_proj){
         a = a + geom_polygon(data=m, aes(x=long, y=lat, group=group),  color='black',
                              fill='#dddddd')
-        a = add_eems_overlay(a, mcmcpath, is.mrates)
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+    	if(!just_map){
+	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	}
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
         a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
+	a = a + ylim(-38, 80)
         a = a + theme_classic()
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
-        a = add_eems_overlay(a, mcmcpath, is.mrates)
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='black')
+    	if(!just_map){
+	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	}
+        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
     }
 
     #a=a+gg_add_samples(mcmcpath)
@@ -119,7 +124,8 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
     pm <- pm[!is.na(pm$longitude),]                                          
     pm$longitude[pm$longitude < -30] <- pm$longitude[pm$longitude< -30]+360  
 
-    map + geom_text(data=pm, aes(label=abbrev, x=longitude, y=latitude)) 
+    map + geom_text(data=pm, aes(label=abbrev, x=longitude, y=latitude),
+		    color='#222222dd') 
 }
 
 
@@ -274,6 +280,22 @@ read.output.graph <- function(path) {
     alpha <- as.numeric(names(sizes))
     sizes <- as.numeric(sizes)
     return(list(ipmap=ipmap,demes=demes,edges=edges,alpha=alpha,sizes=sizes,outer=outer))
+}
+
+ggadd.graph <- function(g, color="#eeeeee50"){
+    xstart <- g$demes[g$edges[,1],1]
+    xend <- g$demes[g$edges[,2],1]
+    ystart <- g$demes[g$edges[,1],2]
+    yend <- g$demes[g$edges[,2],2]
+    grid <- data.frame(xstart, xend, ystart, yend)
+    geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color=color)
+}
+ggadd.pts <- function(g, color="#222222dd"){
+    tbl <- table(g$ipmap)
+    ind <- as.numeric(names(tbl))
+    sizes <- as.vector(tbl)
+    df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
+    geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
 }
 
 read.edges <- function(mcmcpath) {

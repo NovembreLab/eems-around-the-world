@@ -74,6 +74,9 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     df <- df[df$filter,]
     df$Zmean <- df$Zmean - mean(df$Zmean)
 
+    df$Zmean[df$Zmean > 2] <- 2
+    df$Zmean[df$Zmean < (-2)] <- -2
+
     df$alpha <- cut(df$Zmean, 101)
     alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), values=alpha, guide='none')
 
@@ -85,7 +88,7 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
 
     if(is.mrates){
 	eems_colors <- scale_fill_gradientn(colours=eems.colors,
-					    name="M")
+					    name="M", limits=c(-2,2))
     } else {
 	eems_colors <- scale_fill_gradientn(colours=eems.colors,
 					    name="q")
@@ -226,7 +229,7 @@ standardize.rates <- function(mcmcpath,dimns,longlat,is.mrates) {
     xseed <- voronoi$xseed
     yseed <- voronoi$yseed
     Zvals <- matrix(0,dimns$nxmrks,dimns$nymrks)
-    niter <- 100#length(tiles)
+    niter <- min(100, length(tiles))
     count <- 0
     for (i in 1:niter) {
         now.tiles <- tiles[i]
@@ -247,7 +250,7 @@ standardize.rates.var <- function(mcmcpath,dimns,Zmean,longlat,is.mrates) {
     xseed <- voronoi$xseed
     yseed <- voronoi$yseed
     Zvar <- matrix(0,dimns$nxmrks,dimns$nymrks)
-    niter <- 100#length(tiles)
+    niter <- min(100, length(tiles))
     count <- 0
     for (i in 1:niter) {
         now.tiles <- tiles[i]
@@ -337,8 +340,8 @@ read.edges <- function(mcmcpath) {
 }
 
 f <- function(x, alpha) adjustcolor(x, alpha.f=alpha)
-alpha = c(seq(.8, .2, length.out=50),
+alpha = c(seq(.66, .0, length.out=50),
 	  rep(0, 1),
-	  seq(.2, .8, length.out=50))
+	  seq(.0, .66, length.out=50))
 	    
 

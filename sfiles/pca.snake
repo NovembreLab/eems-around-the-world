@@ -56,6 +56,7 @@ rule make_pc_plots_wdf:
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo=config['DATA']['meta'] + '.pop_geo',
         pop_order="subset/{name}.pop_order",
         __script__='scripts/ggpca.R'
     params:
@@ -65,6 +66,9 @@ rule make_pc_plots_wdf:
             PC=range(1,21), name=['{name}']),
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png', 
             PC=range(1,21,2), name=['{name}']),
+        pve="figures/pca/pve_{name}_wdf.png",
+        rdsname="figures/pca/pc2d_{name}_wdf.rds",
+        rdspvename="figures/pca/pve_{name}_wdf.rds"
     script: "../" +input.__script__
     #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
     #    " {input.indiv_meta} {input.pop_display} "
@@ -77,6 +81,7 @@ rule make_pc_plots:
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_order="subset/{name}.pop_order",
+        pop_geo=config['DATA']['meta'] + '.pop_geo',
         __script__='scripts/ggpca.R'
     params:
         wdf=False
@@ -85,6 +90,11 @@ rule make_pc_plots:
             PC=range(1,21), name=['{name}']),
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}']),
+        pve="figures/pca/pve_{name}.png",
+        rdsname="figures/pca/pc2d_{name}.rds",
+        map_bit="figures/paper/map_{name}.rds",
+        map_bit_png="figures/paper/map_{name}.png",
+        rdspvename="figures/pca/pve_{name}.rds"
     script: "../" +input.__script__
 
 rule make_pc_plots_highlight_excluded:
@@ -94,6 +104,7 @@ rule make_pc_plots_highlight_excluded:
         exfam='subset/{exname}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_geo=config['DATA']['meta'] + '.pop_geo',
         pop_order="subset/{name}.pop_order",
         __script__='scripts/ggpca.R'
     params:
@@ -143,6 +154,11 @@ rule pca_vs_gen:
         order='eems/{name}.order',
         __script__='scripts/pca_vs_geo.R',
     output:
-        pcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.png'
+        pcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.png',
+        pcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.png',
+	rsq='figures/rsq/{name}_pc1-{npcs}.png',
+        ggpcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.rds',
+        ggpcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.rds',
+	ggrsq='figures/rsq/{name}_pc1-{npcs}.rds',
     script: "../" +input.__script__
 
