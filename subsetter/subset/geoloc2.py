@@ -2,7 +2,7 @@ import fiona
 from shapely.geometry import shape, MultiPolygon
 from shapely.affinity import translate
 import descartes
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import shapely.ops as ops
 from collections import defaultdict
 import numpy as np

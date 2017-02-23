@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
 library(ggplot2)
 library(data.table)
 library(dplyr)
+library(viridis)
 source("scripts/load_pop_meta.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
@@ -42,9 +43,16 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
     data2 <- data[sample.int(nrow(data), nrow(data)),]
 
     if(wdf){
-        g <- ggplot(data2,aes_string(id1, id2, colour='wasDerivedFrom', label='abbrev'))+
+        g <- ggplot(data2,aes_string(id1, id2, color='wasDerivedFrom', label='abbrev'))+
             theme_classic() + 
-            geom_text(size=size) + col
+            viridis::scale_color_viridis(discrete=T) + 
+            geom_text(size=1.5) + 
+            theme(legend.position="bottom",
+                  legend.key.size=unit(.5, "cm"),
+                  legend.text=element_text(size=5),
+                  legend.title=element_blank()) +
+            guides(color=guide_legend(nrow=4,byrow=TRUE)) 
+
     }
     else {
 #        g <- ggplot(data2,aes_string(id1, id2,  label='abbrev'), color='lightgray') +
@@ -53,9 +61,9 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
             geom_text(size=size, alpha=0.3) + col
         g <- g + theme_classic()
         g <- g + theme(legend.position='none')
+        g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
     }
 
-    g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
 
     if(for_paper){
         medians <- data %>% group_by(popId) %>% 
@@ -120,18 +128,19 @@ means <- function(data){
 }
 
 makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
-    token=strsplit(strsplit(output1, "/")[[1]][3], "_")[[1]][2]
+    token=strsplit(strsplit(output2, "/")[[1]][3], "_")[[1]][2]
     #p_summary <- make2PC(data, 1, 2, col, wdf=wdf, small=T, for_paper=T, maptoken=token)
     #saveRDS(p_summary, rdsname)
 
     nmax <- sum(substr(names(data),1,2) == 'PC') 
-    p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
+    if(!wdf) p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col, wdf=wdf))
+    saveRDS(p2, "tmp.debug")
     l = list(PC1=p1, PC2=p2)
     #png(file=output1, width=3200, height=1600)
     #multiplot(plotlist=p1, file=output, cols=4)
     for(i in 1:20){
-        ggsave(output1[i], p1[[i]], width=7, height=3)
+        if(!wdf)ggsave(output1[i], p1[[i]], width=7, height=3)
     }
     for(i in 1:10){
         ggsave(output2[i], p2[[i]], width=3, height=3)
@@ -141,6 +150,7 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
     saveRDS(p_summary, rdsname)
 }
 
+p1 <- c()
 wdf <- F
 args <- commandArgs(T)
 if(exists('snakemake')){

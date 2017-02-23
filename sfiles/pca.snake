@@ -62,8 +62,8 @@ rule make_pc_plots_wdf:
     params:
         wdf=True
     output:
-        pc1=expand('figures/pca/pc1d_{name}_pc{PC}_wdf.png', 
-            PC=range(1,21), name=['{name}']),
+        #pc1=expand('figures/pca/pc1d_{name}_pc{PC}_wdf.png', 
+        #    PC=range(1,21), name=['{name}']),
         pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png', 
             PC=range(1,21,2), name=['{name}']),
         pve="figures/pca/pve_{name}_wdf.png",
