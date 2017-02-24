@@ -1,44 +1,48 @@
 
+__script__1="scripts/poly_overview.R"
 rule subset_all_polygon_plot:
     input:
         polys=subset_paper_fun(prefix='subset/', ext='.polygon'),
         pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=True),
         pop_display=config['DATA']['meta'] + '.pop_display',
         excluded='subset/excluded.txt',
-        __script__="scripts/poly_overview.R"
+	script= __script__1
     output:
         png="paper/polygon_plot.pdf"
-    script: "../" + input.__script__
+    script: __script__1
 
+__script__2="scripts/table_panels.R"
 rule table_panels:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         bim=subset_paper_fun(prefix='subset/', ext='.bim'),
         subset_file = "config/subset.json",
-        __script__="scripts/table_panels.R"
+	script= __script__2
     params:
         panels=subsets_paper
     output:
         csv="paper/table_panel.csv"
-    script: "../" + input.__script__
+    script: "../" + __script__2
 
+__script__3="scripts/table_sources.R"
 rule table_sources:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
-        __script__="scripts/table_sources.R"
+	script= __script__3
     output:
         csv='paper/table_sources.csv'
-    script: "../" + input.__script__
+    script: "../" + __script__3
 
+__script__4="scripts/table_loc.R"
 rule table_locations:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         pop_geo="../meta/pgs/gvar.pop_geo",
         pop_display ="../meta/pgs/gvar.pop_display",
-        __script__="scripts/table_loc.R"
+	script= __script__4
     output:
         csv='paper/table_loc.csv'
-    script: "../" + input.__script__
+    script: "../" + __script__4
 
 rule tex_blurb:
     output: "blurbs/{name}.tex",
@@ -140,13 +144,14 @@ rule all_reports:
     input:
         reps=subset_paper_fun(prefix='reports/report_', ext='.pdf'),
 
+__script__5="scripts/pca_panels.R"
 rule pca_fig:
     input:
         subset_paper_fun(prefix="figures/pca/pc2d_", ext=".rds"),
-        __script__="scripts/pca_panels.R",
+        __script__=__script__5
     output:
         "figures/paper/pca2.png"
-    script: "../" + input.__script__
+    script: "../" + __script__5
 
 
 rule paper_fig:

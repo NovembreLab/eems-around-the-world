@@ -135,7 +135,7 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
     nmax <- sum(substr(names(data),1,2) == 'PC') 
     if(!wdf) p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col, wdf=wdf))
-    saveRDS(p2, "tmp.debug")
+    #saveRDS(p2, "tmp.debug")
     l = list(PC1=p1, PC2=p2)
     #png(file=output1, width=3200, height=1600)
     #multiplot(plotlist=p1, file=output, cols=4)
@@ -236,6 +236,7 @@ if(exists('snakemake')){
 }
 
 
+warnings()
 
 
 

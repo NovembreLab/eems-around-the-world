@@ -48,8 +48,8 @@ rule get_pca_outliers:
     shell:
         "Rscript {input.__script__} {input.loadings} {input.bimfile} "
         "{params.region_bp} {params.abs_cutoff} {output.outliers} "
-    #script: "../" + input.__script__
 
+__script__6='scripts/ggpca.R'
 rule make_pc_plots_wdf:
     input:
         pc='pca/flash_{name}_dim20.pc',
@@ -58,7 +58,7 @@ rule make_pc_plots_wdf:
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_geo=config['DATA']['meta'] + '.pop_geo',
         pop_order="subset/{name}.pop_order",
-        __script__='scripts/ggpca.R'
+        __script__6='scripts/ggpca.R'
     params:
         wdf=True
     output:
@@ -69,7 +69,7 @@ rule make_pc_plots_wdf:
         pve="figures/pca/pve_{name}_wdf.png",
         rdsname="figures/pca/pc2d_{name}_wdf.rds",
         rdspvename="figures/pca/pve_{name}_wdf.rds"
-    script: "../" +input.__script__
+    script: "../" +__script__6
     #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
     #    " {input.indiv_meta} {input.pop_display} "
     #    " {output.pc1} {output.pc2} 20"
@@ -95,7 +95,7 @@ rule make_pc_plots:
         map_bit="figures/paper/map_{name}.rds",
         map_bit_png="figures/paper/map_{name}.png",
         rdspvename="figures/pca/pve_{name}.rds"
-    script: "../" +input.__script__
+    script: "../" +__script__6
 
 rule make_pc_plots_highlight_excluded:
     input:
@@ -114,8 +114,9 @@ rule make_pc_plots_highlight_excluded:
             PC=range(1,21), name=['{name}'], exname=['{exname}']),
         pc2=expand('figures/pcaex/pc2d_{name}_ex:{exname}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}'], exname=['{exname}']),
-    script: "../" +input.__script__
+    script: "../" +__script__6
 
+__script__7='scripts/pcaloadings.R'
 rule make_loadings_plots:
     input:
         load='pca/flash_{name}_dim20.load',
@@ -124,12 +125,13 @@ rule make_loadings_plots:
     output:
         fig=expand('figures/pca/loadings_{name}_pc{PC}.png', 
             PC=range(1,21), name=['{name}']),
-    script: '../' + input.__script__
+    script: '../' + __script__7
     #shell:
     #    config['EXE']['R'] + " {input.__script__} {input.load} "
     #    "{input.bim} {output.fig}"
 
 
+__script__8="scripts/pca_derived_order.R"
 rule get_pca_derived_order:
     input:
         pc="subset_nopca/flash_{name}_dim10.pc", #hard code to 10 for now
@@ -139,9 +141,10 @@ rule get_pca_derived_order:
     output:
         pop_order="subset/{name}.pop_order",
     script:
-        "../" + input.__script__
+        "../" + __script__8
 
 
+__script__9='scripts/pca_vs_geo.R'
 rule pca_vs_gen:
     input:
         pc='pca/flash_{name}_dim20.pc',
@@ -156,9 +159,9 @@ rule pca_vs_gen:
     output:
         pcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.png',
         pcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.png',
-	rsq='figures/rsq/{name}_pc1-{npcs}.png',
+        rsq='figures/rsq/{name}_pc1-{npcs}.png',
         ggpcvsdist='figures/pcvsdist/{name}_pc1-{npcs}.rds',
         ggpcvsgrid='figures/pcvsgrid/{name}_pc1-{npcs}.rds',
-	ggrsq='figures/rsq/{name}_pc1-{npcs}.rds',
-    script: "../" +input.__script__
+        ggrsq='figures/rsq/{name}_pc1-{npcs}.rds',
+    script: "../" +__script__9
 

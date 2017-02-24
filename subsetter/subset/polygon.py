@@ -259,7 +259,9 @@ def _get_subset_area(meta_data, population=None,
 
     hull = None
     if convex_hull:
+        print("adding hull")
         hull = get_hull(meta_data)
+        print("META DATA:", meta_data.shape)
         hull = hull.buffer(sample_buffer)
         if poly1 is None:
             poly1 = hull
@@ -269,6 +271,8 @@ def _get_subset_area(meta_data, population=None,
         hull = hull.buffer(sample_buffer)
         if poly1 is None:
             poly1 = hull
+    else:
+        print("not adding hull")
 
     if hull is not None:
         poly1 = poly1.intersection(hull)

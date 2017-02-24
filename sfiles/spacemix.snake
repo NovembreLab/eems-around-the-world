@@ -42,7 +42,6 @@ rule run_spacemix:
         __script__='scripts/run_spacemix.R'
     output:
         "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj"
-    #script: '../' + input.__script__
     run:
         l = [config['EXE']['R'], input.__script__, input.ss, input.cts,
                 input.pop_geo, wildcards.model, output[0]]
@@ -68,7 +67,6 @@ rule plot_spacemix_geospace:
         __script__='scripts/plot_spacemix.R'
     output:
         'spacemix/{name}/{model}_geospace.png'
-    #script: '../' + input.__script__
     run:
         l = [config['EXE']['R'], input.__script__, input.spacemix_output, 
                 input.pop_geo, input.pop_display,  output[0]]

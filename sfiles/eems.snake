@@ -349,16 +349,16 @@ rule run_eems_replicate_runs:
     
 
 
+__script__0='scripts/diagnostic_mds.R'
 rule diagnostic_mds:
     input:
         diffs='eems/{name}.diffs',
         order='eems/{name}.order',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
-        __script__='scripts/diagnostic_mds.R'
     output:
         pdf='eems/figures/{name}-mds.pdf'
-    script: input.__script__
+    script: __script__0
 
 
 
@@ -397,7 +397,7 @@ rule ggplot_eems:
     params:
         RES=200,
         ZOOM=4,
-        fancy=1
+        fancy=0
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
         m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png"

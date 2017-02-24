@@ -319,6 +319,7 @@ rule install:
 
 
 
+__script__11='scripts/diagnostic_pca.R',
 rule diagnostic_pca:
     input:
         pc='pca/flash_{name}_dim20.pc',
@@ -329,7 +330,7 @@ rule diagnostic_pca:
         __lib__='pw_plot.R'
     output:
         pdf='pca/figures/{name}-pca.pdf'
-    script: input.__script__
+    script: __script__11
 
 """
 rule run_eems:
