@@ -22,9 +22,9 @@ if(FOR_PAPER){
 }
 
 
-get_grid_info <- function(mcmcpath, indiv_label_file, pop_display_file){
+get_grid_info <- function(ipmap, indiv_label_file, pop_display_file){
     pop_display <- read.csv(pop_display_file)
-    o <- read.table(sprintf("%s/ipmap.txt", mcmcpath[1]))
+    o <- read.table(ipmap)
     names(o) <- 'grid'
     o <- cbind(grid=o, grid_order=1:nrow(o))
     indiv_label <- read.csv(indiv_label_file)     
@@ -158,8 +158,8 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     JtDobsJ <- JtDobsJ/n_reps
     JtDobsJ[is.nan(JtDobsJ)] <- median(diag(JtDobsJ), na.rm=T) #nan fix
     JtDhatJ <- JtDhatJ/n_reps
-
-    i2 <- get_grid_info(mcmcpath, indiv_label_file, pop_display_file)
+    ipmap <- sprintf("%s/ipmap.txt", mcmcpath[1])
+    i2 <- get_grid_info(ipmap, indiv_label_file, pop_display_file)
     pop_labels <- get_fit_matrix_abbrev(i2)
     pop_ids <- get_fit_matrix_ids(i2)
     pop_labels_full<- get_fit_matrix_full(i2)
@@ -274,7 +274,8 @@ get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_f
     d3 <- melt(dmat, value.name="dist")
     names(d3) <- c('popId.x', 'popId.y', 'dist')
 
-    i2 <- get_grid_info(mcmcpath, indiv_label_file, pop_display_file)
+    ipmap <- sprintf("%s/ipmap.txt", mcmcpath[1])
+    i2 <- get_grid_info(ipmap, indiv_label_file, pop_display_file)
     idpop <- data.frame(popId=pop_geo$popId, id=1:nrow(pop_geo))
      v <- idpop$id          
      names(v) <- idpop$popId

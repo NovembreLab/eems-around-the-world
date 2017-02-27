@@ -148,6 +148,7 @@ __script__9='scripts/pca_vs_geo.R'
 rule pca_vs_gen:
     input:
         pc='pca/flash_{name}_dim20.pc',
+        ipmap='eemsout/0/{name}/ipmap.txt',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',

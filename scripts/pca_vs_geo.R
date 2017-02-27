@@ -7,8 +7,9 @@ source("scripts/ggeems/scatter.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
 
-get_err_mat <- function(mcmcpath){
-    ipmap <- read.table(paste0(mcmcpath[1], "/ipmap.txt"))[,1]
+get_err_mat <- function(ipmap, mcmcpath){
+    print("ipmap")
+    ipmap <- read.table(ipmap)[,1]
     n_pops <- length(unique(ipmap))
     n_reps <- length(mcmcpath)
     JtDhatJ <- matrix(0,n_pops,n_pops)
@@ -92,6 +93,7 @@ if(exists('snakemake')){
     pop_display <- snakemake@input[['pop_display']]
     pop_order <- snakemake@input[['pop_order']]
     pop_geo <- snakemake@input[['pop_geo']]
+    ipmap <- snakemake@input[['ipmap']]
     npcs <- as.numeric(snakemake@wildcards$npcs)
 
     diffs <- snakemake@input$diffs
@@ -141,7 +143,7 @@ if(exists('snakemake')){
     err <- get_pop_mats(mcmcpath, diffs, order, pop_display,
                         indiv_meta, pop_geo)$pw
     err[,1:2] <- err[,5:6]
-    i2 <- get_grid_info(mcmcpath, indiv_meta, pop_display)
+    i2 <- get_grid_info(ipmap, indiv_meta, pop_display)
     idgrid <- i2 %>% dplyr::select(popId, grid) %>% unique()
 
     data <- data %>% left_join(idgrid)
@@ -158,7 +160,7 @@ if(exists('snakemake')){
     saveRDS(pcplot, file=rds_names[1])
 
     pcd.grid <- get_pc_dist_diagnorm(data, npcs, annotation="grid")
-    err.grid <- get_err_mat(mcmcpath)
+    err.grid <- get_err_mat(ipmap, mcmcpath)
     data.grid <- inner_join(err.grid, pcd.grid) 
     data.grid$is_outlier <- F
 
