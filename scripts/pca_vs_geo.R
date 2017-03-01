@@ -86,7 +86,10 @@ get_sample_dist <- function(){
 }
 
 
+print("running pca vs geo")
+ls()
 if(exists('snakemake')){
+    print("running pca vs geo")
     pc <- snakemake@input[['pc']]
     fam <- snakemake@input[['fam']]
     indiv_meta <- snakemake@input[['indiv_meta']]
@@ -142,7 +145,10 @@ if(exists('snakemake')){
     print("loading err")
     err <- get_pop_mats(mcmcpath, diffs, order, pop_display,
                         indiv_meta, pop_geo)$pw
-    err[,1:2] <- err[,5:6]
+
+    #err[,1:2] <- err[,5:6]
+    err$Var1 <- err$popId.x
+    err$Var2 <- err$popId.y
     i2 <- get_grid_info(ipmap, indiv_meta, pop_display)
     idgrid <- i2 %>% dplyr::select(popId, grid) %>% unique()
 
@@ -196,8 +202,6 @@ if(exists('snakemake')){
 #         theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1))
     ggsave(out_rsq, P, width=7, height=3)
     saveRDS(P, file=rds_names[3])
-
-
 } 
 
 

@@ -1,4 +1,5 @@
 require(dplyr)
+require(fields)
 source("scripts/eems_plot/contour.r")
 source("scripts/eems_plot/compute_spatial_posterior.r")
 source("scripts/eems_plot/plot_raw_data.r")
@@ -302,7 +303,8 @@ plot.param <- function(mcmcpath, fname, column=1, ...){
     data
 }
 
-dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove.singletons=T, outlier_file, ...) {
+dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, 
+                             remove.singletons=T, outlier_file, ...) {
     print('Plotting average dissimilarities within and between demes')
     mcmcpath1 <- character()
     for (path in mcmcpath) {
@@ -338,8 +340,7 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
     JtDobsJ <- matrix(0,nPops,nPops)
 
     JtDhatJ <- matrix(0,nPops,nPops)
-    for (path in mcmcpath[1]) {
-        print(path)
+    for (path in mcmcpath) {
         JtDobsJ <- JtDobsJ + as.matrix(read.table(paste(path,'/rdistJtDobsJ.txt',sep=''),header=FALSE))
         JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
     }
@@ -375,7 +376,6 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
 
     g <- read.output.graph(mcmcpath[1])
     d.obs <- g$demes[unique(g$ipmap),]
-    require(fields)
     dmat <- rdist.earth(d.obs)
     dpts <- dmat[upper.tri(dmat, diag=FALSE)]
 
@@ -437,6 +437,17 @@ dist.scatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, remove
 
     write.table(data.frame(popId=pop_ids, error=error_by_pop), outlier_file, 
                 row.names=F)
+
+    mad_o20 <- order(mad, decreasing=T)[1:min(20, length(mad))]
+    barplot(mad[mad_o20], names.arg=pop_labels_full[mad_o20], 
+	    las=2, cex.names=0.6)
+
+    abs_error_norm <- apply(abs_error/(Bhat+1e-10), 1, median)
+    m_o20 <- order(abs_error_norm, decreasing=T)[1:min(20, length(abs_error_norm))]
+    barplot(abs_error_norm[m_o20], names.arg=pop_labels_full[m_o20], 
+	    las=2, cex.names=0.6)
+
+    msq_error <- (Bobs-Bhat)^2
 
     
 

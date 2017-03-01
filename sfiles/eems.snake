@@ -378,7 +378,8 @@ rule plot_eems:
         eemsin,
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_geo='subset/{name}.pop_geo',
-        indiv_label='subset/{name}.indiv_meta'
+        indiv_label='subset/{name}.indiv_meta',
+        script='scripts/eems_plot/make_plots.r'
     output:
         mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
     run:
