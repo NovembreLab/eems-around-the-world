@@ -1,5 +1,5 @@
 configfile: "config/subset.json"
-configfile: "config/eems.json"
+configfile: "config/eems.yaml"
 configfile: "config/config.json"
 configfile: "config/data.json"
 
@@ -299,10 +299,13 @@ rule subset_pca:
         bed='subset/{name}.bed',
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
-    shell:
-        '{PLINK_EXE} --bfile subset_nopca/{wildcards.name} '
-        '--exclude {input.outliers} '
-        '--out subset/{wildcards.name} --make-bed'
+    run:
+        s = '{PLINK_EXE} --bfile subset_nopca/{wildcards.name} '
+        s += ' --out subset/{wildcards.name} --make-bed'
+        if 'no_pca' in config['subset'][wildcards.name]:
+            if config['subset'][wildcards.name]['no_pca']:
+                s += ' --exclude {input.outliers} '
+        shell(s)
 
 
 
@@ -319,7 +322,7 @@ rule install:
 
 
 
-__script__11='scripts/diagnostic_pca.R',
+__script__11='scripts/diagnostic_pca.R'
 rule diagnostic_pca:
     input:
         pc='pca/flash_{name}_dim20.pc',
@@ -327,7 +330,7 @@ rule diagnostic_pca:
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=config['DATA']['meta'] + '.pop_display',
         __script__='scripts/diagnostic_pca.R',
-        __lib__='pw_plot.R'
+        __lib__='scripts/pw_plot.R'
     output:
         pdf='pca/figures/{name}-pca.pdf'
     script: __script__11
