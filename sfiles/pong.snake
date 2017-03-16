@@ -39,15 +39,20 @@ rule run_admixture_single_run:
         fam='subset/{name}.fam',
     benchmark:
         'admixture/{name}/{i}/{name}.{k}.BM',
+    log:
+        'admixture/{name}/{i}/{name}.{k}.log'
     output:
         P='admixture/{name}/{i}/{name}.{k}.P',
-        Q='admixture/{name}/{i}/{name}.{k}.Q'
+        Q='admixture/{name}/{i}/{name}.{k}.Q',
+        LL='admixture/{name}/{i}/{name}.{k}.LL'
     run:
         name, i, k = wildcards.name, wildcards.i, wildcards.k
         seed = int(i) * 23 + int(k) * 1541
         s = 'cd admixture/{name}/{i};'
         s += '%s ../../../{input.bed} {k}'
-        s += ' --seed={seed}; '
+        s += ' --seed={seed} '
+        s += ' > ../../../{log}; '
+        s += ' cd - ; grep ^Logl {log} > {output.LL}'
 #        s += 'mv {name}.{k}.P {i}.{k}.P;'
 #        s += 'mv {name}.{k}.Q {i}.{k}.Q;'
         shell(s % config['EXE']['admixture'])
