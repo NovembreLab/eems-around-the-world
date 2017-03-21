@@ -3,7 +3,6 @@ library(ggplot2)
 library(dplyr)
 library(fields)
 library(reshape2)
-library(Cairo)
 source("scripts/eems_plot/load_output.r")
 
 
