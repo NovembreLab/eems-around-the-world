@@ -260,12 +260,16 @@ rule make_pilot_ini_file:
         ini = base(output.inifile)
         meta_data= pd.read_table(input.coord, header=None)
 
-        cfg['gridpath'] = datapath
+        if "gridsrc" in cfg and cfg['gridsrc'] == 'auto':
+            pass
+        else:
+            cfg['gridpath'] = datapath
         create_ini_file(ini, mcmcpath, datapath,
             meta_data=meta_data,
             n_demes=n_demes, **cfg)
 
 def get_pilot_runs_input(wildcards):
+    print(wildcards)
     name = wildcards.name
     try:
         n_pilots = int(config['eems'][name]['n_pilots'])
@@ -292,6 +296,7 @@ rule make_post_pilot_ini:
     output:
         inifile='eems/{name}-run{i, \d+}.ini'
     run:
+        print(wildcards)
         from subsetter.eems import create_diffs_file, create_ini_file
         from subsetter.load import load_pop_geo, load_indiv_meta
         from subsetter.intersect import intersect
