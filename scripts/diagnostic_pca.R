@@ -1,4 +1,4 @@
-source("pw_plot.R")
+source("scripts/pw_plot.R")
 pc = snakemake@input$pc
 order = snakemake@input$order
 indiv_meta = snakemake@input$indiv_meta
