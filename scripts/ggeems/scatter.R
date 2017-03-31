@@ -40,6 +40,12 @@ subtract_diag <- function(JtDobsJ, JtDhatJ){
     ones <- matrix(1,n_pops,1)                               
     Bobs <- JtDobsJ - (Wobs%*%t(ones) + ones%*%t(Wobs))/2   
     Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2   
+    norm_obs <- range(JtDobsJ)
+    norm_hat <- range(JtDhatJ)
+    Bobs <- JtDobsJ #- (Wobs%*%t(ones) + ones%*%t(Wobs))/2   
+    Bhat <- JtDhatJ #- (What%*%t(ones) + ones%*%t(What))/2   
+    Bobs <- JtDobsJ 
+    Bhat <- JtDhatJ #- (What%*%t(ones) + ones%*%t(What))/2   
     colnames(Bobs) <- NULL
     colnames(Bhat) <- NULL
 
@@ -98,13 +104,23 @@ plot_within <- function(within){
 	theme(plot.title = element_text(size = rel(.5), hjust=0))
 }
 
-plot_pw <- function(df){
+plot_pw <- function(df, text=T){
     ll <- lm(Bobs ~ Bhat, data=df)
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
+    print("plotting_pw")
+    print(head(df))
+    if(text){
+        if(!"label" %in% names(df)){
+            df$label <- sprintf("%s|%s", df$popId.x, df$popId.y)
+        }
+    P <- ggplot(df) + geom_text(aes(y=Bobs, x=Bhat, label=label), 
+                                size=2, alpha=.5)
+    }else{
     P <- ggplot(df) + geom_point(aes(y=Bobs, x=Bhat, 
-                  color=is_outlier), size=PT_SIZE, alpha=0.6)  +
-        theme_classic() + 
+                  color=is_outlier), size=PT_SIZE, alpha=0.6)  
+    }
+    P <- P + theme_classic() + 
         geom_abline(intercept=0) +
         theme(legend.position=0) +
         ylab("Genetic dissimilarity") +
@@ -133,7 +149,7 @@ plot_vs_pc <- function(df, n=1){
         ylab("Genetic dissimilarity") +
         xlab(pclab) + cm + 
 	labs(title = paste("r² = ",signif(summary(ll)$adj.r.squared, 3))) + 
-	theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+theme(plot.title = element_text(size = rel(.5), hjust=0)) +
         annotate("text", Inf, -Inf, label = r2, hjust = 1, vjust = -0.3, size=2)
 }
 
@@ -153,8 +169,7 @@ plot_vs_true <- function(df){
 	theme(plot.title = element_text(size = rel(.5), hjust=0)) + 
         annotate("text", Inf, -Inf, label = r2, hjust = 1, vjust = -0.3, size=2)
 }
-plot_median_error <- function(error, nmax=50){
-    print(c("MED_ERROR",names(error)))
+plot_median_error <- function(error, nmax=50, text_out=NULL){
     error <- error %>% ungroup()%>% arrange(-nmad)
     error$labels <- factor(error$labels, levels=error$labels)
     cm <- scale_fill_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
@@ -168,6 +183,16 @@ plot_median_error <- function(error, nmax=50){
         P <- ggplot(error[1:nmax,]) + geom_col(aes(y=nmad, x=labels, 
                                           fill=is_outlier))
     }
+
+    print(names(error))
+    if(!is.null(text_out)){
+        fnames <- sprintf("%s_%spc.txt", text_out, c(3,5,0))
+        e <- error %>% select(labels, nmad, nmad_)
+        e %>% filter(nmad > 0.03) %>% write.table(fnames[1], quote=F, row.names=F)
+        e %>% filter(nmad > 0.05) %>% write.table(fnames[2], quote=F, row.names=F)
+        e %>% filter(nmad >= 0.0) %>% write.table(fnames[3], quote=F, row.names=F)
+    }
+
     P <- P + theme_classic()
     ymax <- pmin(1, max(error$nmad))
     P <- P + xlab("") + ylab("Rel. MAD")
@@ -176,9 +201,10 @@ plot_median_error <- function(error, nmax=50){
     P <- P + theme(legend.position=0) 
     library(scales)
     P <- P + scale_y_continuous(labels=function(i)sprintf("%.2f", i),
-                                limits=c(0,ymax))
+                                limits=c(0,ymax), oob=rescale_none)
 #    P <- P + scale_y_continuous(labels=comma_format(digits=2))
-    P <- P + cm
+    P <- P + cm +geom_hline(yintercept=0.03, color='lightgray')
+    P <- P + cm +geom_hline(yintercept=0.05, color='lightgray')
 }
 
 ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file, 
@@ -253,9 +279,11 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
         summarize(E=median(Bhat), M=mean(Bhat)) %>% 
         left_join(df) %>%
         group_by(Var1) %>%
-        summarize(mad=median(error), rmse=sqrt(mean(error^2)),
-                  M=first(M), E=first(E)) %>%
-        mutate(nrmse=rmse/M, nmad=mad/E) %>%
+        #summarize(mad=median(error), rmse=sqrt(mean(error^2)),
+        #          M=first(M), E=first(E)) %>%
+        #mutate(nrmse=rmse/M, nmad=mad/E) %>%
+        summarize(nmad=median(error/(Bobs+0.001)), 
+                  nmad_=sqrt(mean((error^2/(Bobs+0.001))))) %>%
         left_join(grid_ids) %>% 
         #select(-M) %>%
         arrange(-nmad) %>%
@@ -305,11 +333,10 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
 
 
     ggsave(outnames[1], plot_pw(df), width=3, height=3)
+    ggsave(outnames[3], plot_within(within), width=3, height=3)
     ggsave(outnames[2], plot_vs_true(df), width=3, height=3)
-    ggsave(outnames[3], 
-           plot_within(within))
     ggsave(outnames[4], 
-           plot_median_error(grid_error), width=7, height=3)
+           plot_median_error(grid_error, text_out=outnames[1]), width=7, height=3)
     
     l <- get_pop_mats(mcmcpath, diffs, order, 
                       pop_display_file, indiv_label_file,
@@ -319,14 +346,17 @@ ggscatter <- function(mcmcpath, diffs, order, pop_display_file, pop_geo_file,
     l$pw$is_outlier <- l$pw$popId.x %in% outlier_pop$popId |
                        l$pw$popId.y %in% outlier_pop$popId
     l$error$labels <- l$error$popId
+    l$within$label<- l$within$popId
+    l$within$is_outlier<- F
 
+    #ggsave(outnames[6], plot_pw(l$pw), width=3, height=3)
     ggsave(outnames[5], 
-           plot_median_error(l$error))
+           plot_median_error(l$error, text_out=outnames[5]))
     ggsave(outnames[6], 
            plot_vs_true(l$pw))
     ggsave(outnames[7], 
-           plot_vs_true(l$pw))
-    save(file=".rdebug",list=ls())
+           plot_pw(l$pw))
+    save(file=".rdebug2",list=ls())
 }
 
 
@@ -435,9 +465,11 @@ get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_f
         summarize(E=median(Bhat), M=mean(Bhat)) %>% 
         left_join(df) %>%
         group_by(Var1, popId) %>%
-        summarize(mad=median(error), rmse=sqrt(mean(error^2)),
-                  M=first(M), E=first(E)) %>%
-        mutate(nrmse=rmse/M, nmad=mad/E) %>%
+        #summarize(mad=median(error), rmse=sqrt(mean(error^2)),
+        #          M=first(M), E=first(E)) %>%
+        #mutate(nrmse=rmse/M, nmad=mad/E) %>%
+        summarize(nmad=median(error/(Bobs+0.001)), 
+                  nmad_=sqrt(mean((error^2/(Bobs+0.001))))) %>%
         left_join(uid) %>% 
         arrange(-nmad)
         #select(-M) %>%
@@ -452,5 +484,8 @@ get_pop_mats <- function(mcmcpath, diffs, order, pop_display_file, indiv_label_f
     pop_error_pw$is_outlier <- F
     pop_error_pw <- pop_error_pw %>% left_join(d3)
 
-    return(list(error=pop_error, pw=pop_error_pw ))
+    #df for within grid error
+    within <- data.frame(uid, Wobs=Wobs, What=What)
+
+    return(list(error=pop_error, pw=pop_error_pw, within=within ))
 }

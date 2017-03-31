@@ -4,6 +4,8 @@ EPS = 0.00001
 
 base = lambda x: os.path.splitext(x)[0]
 
+localrules: make_pilot_ini_file, make_outer, make_post_pilot_ini, panel_figs
+
 rule bed2diffs:
     input:
         bed='subset/{name}.bed',
@@ -421,21 +423,22 @@ rule ggeems_scatter:
         ggrsq='figures/rsq/{name}_pc1-10.rds',
         script='scripts/ggeems/scatter.R'
     output:
-        p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter01.png",
-        p2="eemsout_gg/{name}_nruns{nruns, \d+}-scatter02.png",
-        p3="eemsout_gg/{name}_nruns{nruns, \d+}-scatter03.png",
-        p4="eemsout_gg/{name}_nruns{nruns, \d+}-scatter04.png",
-        p5="eemsout_gg/{name}_nruns{nruns, \d+}-scatter05.png",
-        p6="eemsout_gg/{name}_nruns{nruns, \d+}-scatter06.png",
-        p7="eemsout_gg/{name}_nruns{nruns, \d+}-scatter07.png",
+        p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid01.png",
+        p2="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid02.png",
+        p3="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid03.png",
+        p4="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid04.png",
+        p5="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop01.png",
+        p6="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop02.png",
+        p7="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop03.png",
         paperfig="figures/paper/scatter_{name}_nruns{nruns, \d+}.png",
         paperrds="figures/paper/scatter_{name}_nruns{nruns, \d+}.rds"
-    run:
-        s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
-        s +=   " {wildcards.nruns} {wildcards.name} "
-        s += " {input.pop_display} {input.pop_geo} {input.indiv_label} "
-        s += " {input.diffs} {input.order} "
-        shell(s)
+    script: "../scripts/ggeems/run_scatter_snake.R"
+    #run:
+    #    s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
+    #    s +=   " {wildcards.nruns} {wildcards.name} "
+    #    s += " {input.pop_display} {input.pop_geo} {input.indiv_label} "
+    #    s += " {input.diffs} {input.order} "
+    #    shell(s)
 
 rule ggeems_scatter_hlex:
     input:
@@ -464,7 +467,7 @@ rule panel_figs:
     input:
         "eemsout_gg/{name}_nruns4-mrates01.png",
         "eemsout/{name}_nruns4-mrates01.png",
-        "eemsout_gg/{name}_nruns4-scatter01.png",
+        "eemsout_gg/{name}_nruns4-scatter-grid01.png",
         "figures/pcvsgrid/{name}_pc1-10.png",
         "figures/pcvsgrid/{name}_pc1-2.png",
         "figures/pca/pc1d_{name}_pc1.png",
