@@ -35,7 +35,8 @@ makePC <- function(data, n, col, field='abbrev'){
     G
 }
 
-make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL){
+make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL,
+                    median_only=F){
     size <- ifelse(small, 1, 4)
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
@@ -57,9 +58,9 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
     else {
 #        g <- ggplot(data2,aes_string(id1, id2,  label='abbrev'), color='lightgray') +
 #            geom_text(size=size, color='lightgray') + col
-        g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) +
-            geom_text(size=size, alpha=0.3) + col
-        g <- g + theme_classic()
+        g <- ggplot(data2,aes_string(id1, id2, colour='abbrev', label='abbrev')) 
+        if(!median_only) g <- g + geom_text(size=size, alpha=0.3) 
+        g <- g + col + theme_classic()
         g <- g + theme(legend.position='none')
         g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
     }
@@ -67,16 +68,19 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL)
 
     if(for_paper){
         medians <- data %>% group_by(popId) %>% 
-            summarize(M1=median(PC1), M2=median(PC2),
-		      M3=median(PC3), M4=median(PC4),abbrev=first(abbrev),
+            summarize_at(.cols = vars(starts_with("PC")),
+                         .funs=c("M"="median"))
+        other <- data %>% group_by(popId) %>%
+            summarize(abbrev=first(abbrev),
                       latitude=median(latitude), longitude=median(longitude))
-    	if(id1=="PC1"){
-        g <- g + geom_point(data=medians, aes(x=M1, y=M2, col=abbrev), size=3) +
-            geom_text(data=medians, aes(x=M1, y=M2), col='white', size=3/4*1.5*1.2 ) 
-	} else {
-        g <- g + geom_point(data=medians, aes(x=M3, y=M4, col=abbrev), size=3) +
-            geom_text(data=medians, aes(x=M3, y=M4), col='white', size=3/4*1.5*1.2 ) 
-	}
+        medians <- inner_join(medians, other)
+        idm1 <- sprintf("%s_M", id1)
+        idm2 <- sprintf("%s_M", id2)
+        abbrev="abbrev"
+        g <- g + geom_point(data=medians, aes_string(x=idm1, y=idm2, 
+                                                     col=abbrev), size=10)
+        #g <- g+  geom_text(data=medians, aes_string(x=idm1, y=idm2), 
+        #              col='white', size=3/4*1.5*1.2*2 ) 
 
 
         if(!is.null(maptoken)){
@@ -186,7 +190,8 @@ if(exists('snakemake')){
         col_list <- data %>% group_by(wasDerivedFrom) %>% 
             summarize(color=first(color), order=mean(order)) %>% 
             arrange(order)
-        data$wasDerivedFrom <- factor(data$wasDerivedFrom, levels=col_list$wasDerivedFrom)
+        data$wasDerivedFrom <- factor(data$wasDerivedFrom,
+                                      levels=col_list$wasDerivedFrom)
         cv <- as.character(col_list$color)
         names(cv) <- col_list$wasDerivedFrom
         col <- list()

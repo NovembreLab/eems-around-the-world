@@ -24,7 +24,7 @@ def filter_data(meta_data, bedfile, missing=0.001, plink="plink",
     include_name = '%s.incl' % outfile
 
     fam = pd.read_table("%s.fam" % bedfile, header=None,
-                        skipinitialspace=True, sep="\t")
+                        skipinitialspace=True, sep=" ")
     fam.columns = ['FAM', 'sampleId', 'a', 'b', 'c', 'd']
 
     extract_data = meta_data.merge(fam, on='sampleId', how='inner')

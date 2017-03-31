@@ -1,5 +1,5 @@
 configfile: "config/subset.json"
-configfile: "config/eems.yaml"
+configfile: "config/eems.json"
 configfile: "config/config.json"
 configfile: "config/data.json"
 
@@ -13,25 +13,16 @@ include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
 
 
-subsets_paper = ['africa3', 
-    'medi4',
-    'europe3', 
-    'centralasia1',
-    'eastasia2',
-    'eastasia1',
-    'seasiaB',
-    'southafrica2',
-    'india1'
-
-#    'ncasia3',
-#    'medi5',
-#    'medi6',
-#    'africa4',
-#    'africa5',
-#    'centralasia2'
-#    "ncasia0",
-#    "northasia1",
-#    "ncasia1",
+subsets_paper = [
+"global2",
+"africa4",
+"centralasiacer22",
+"easia5pccer22",
+"europe2",
+"india5noonge",
+"medi1",
+"seasia3c",
+"southafrica1"
 ]
 subsets0 = ['africa0', 
     'medi0',
@@ -248,8 +239,14 @@ rule subset_all_pca_wdf:
 rule subset_all_pong:
     input: subset_all_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
 
+rule subset_paper_pong:
+    input: subset_paper_fun(prefix='pong/run_pong_', ext='-K2-8-nruns3.sh')
+
 rule subset_all_treemix:
-    input : subset_all_fun(prefix='treemix/subset/', ext='_m2-8_runs4.tree.png')
+    input : subset_all_fun(prefix='treemix/subset/', ext='_m0-8_runs4.tree.png')
+
+rule subset_paper_treemix:
+    input : subset_paper_fun(prefix='treemix/subset/', ext='_m0-8_runs4.tree.png')
 
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
