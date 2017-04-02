@@ -25,11 +25,6 @@ add_eems_overlay <- function(P, mcmcpath, is.mrates=T, ...){
 
     P <- average.eems.contours.ggplot(P, mcmcpath, dimns, 
                                  is.mrates=is.mrates, ...) #+
-    #ggsave(paste0(plotpath,"-mrates.pdf"))
-    #average.eems.contours.ggplot(P, mcmcpath, dimns, longlat, plot.params=list(),
-    #                             is.mrates=F, alphaplot=alphaplot, ...)
-    #ggsave(paste0(plotpath,"-qrates.pdf"))
-    #dev.off()
 }
 
 combine_map <- function(bbox, zoom=6){

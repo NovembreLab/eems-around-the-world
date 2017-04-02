@@ -11,6 +11,7 @@ include: 'sfiles/spacemix.snake'
 include: 'sfiles/paintings.snake'
 include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
+include: 'sfiles/distances.snake'
 
 
 subsets_paper = [

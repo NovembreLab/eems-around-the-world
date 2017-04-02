@@ -1,5 +1,6 @@
 suppressPackageStartupMessages({
 	library(dplyr)
+library(reshape2)
 })
 #a <- read.table("data/world.diffs")
 #b <- read.table("data/world.order", as.is=T)

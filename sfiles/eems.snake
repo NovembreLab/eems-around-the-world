@@ -405,7 +405,7 @@ rule ggplot_eems:
     params:
         RES=200,
         ZOOM=4,
-        fancy=0
+        fancy=1
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
         m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png"
@@ -494,7 +494,7 @@ rule ggeems_map:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=200,
+        RES=100,
         ZOOM=4,
         fancy=0
     output:

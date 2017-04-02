@@ -5,10 +5,8 @@ library(dplyr)
 source("scripts/load_pop_meta.R")
 source("scripts/ggeems/scatter.R")
 })
-#! called from snakefiles/pca.snake:make_pc_plots
 
 get_err_mat <- function(ipmap, mcmcpath){
-    print("ipmap")
     ipmap <- read.table(ipmap)[,1]
     n_pops <- length(unique(ipmap))
     n_reps <- length(mcmcpath)
@@ -114,33 +112,12 @@ if(exists('snakemake')){
 		   snakemake@output$ggrsq)
     save.image('.Rsnakemakedebug')
 
-    data <- load_pca_data(pc, fam, indiv_meta, pop_display)
-    data <- data %>% dplyr::select(-order) %>% left_join(read.csv(pop_order))
-    data <- left_join(data, read.csv(pop_geo))
-
-
+    data <- load_pca_median(median, pop_display)
     col_list <- data %>% group_by(abbrev, popId) %>% 
-        summarize(color=first(color), order=mean(order)) %>% 
+        summarize(color=first(color), order=first(PC1_M)) %>% 
         arrange(order)
     col_list$color <- as.character(col_list$color)
     data$abbrev <- factor(data$abbrev, levels=col_list$abbrev)
-
-
-    #set up color
-	# if we have a set of excluded guys
-	if(!is.null(snakemake@input$exfam)){
-		exfam <- read.table(snakemake@input$exfam)
-		excluded <- data$sampleId %>% setdiff(exfam[,1])
-		expops <- data %>% filter(sampleId %in% excluded) %>% 
-            dplyr::select(popId) %>% unique()  %>% unlist() %>% c()
-		col_list[col_list$popId %in% expops,'color'] <- 'red'
-	}  else{
-
-        cv <- as.character(col_list$color)
-        names(cv) <- col_list$abbrev
-        col <- list(scale_color_manual(values=cv),
-                    scale_fill_manual(values=cv))
-    }
 
     print("loading err")
     err <- get_pop_mats(mcmcpath, diffs, order, pop_display,

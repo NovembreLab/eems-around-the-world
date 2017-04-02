@@ -15,9 +15,9 @@ rule run_flashpca_outliers:
         bim='subset_nopca/{name}.bim',
         fam='subset_nopca/{name}.fam',
     output:
-        pc="subset_nopca/flash_{name}_dim{ndim}.pc",
-        load="subset_nopca/flash_{name}_dim{ndim}.load",
-        pve="subset_nopca/flash_{name}_dim{ndim}.pve",
+        pc="subset_nopca/flash_{name}_dim{ndim, \d+}.pc",
+        load="subset_nopca/flash_{name}_dim{ndim, \d+}.load",
+        pve="subset_nopca/flash_{name}_dim{ndim, \d+}.pve",
     params: seed=14
     run: 
         run_pca(input, output, params, wildcards, config)
@@ -96,6 +96,18 @@ rule make_pc_plots:
         map_bit_png="figures/paper/map_{name}.png",
         rdspvename="figures/pca/pve_{name}.rds"
     script: "../" +__script__6
+
+script_median='scripts/get_pc_median.R'
+rule pca_median:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script__=script_median
+    output:
+        pc='pca/median_{name}_dim20.pc'
+    script: "../" + script_median
 
 rule make_pc_plots_highlight_excluded:
     input:
