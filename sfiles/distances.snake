@@ -1,0 +1,87 @@
+
+N_EEMS_RUNS=4
+
+pcpopscript="scripts/pcdist.R"
+rule pc_pop_dist:
+    input:
+        "pca/median_{name}_dim20.pc",
+        script = pcpopscript
+    output:
+        "dists/{name}_dim{npc, \d+}.pcdist"
+    script:  "../" + pcpopscript
+
+geopopscript="scripts/geodist.R"
+rule geo_dist:
+    input:
+        "subset/{name}.pop_geo",
+        script = geopopscript
+    output:
+        "dists/{name}.geodist"
+    script:  "../" + geopopscript
+
+gendistscript = "scripts/gendist.R"
+rule gen_dist:
+    input:
+        indiv_meta="subset/{name}.indiv_meta",
+        diffs="eems/{name}.diffs",
+        order="eems/{name}.order",
+        script=gendistscript
+    output:
+        "dists/{name}.gendist"
+    script: "../" + gendistscript
+
+eemsdistscript = "scripts/eemsdist.R"
+rule eems_pop_dist:
+    input:
+        Dhat=expand("eemsout/{i}/{name}/rdistJtDhatJ.txt",
+            i = range(N_EEMS_RUNS), 
+            name = ['{name}']),
+        ipmap='eemsout/0/{name}/ipmap.txt',
+        order="eems/{name}.order",
+        indiv_meta="subset/{name}.indiv_meta",
+        script=eemsdistscript
+    output:
+        "dists/{name}.eemsdist"
+    script: "../" + eemsdistscript
+
+eemsgridscript="scripts/eems_grid_dist.R"
+rule eems_grid_dist:
+    input:
+        mat=expand("eemsout/{i}/{name}/rdistJtDhatJ.txt",
+            i = range(N_EEMS_RUNS), 
+            name = ['{name}']),
+        script=eemsgridscript
+    output:
+        "dists/{name}.eemsgriddist"
+    script: "../" + eemsgridscript
+
+rule gen_grid_dist:
+    input:
+        mat=expand("eemsout/{i}/{name}/rdistJtDobsJ.txt",
+            i = range(N_EEMS_RUNS), 
+            name = ['{name}']),
+        script=eemsgridscript
+    output:
+        "dists/{name}.gengriddist"
+    script: "../" + eemsgridscript
+
+
+rule dist_all:
+    input:
+        "dists/{name}.gengriddist",
+        "dists/{name}.eemsgriddist",
+        "dists/{name}.eemsdist",
+        "dists/{name}_dim10.pcdist",
+        "dists/{name}_dim2.pcdist",
+        "dists/{name}.geodist",
+    output:
+        "dists/{name}.dists"
+    shell:
+        "touch {output}"
+"""
+rule pc_grid_dist:
+    pass
+
+rule geo_grid_dist:
+    pass
+"""
