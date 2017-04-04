@@ -27,6 +27,29 @@ add_eems_overlay <- function(P, mcmcpath, is.mrates=T, ...){
                                  is.mrates=is.mrates, ...) #+
 }
 
+get_boundary_map <- function(){
+    print("iterior only")
+    regions <- map(namesonly=T, plot=F)
+    regions <- regions[substr(regions, 1, 5) != 'Antar']
+    m1 <- map(regions=regions, interior=F, plot=F, xlim=c(-30, 180), resolution=0)
+    m2 <- map(regions=regions, interior=F, plot=F, xlim=c(-180, -30), resolution=0)
+    m1$group <- cumsum(is.na(m1$x))
+    m2$group <- cumsum(is.na(m2$x)) + max(m1$group) + 1
+    m <- data.frame(long=c(m1$x,m2$x), lat=c(m1$y, m2$y),
+		    group=c(m1$group, m2$group))
+    m <- m %>% filter(!is.na(long))
+    m$long[m$long< -30] <- m$long[m$long< -30] +360   
+    m$lat[m$lat< -38] <- -38
+    print("got interior")
+    return(m)
+}
+get_fill_map <- function(){
+    m = map_data("world") %>% filter(region!='Antarctica')
+    m$long[m$long< -30] <- m$long[m$long< -30] +360   
+    lower_boundary <- m$lat < -38
+    m$lat[m$lat< -38] <- -38
+    m
+}
 combine_map <- function(bbox, zoom=6){
     bbox1 <- bbox
     bbox1['right'] <- 180-1e-10
@@ -51,7 +74,8 @@ shifted_map <- function(bbox, zoom=6){
 }
 
 
-make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F){
+make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, interior=F,
+		     fancy_proj_pars=c(90,10, 40), ...){
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
@@ -75,35 +99,51 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F){
     }
 
     #FORMAT axis                                                                            
-    a=a+scale_x_continuous("Longitude",limits = bbox[c('left', 'right')],
-                           expand = c(0, 0))               
-    a=a+ scale_y_continuous("Latitude",limits = bbox[c('bottom', 'top')], 
-                            expand = c(0, .50))                
+    a=a+scale_x_continuous("Longitude")
+    a=a+ scale_y_continuous("Latitude")
                                                                                         
     a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
     a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
 
-    m = map_data("world") %>% filter(region!='Antarctica')
-    m$long[m$long< -30] <- m$long[m$long< -30] +360   
-    lower_boundary <- m$lat < -38
-    m$lat[m$lat< -38] <- -38
+    m_fill <- get_fill_map()
+    m_boundary <- get_boundary_map()
 
     if(fancy_proj){
-        a = a + geom_polygon(data=m, aes(x=long, y=lat, group=group),  color='black',
-                             fill='#dddddd')
-    	if(!just_map){
-	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	if(interior){
+	    a = a + geom_polygon(data=m_fill, aes(x=long, y=lat, group=group),  color='black',
+				 fill='#aaaaaa')
+	} else {
+	    a = a + geom_polygon(data=m_fill, aes(x=long, y=lat, group=group),  color='#aaaaaa',
+				 fill='#aaaaaa')
 	}
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
-        a = a + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
-	a = a + ylim(-38, 80)
-        a = a + theme_classic()
+    	if(!just_map){
+	    a = add_eems_overlay(a, mcmcpath, is.mrates, ...)
+	}
+	if(interior){
+	    a = a + geom_path(data=m_fill, aes(x=long, y=lat, group=group),  color='#222222dd')
+	}else {
+	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
+	}
+        a = a + coord_map("mollweide",orientation=fancy_proj_pars,
+			  xlim=c(-20, 195), ylim=c(-30,80)) + xlim(-20,195)
+	print("plotting fancy")
+        a = a + theme_classic() #+ theme(panel.background = element_rect(colour = "#efefef")
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
     } else {
+	a=a+coord_map("mercator", parameters=NULL,  xlim=bbox[c('left', 'right')],
+			   ylim=bbox[c('bottom', 'top')]
+			   ) + 
+	    xlim(bbox[c('left', 'right')])+ 
+	    ylim(bbox[c('bottom', 'top')])
     	if(!just_map){
-	    a = add_eems_overlay(a, mcmcpath, is.mrates)
+	    a = add_eems_overlay(a, mcmcpath, is.mrates,...)
 	}
-        a = a + geom_path(data=m, aes(x=long, y=lat, group=group),  color='#222222dd')
+	if(interior){
+	    a = a + geom_path(data=m_fill, aes(x=long, y=lat, group=group),  color='#222222dd')
+	}else {
+	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
+	}
+	print("done with map fn")
     }
 
     #a=a+gg_add_samples(mcmcpath)
@@ -123,144 +163,6 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
 		    color='#222222dd') 
 }
 
-
-ggscatterplot <- function(mcmcpath,pop_display_file, indiv_label_file, 
-                          remove.singletons=F, outlier_file, ...) {
-    print('Plotting average dissimilarities within and between demes')
-    mcmcpath1 <- character()
-    for (path in mcmcpath) {
-        if (file.exists(paste(path,'/rdistJtDobsJ.txt',sep=''))&&
-            file.exists(paste(path,'/rdistJtDhatJ.txt',sep=''))&&
-            file.exists(paste(path,'/rdistoDemes.txt',sep=''))) {
-            mcmcpath1 <- c(mcmcpath1,path)
-        }
-    }
-    mcmcpath <- mcmcpath1
-    nsimnos <- length(mcmcpath)
-    if (nsimnos==0) { return(0) }
-    ## List of observed demes, with number of samples taken collected
-    ## Each row specifies: x coordinate, y coordinate, n samples
-    oDemes <- scan(paste(mcmcpath[1],'/rdistoDemes.txt',sep=''),quiet=TRUE)
-    oDemes <- matrix(oDemes,ncol=3,byrow=TRUE)
-    Sizes <- oDemes[,3]
-    nPops <- length(Sizes)
-    matSize <- matrix(Sizes,nPops,nPops)
-    minSize <- pmin(matSize,t(matSize))
-
-    JtDobsJ <- matrix(0,nPops,nPops)
-    JtDhatJ <- matrix(0,nPops,nPops)
-    for (path in mcmcpath) {
-        print(path)
-        JtDobsJ <- JtDobsJ + as.matrix(read.table(paste(path,'/rdistJtDobsJ.txt',sep=''),header=FALSE))
-        JtDhatJ <- JtDhatJ + as.matrix(read.table(paste(path,'/rdistJtDhatJ.txt',sep=''),header=FALSE))
-    }
-    JtDobsJ <- JtDobsJ/nsimnos
-    JtDobsJ[is.nan(JtDobsJ)] <- median(diag(JtDobsJ), na.rm=T) #nan fix
-    JtDhatJ <- JtDhatJ/nsimnos
-
-    pop_labels <- get_fit_matrix_abbrev(mcmcpath, indiv_label_file, pop_display_file)
-    pop_ids <- get_fit_matrix_ids(mcmcpath, indiv_label_file, pop_display_file)
-    pop_labels_full<- get_fit_matrix_full(mcmcpath, indiv_label_file, pop_display_file)
-    label_mat <- outer(FUN=paste, pop_labels, pop_labels, sep="-")
-    #label_mat <<- label_mat
-
-
-    if (remove.singletons) {
-        print("REMOVING SINGLETONS")
-        remove <- which(Sizes<=1)
-        if (length(remove)) {
-            JtDobsJ <- JtDobsJ[-remove,-remove]
-            JtDhatJ <- JtDhatJ[-remove,-remove]
-            minSize <- minSize[-remove,-remove]
-            Sizes <- Sizes[-remove]
-            nPops <- length(Sizes)
-            label_mat <- label_mat[-remove, -remove]
-            pop_labels <- pop_labels[-remove]
-            pop_labels_full <- pop_labels_full[-remove]
-            pop_ids <- pop_ids[-remove]
-        }
-    }
-    if (nPops<2) {
-        print('Need at least two observed demes to plot pairwise differences')
-        return (0)
-    }
-
-    require(fields)
-    dmat <- as.matrix(rdist.earth(oDemes[,1:2]))
-    dpts <- dmat[upper.tri(dmat, diag=FALSE)]
-
-    Wobs <- diag(JtDobsJ)
-    What <- diag(JtDhatJ)
-    ones <- matrix(1,nPops,1)
-    Bobs <- JtDobsJ - (Wobs%*%t(ones) + ones%*%t(Wobs))/2
-    Bhat <- JtDhatJ - (What%*%t(ones) + ones%*%t(What))/2
-    xpts <- Bhat[upper.tri(Bhat,diag=FALSE)]
-    ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
-    label_mat <- label_mat[upper.tri(label_mat, diag=FALSE)]
-    
-
-    cnts <- minSize[upper.tri(minSize,diag=FALSE)]
-    par(font.main=1)
-    plot(xpts,ypts,col=NULL,
-         xlab=expression(paste("Fitted dissimilarity between demes,  ",hat(D)[ab]," - (",hat(D)[aa],"+",hat(D)[bb],")/2",sep="")),
-         ylab=expression(paste("Observed dissimilarity between demes,  ",D[ab]," - (",D[aa],"+",D[bb],")/2",sep="")), ...)
-    if (remove.singletons) {
-        title(main="Dissimilarities between demes\nSingleton demes, if any, excluded from plot (not from EEMS)")
-    } else {
-        title(main="Dissimilarities between demes\nGray means a or b has a single individual sampled from")
-    }
-    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=label_mat)
-    abline(0, 1, col='grey', lty=2)
-
-
-    ypts <- Wobs
-    xpts <- What
-    plot(xpts,ypts,col=NULL,
-         xlab=expression(paste("Fitted dissimilarity within demes,  ",hat(D)[aa],sep="")),
-         ylab=expression(paste("Observed dissimilarity within demes,  ",D[aa],sep="")), ...)
-    if (remove.singletons) {
-        title(main="Dissimilarities within demes\nSingleton demes, if any, excluded from plot (not from EEMS)")
-    } else {
-        title(main="Dissimilarities within demes\nGray means a has a single individual sampled from")
-    }
-    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=pop_labels)
-    abline(0, 1, col='grey', lty=2)
-
-
-
-
-
-    diag(Bobs) <- 0
-    diag(Bhat) <- 0
-    print(dim(Bobs))
-    Bobs <<- Bobs
-    Bhat <<- Bhat
-    print(dim(Bobs))
-    abs_error <- abs(Bobs-Bhat)                  
-    m <- apply(abs_error, 2, median)             
-    mad <- apply( abs(abs_error -m), 2, median)  
-
-    error_by_pop <- mad / median(mad)
-    o20 <- order(error_by_pop, decreasing=T)[1:min(20, length(error_by_pop))]
-    barplot(error_by_pop[o20], names.arg=pop_labels_full[o20], las=2, cex.names=0.6)
-    title("Median Abs Error of Fitted Dissimilarities (Top 20)")
-    o <- order(error_by_pop, decreasing=T)
-    barplot(error_by_pop[o], names.arg=pop_labels_full[o], las=2, cex.names=0.6
-            )
-    title("Median Abs Error of Fitted Dissimilarities")
-
-    write.table(data.frame(popId=pop_ids, error=error_by_pop), outlier_file, 
-                row.names=F)
-
-    #=------------------- stuff w
-    dmat <- rdist.earth(oDems[,1:2])
-    xpts <- dmat[upper.tri(dmat, diag=FALSE)]
-    ypts <- Bobs[upper.tri(Bobs,diag=FALSE)]
-    plot(xpts,ypts,col=NULL,
-         xlab=expression(paste("Geographic distance between demes,  ",hat(D)[aa],sep="")),
-         ylab=expression(paste("Observed genetic dissimilarity between demes,  ",D[aa], " (km)", sep="")), ...)
-    text(xpts,ypts,col=c("black","gray60")[1+1*(cnts==1)], labels=pop_labels)
-}
 
 read.output.graph <- function(path) {
     ipmap <- scan(paste(path,'/ipmap.txt',sep=''),what=numeric(),quiet=TRUE)
@@ -285,12 +187,16 @@ ggadd.graph <- function(g, color="#eeeeee50"){
     grid <- data.frame(xstart, xend, ystart, yend)
     geom_segment(aes(x=xstart, y=ystart, xend=xend, yend=yend), data=grid, color=color)
 }
-ggadd.pts <- function(g, color="#222222dd"){
+ggadd.pts <- function(g, color="#efefefdd", const_size=T){
     tbl <- table(g$ipmap)
     ind <- as.numeric(names(tbl))
     sizes <- as.vector(tbl)
     df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
-    geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
+    if(const_size) {
+	pts <- geom_point(aes(x=x, y=y), data=df, color=color, size=1.5)
+    } else {
+	pts <- geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
+    }
 }
 
 read.edges <- function(mcmcpath) {

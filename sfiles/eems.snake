@@ -401,43 +401,27 @@ rule ggplot_eems:
         eemsin,
         pop_display=config['DATA']['meta'] + '.pop_display',
         pop_geo='subset/{name}.pop_geo',
-        indiv_label='subset/{name}.indiv_meta'
-    params:
-        RES=200,
-        ZOOM=4,
-        fancy=1
+        indiv_label='subset/{name}.indiv_meta',
+	libscript="scripts/ggeems/ggeems_main.R",
+	libscript2="scripts/ggeems/eems.plots.ggplot.R",
+	runscript="scripts/ggeems/run.R",
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
         m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png"
-    run:
-        s =  "%s scripts/ggeems/run.R" % config['EXE']['R']
-        s +=   " {wildcards.nruns} {wildcards.name} "
-        s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
-        s += " {params.RES} {params.ZOOM} {params.fancy}"
-        shell(s)
+    script: "../" + "scripts/ggeems/run.R"
 
-rule ggeems_scatter:
+rule ggeems_errors:
     input:
-        eemsin,
+        dist="dists/global2.dist",
+        grid="dists/global2.grid",
         pop_display=config['DATA']['meta'] + '.pop_display',
-        pop_geo='subset/{name}.pop_geo',
-        indiv_label='subset/{name}.indiv_meta',
-        diffs='eems/{name}.diffs',
-        order='eems/{name}.order',
-        ggpcvsgrid='figures/pcvsgrid/{name}_pc1-2.rds',
-        ggrsq='figures/rsq/{name}_pc1-10.rds',
-        script='scripts/ggeems/scatter.R'
+        popgrid="dists/global2.popgrid",
+        script='scripts/ggeems/error.R',
+        runscript='scripts/ggeems/run_error.R',
     output:
-        p1="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid01.png",
-        p2="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid02.png",
-        p3="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid03.png",
-        p4="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-grid04.png",
-        p5="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop01.png",
-        p6="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop02.png",
-        p7="eemsout_gg/{name}_nruns{nruns, \d+}-scatter-pop03.png",
-        paperfig="figures/paper/scatter_{name}_nruns{nruns, \d+}.png",
-        paperrds="figures/paper/scatter_{name}_nruns{nruns, \d+}.rds"
-    script: "../scripts/ggeems/run_scatter_snake.R"
+        err_pop="eemsout_gg/{name}_nruns{nruns, \d+}-error-pop01.png",
+        err_grid="eemsout_gg/{name}_nruns{nruns, \d+}-error-grid01.png",
+    script: "../scripts/ggeems/run_error.R"
     #run:
     #    s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
     #    s +=   " {wildcards.nruns} {wildcards.name} "
@@ -495,7 +479,7 @@ rule ggeems_map:
         indiv_label='subset/{name}.indiv_meta'
     params:
         RES=100,
-        ZOOM=4,
+        ZOOM=3,
         fancy=0
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-map01.png",

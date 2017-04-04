@@ -30,5 +30,3 @@ compute.pts <- function(dimns,spatfile, standardize=F) {
     return(zvals)
 }
 
-if( interactive()) {
-}

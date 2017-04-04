@@ -16,6 +16,7 @@ get.z <- function(mcmcpath, dimns, is.mrates, longlat=F){
         Zmean <- Zmean + rslt$Zvals
     }
     Zmean <- Zmean/niter
+
     Zvar <- matrix(0,dimns$nxmrks,dimns$nymrks)
     for (path in mcmcpath) {
         rslt <- standardize.rates.var(path,dimns,Zmean,longlat,is.mrates)
@@ -26,9 +27,30 @@ get.z <- function(mcmcpath, dimns, is.mrates, longlat=F){
     return(list(mean=Zmean, var=Zvar))
 }
 
+get.sign <- function(mcmcpath, dimns, is.mrates, longlat=F){
+    niter <- 0
+    Zpos <- matrix(0,dimns$nxmrks,dimns$nymrks)
+    Zneg <- matrix(0,dimns$nxmrks,dimns$nymrks)
+    for (path in mcmcpath) {
+        rslt <- standardize.rates.sign(path,dimns,longlat,is.mrates)
+        niter <- niter + rslt$niter
+        Zpos <- Zpos + rslt$Zpos
+        Zneg <- Zneg + rslt$niter - rslt$Zpos
+    }
+    Zpos <- Zpos/niter
+    Zneg <- Zneg/niter
+
+    Z <- matrix(0.000,dimns$nxmrks,dimns$nymrks)
+    Z[Zpos > .95] <- 1.99
+    Z[Zneg > .95] <- -1.99
+
+    print(Zpos)
+    return(Z)
+}
+
 
 average.eems.contours.ggplot <- function(P, mcmcpath,dimns,
-                                  is.mrates) {
+                                  is.mrates, signplot=F, ...) {
     if (is.mrates) {
         message('Plotting effective migration rates m : posterior mean and variance')
         files <- c('/mcmcmtiles.txt','/mcmcmrates.txt', 
@@ -43,32 +65,37 @@ average.eems.contours.ggplot <- function(P, mcmcpath,dimns,
     n_runs <- length(mcmcpath)
     if (n_runs==0) { return(0) }
 
-    Z <- get.z(mcmcpath, dimns, is.mrates, T)
-    Zmean <- Z[[1]]
-    Zvar <- Z[[2]]
-    
-
-    add.one.eems.contour.ggplot(P, mcmcpath, dimns, Zmean, Zvar,
-                             is.mrates)
+    if(signplot){
+        Z <- get.sign(mcmcpath, dimns, is.mrates, T)
+        saveRDS(Z, "z.rds")
+        return(add.one.eems.contour.ggplot(P, mcmcpath, dimns, Z, Zvar=NULL,
+                                 is.mrates, ...))
+    }else{
+        Z <- get.z(mcmcpath, dimns, is.mrates, T)
+        Zmean <- Z[[1]]
+        Zvar <- Z[[2]]
+        return(add.one.eems.contour.ggplot(P, mcmcpath, dimns, Zmean, Zvar,
+                                 is.mrates, ...))
+    }
 }
 
 
 add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
-                                     is.mrates){
+                                     is.mrates, alpha_limits=c(0,.1), 
+                                     alpha_null=0.6, ...){
     y <- rep(dimns$ymrks, each=length(dimns$xmrks))       
     x <- rep(dimns$xmrks, length(dimns$ymrks))
 
-    Zcv <- c(sqrt(Zvar)/Zmean)
-    Zprec <- 1/c(Zvar)
-    Zprecn <- (Zprec-min(Zprec))/(max(Zprec)-min(Zprec))
-    Zprecn <- rank(Zprecn)/length(Zprecn)
-    Zcvn <- (Zcv-min(Zcv))/(max(Zcv)-min(Zcv))
+    #Zcv <- c(sqrt(Zvar)/Zmean)
+    #Zprec <- 1/c(Zvar)
+    #Zprecn <- (Zprec-min(Zprec))/(max(Zprec)-min(Zprec))
+    #Zprecn <- rank(Zprecn)/length(Zprecn)
+    #Zcvn <- (Zcv-min(Zcv))/(max(Zcv)-min(Zcv))
 
     df <- data.frame(x=y, y=x, Zmean=c(Zmean), 
-                     Zvar=c(Zvar), Zprecn=Zprecn,
-                     Zcvn=Zcvn, filter=dimns$filter)
+                     filter=dimns$filter)
     dff <- df[!df$filter,]
-    dff$alpha <- 0.6
+    dff$alpha <- alpha_null
     dff <<- dff
 
     df <- df[df$filter,]
@@ -77,13 +104,22 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     df$Zmean[df$Zmean > 2] <- 2
     df$Zmean[df$Zmean < (-2)] <- -2
 
-    df$alpha <- cut(df$Zmean, 101)
-    alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), values=alpha, guide='none')
+    n_cuts <- max(min(101, length(unique(df$Zmean))), 2)
+    print(n_cuts)
+    df$alpha <- cut(df$Zmean, n_cuts)
+    alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), 
+                                      values=alpha, guide='none',
+                                      palette=function(n){
+                                          nhalf = n %/% 2
+                                          s <- seq(alpha_limits[2], 
+                                              alpha_limits[1], 
+                                              length.out=nhalf)
+                                          c(s, alpha_limits[1], rev(s))
+                                      })
 
     #rescaling for debug
     #df$y <- 8 + (df$y - min(df$y))/diff(range(df$y))*2.3
     #df$x <- 38.85 + (df$x - min(df$x))/diff(range(df$x))*2.53
-
 
 
     if(is.mrates){
@@ -97,7 +133,7 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
     tiles <- P + geom_tile(data=df, aes(x=y, y=x, fill=Zmean, alpha=alpha) ) +
 	eems_colors + alpha_scale 
     tiles <- tiles + geom_tile(data=dff, aes(x=y, y=x),
-			       alpha=0.6, fill='white', color=NA)
+			       alpha=alpha_null, fill='white', color=NA)
 			    
     return(tiles)
 }
@@ -222,6 +258,22 @@ compute.contour.vals <- function(dimns,seeds,rates,use.weighted.mean=TRUE) {
     }
     return(zvals)
 }
+compute.contour.vals.sign <- function(dimns,seeds,rates,use.weighted.mean=TRUE) {
+    ## Here 'seeds' stores the generator seeds of a Voronoi tessellation
+    ## and 'rates' stores the log10-transformed rates of the tiles.
+    ## If there are C seeds in the partition, then 'seeds' is a matrix
+    ## with C rows and 2 columns and 'rates' is a vector with C elements
+    distances <- rdist(dimns$marks,seeds)
+    closest <- apply(distances,1,which.min)
+    if (use.weighted.mean) {
+        zvals <- matrix(rates[closest],dimns$nxmrks,dimns$nymrks,byrow=FALSE)
+        zvals <- zvals - mean(zvals)
+    } else {
+        rates <- rates - mean(rates)
+        zvals <- matrix(rates[closest],dimns$nxmrks,dimns$nymrks,byrow=FALSE)
+    }
+    return(zvals>0)
+}
 standardize.rates <- function(mcmcpath,dimns,longlat,is.mrates) {
     voronoi <- read.voronoi(mcmcpath,longlat,is.mrates)
     rates <- voronoi$rates
@@ -242,6 +294,28 @@ standardize.rates <- function(mcmcpath,dimns,longlat,is.mrates) {
         count <- count + now.tiles
     }
     return(list(Zvals=Zvals,niter=niter))
+}
+
+standardize.rates.sign <- function(mcmcpath,dimns,longlat,is.mrates) {
+    voronoi <- read.voronoi(mcmcpath,longlat,is.mrates)
+    rates <- voronoi$rates
+    tiles <- voronoi$tiles
+    xseed <- voronoi$xseed
+    yseed <- voronoi$yseed
+    Zpos <- matrix(0,dimns$nxmrks,dimns$nymrks)
+    niter <- min(100, length(tiles))
+    count <- 0
+    for (i in 1:niter) {
+        now.tiles <- tiles[i]
+        now.rates <- rates[(count+1):(count+now.tiles)]
+        now.xseed <- xseed[(count+1):(count+now.tiles)]
+        now.yseed <- yseed[(count+1):(count+now.tiles)]
+        now.seeds <- cbind(now.xseed,now.yseed)
+        zvals <- compute.contour.vals.sign(dimns,now.seeds,now.rates)
+        Zpos <- Zpos + zvals
+        count <- count + now.tiles
+    }
+    return(list(Zpos=Zpos,niter=niter))
 }
 standardize.rates.var <- function(mcmcpath,dimns,Zmean,longlat,is.mrates) {
     voronoi <- read.voronoi(mcmcpath,longlat,is.mrates)

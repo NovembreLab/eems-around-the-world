@@ -13,6 +13,7 @@ indiv_meta_file <- snakemake@input$indiv_meta
 ipmap_file <- snakemake@input$ipmap
 
 outname <- snakemake@output[[1]]
+outname2 <- snakemake@output[[2]]
 
 
 #load mats
@@ -25,12 +26,14 @@ dmat <- apply(a, 1:2, mean)
 inds <- read_delim(order, col_names=F, delim=" ")[,1]
 ipmap <- read.table(ipmap_file)
 inds <- cbind(inds, ipmap)
-names(inds) <- c('sampleId', 'gridId')
+names(inds) <- c('sampleId', 'grid')
 indiv_meta <- read_csv(indiv_meta_file)
 inds %>% left_join(indiv_meta) -> inds
-pops <- inds %>% group_by(popId) %>% summarize(gridId=first(gridId))
+pops <- inds %>% group_by(popId) %>% 
+    summarize(grid=first(grid), n=n())
+write.csv(pops, outname2, row.names=F)
 
-griddict <- pops$gridId
+griddict <- pops$grid
 names(griddict) <- pops$popId
 
 unique_pops <- unique(inds$popId)

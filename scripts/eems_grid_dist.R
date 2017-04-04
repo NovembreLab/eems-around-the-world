@@ -9,6 +9,7 @@ require(abind)
 D <- snakemake@input$mat
 
 outname <- snakemake@output[[1]]
+statname=snakemake@params$statname
 
 
 #load mats
@@ -19,8 +20,8 @@ dmat <- apply(a, 1:2, mean)
 rownames(dmat) <- 1:nrow(dmat)
 colnames(dmat) <- 1:nrow(dmat)
 v <- melt(dmat)
-names(v) <- c('popId.x', 'popId.y', 'eemsdist')
-v <- v %>% filter(popId.x < popId.y)
+names(v) <- c('grid.x', 'grid.y', statname)
+v <- v %>% filter(grid.x < grid.y)
 write.csv(v, outname, row.names=F)
 
 

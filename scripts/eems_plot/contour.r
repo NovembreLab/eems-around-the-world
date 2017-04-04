@@ -20,7 +20,8 @@ log.seq <- function(x,...){
     exp(seq(log(x[1]), log(x[2]), ...))
 }
 
-plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, n.levels=length(col), mode='logmean', add=F){
+plot.eems.contour<- function(dimns, pts, col.range=NULL, col=1:12, 
+			     n.levels=length(col), mode='median', add=F){
     mat <- matrix(NA, nrow=dimns$nxmrks, ncol=dimns$nymrks) 
     if(mode[1]=='mean'){
     mat[dimns$filter] <- colMeans(pts)

@@ -36,7 +36,7 @@ makePC <- function(data, n, col, field='abbrev'){
 }
 
 make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL,
-                    median_only=F){
+                    median_only=T){
     size <- ifelse(small, 1, 4)
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
@@ -137,8 +137,8 @@ makePlots <- function(data, col, output1, output2, wdf, rdsname="test.rds"){
     #saveRDS(p_summary, rdsname)
 
     nmax <- sum(substr(names(data),1,2) == 'PC') 
-    if(!wdf) p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     p2 <- lapply(seq(2,nmax, 2), function(i) make2PC(data, i-1, i, col, wdf=wdf))
+    if(!wdf) p1 <- lapply(1:nmax, function(i) makePC(data, i, col))
     #saveRDS(p2, "tmp.debug")
     l = list(PC1=p1, PC2=p2)
     #png(file=output1, width=3200, height=1600)

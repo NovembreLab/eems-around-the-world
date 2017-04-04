@@ -100,8 +100,6 @@ plot_pw <- function(df, text=F){
     ll <- lm(Bobs ~ Bhat, data=df)
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
-    print("plotting_pw")
-    print(head(df))
     if(text){
         if(!"label" %in% names(df)){
             df$label <- sprintf("%s|%s", df$popId.x, df$popId.y)
@@ -128,8 +126,6 @@ plot_vs_pc <- function(df, n=1){
     else{
 	pclab <- sprintf("Dissimilarity based on PC1-%s", n)
     }
-    print("XXXXX")
-    print(head(df))
     ll <- lm(Bobs ~ pcdist, data=df)
         r2 <- paste("r² = ",signif(summary(ll)$adj.r.squared, 2))
     cm <- scale_color_manual(labels=0:1, values=c('#aaaaaa', '#ffaaaa'))
@@ -170,13 +166,11 @@ plot_median_error <- function(error, nmax=50, text_out=NULL){
                                           fill=is_outlier), stat='identity') 
     } else {
         saveRDS(error, "error.rds")
-        print(error$nmad)
         nmax <- pmin(nmax, nrow(error))
         P <- ggplot(error[1:nmax,]) + geom_col(aes(y=nmad, x=labels, 
                                           fill=is_outlier))
     }
 
-    print(names(error))
     if(!is.null(text_out)){
         fnames <- sprintf("%s_%spc.txt", text_out, c(3,5,0))
         e <- error %>% select(labels, nmad, nmad_)

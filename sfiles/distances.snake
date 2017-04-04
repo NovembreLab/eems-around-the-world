@@ -10,6 +10,16 @@ rule pc_pop_dist:
         "dists/{name}_dim{npc, \d+}.pcdist"
     script:  "../" + pcpopscript
 
+pcgridscript="scripts/pcdistgrid.R"
+rule pc_grid_dist:
+    input:
+        pcs="pca/median_{name}_dim20.pc",
+        popgrid="dists/{name}.popgrid",
+        script = pcgridscript
+    output:
+        "dists/{name}_dim{npc, \d+}.pcgriddist"
+    script:  "../" + pcgridscript
+
 geopopscript="scripts/geodist.R"
 rule geo_dist:
     input:
@@ -41,7 +51,8 @@ rule eems_pop_dist:
         indiv_meta="subset/{name}.indiv_meta",
         script=eemsdistscript
     output:
-        "dists/{name}.eemsdist"
+        "dists/{name}.eemsdist",
+        "dists/{name}.popgrid",
     script: "../" + eemsdistscript
 
 eemsgridscript="scripts/eems_grid_dist.R"
@@ -51,6 +62,8 @@ rule eems_grid_dist:
             i = range(N_EEMS_RUNS), 
             name = ['{name}']),
         script=eemsgridscript
+    params:
+        statname='eemsdist'
     output:
         "dists/{name}.eemsgriddist"
     script: "../" + eemsgridscript
@@ -61,27 +74,43 @@ rule gen_grid_dist:
             i = range(N_EEMS_RUNS), 
             name = ['{name}']),
         script=eemsgridscript
+    params:
+        statname='gendist'
     output:
         "dists/{name}.gengriddist"
     script: "../" + eemsgridscript
 
+geogriddistscript="scripts/geodistgrid.R"
+rule geo_grid_dist:
+    input:
+        ipmap='eemsout/0/{name}/ipmap.txt',
+        demes='eemsout/0/{name}/demes.txt',
+        script=geogriddistscript
+    output:
+        "dists/{name}.geogriddist"
+    script: "../" + geogriddistscript
 
-rule dist_all:
+
+rule dist_grid_all:
     input:
         "dists/{name}.gengriddist",
         "dists/{name}.eemsgriddist",
+        "dists/{name}.geogriddist",
+        "dists/{name}_dim2.pcgriddist",
+        "dists/{name}_dim10.pcgriddist",
+    output:
+        "dists/{name}.grid"
+    script: "../" + "scripts/merge_dists.R"
+
+rule dist_all:
+    input:
+        "dists/{name}.gendist",
         "dists/{name}.eemsdist",
         "dists/{name}_dim10.pcdist",
         "dists/{name}_dim2.pcdist",
         "dists/{name}.geodist",
     output:
-        "dists/{name}.dists"
-    shell:
-        "touch {output}"
-"""
-rule pc_grid_dist:
-    pass
+        "dists/{name}.dist"
+    script: "../" + "scripts/merge_dists.R"
 
-rule geo_grid_dist:
-    pass
-"""
+
