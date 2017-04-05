@@ -1,6 +1,6 @@
 *figs
 admixture/
-pca/
+./pca/
 subset/
 .*
 *pdf

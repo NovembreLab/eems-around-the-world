@@ -9,8 +9,8 @@ get_cols <- function(axis1, axis2, cmat=color_mat()){
     cv <- cmat[cbind(x, y)]
 }
 
-color_mat <- function(col_top=c("black", "darkblue", "darkgreen", 'yellow'),
-                      col_bot=c("gray80", "pink", 'red', 'orange')
+color_mat <- function(col_top=c("black", "darkblue", "darkgreen", 'goldenrod'),
+                      col_bot=c("gray80", "purple", '#800000', 'orange')          
                       ){
     grad_top <- rev(gradient_n_pal(col_top)(0:100/100))
     grad_bot <- rev(gradient_n_pal(col_bot)(0:100/100))

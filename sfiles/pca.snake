@@ -97,6 +97,38 @@ rule make_pc_plots:
         rdspvename="figures/pca/pve_{name}.rds"
     script: "../" +__script__6
 
+rule make_2d_pc_plots:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        median='pca/median_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_order="subset/{name}.pop_order",
+        pop_geo=config['DATA']['meta'] + '.pop_geo',
+        __script__='scripts/pca/run_2d.R',
+        _libscript='scripts/ggpca2d.R',
+    params:
+        wdf=False
+    output:
+        pc2=expand('figures/pca/2d/{name}_pc{PC}.png', 
+            PC=range(1,5,2), name=['{name}']),
+        pc2rds=expand('figures/pca/2d/{name}_pc{PC}.rds', 
+            PC=range(1,5,2), name=['{name}']),
+        out_map_rds="figures/paper/map_{name}.rds",
+        out_map_png="figures/paper/map_{name}.png",
+    script: "../" +"scripts/pca/run_2d.R"
+
+rule make_pve_plot:
+    input:
+        pve_file="pca/flash_{name}_dim20.pve",
+        script="scripts/pca/pve.R"
+    output:
+        png="figures/pca/pve/{name}.png",
+        rds="figures/pca/pve/{name}.rds",
+    script: "../scripts/pca/pve.R"
+        
+
 script_median='scripts/get_pc_median.R'
 rule pca_median:
     input:
