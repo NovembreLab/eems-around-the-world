@@ -113,4 +113,13 @@ rule dist_all:
         "dists/{name}.dist"
     script: "../" + "scripts/merge_dists.R"
 
-
+rule dist_plot:
+    input:
+        dists="dists/{name}.dist",
+        pop_display=config['DATA']['meta'] + ".pop_display",
+        script="scripts/dists.R"
+    output:
+        png="figures/dists/{name}.png",
+        rds="figures/dists/{name}.rds"
+    script:
+        "../" + "scripts/dists.R"

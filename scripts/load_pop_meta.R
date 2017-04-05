@@ -153,3 +153,10 @@ get_grid_info <- function(ipmap_file, indiv_label_file){
     indiv_label <- read.csv(indiv_label_file)     
     i2 <- bind_cols(indiv_label,grid=o) %>% left_join(pop_display)
 }
+
+load_dists <- function(dist_file, pop_display){
+    dists <- read.csv(dist_file)
+    pd <- read.csv(pop_display)
+    dists %>% left_join(pd, by=c(popId.x="popId")) %>% 
+	left_join(pd, by=c(popId.y="popId"))
+}
