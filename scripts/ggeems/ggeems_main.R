@@ -159,8 +159,9 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
     pm <- pm[!is.na(pm$longitude),]                                          
     pm$longitude[pm$longitude < -30] <- pm$longitude[pm$longitude< -30]+360  
 
-    map + geom_text(data=pm, aes(label=abbrev, x=longitude, y=latitude),
-		    color='#222222dd') 
+    require(ggrepel)
+    map + geom_label_repel(data=pm, aes(label=abbrev, x=longitude, y=latitude),
+		    color='#222222dd', size=2, fill="#ffffff70") 
 }
 
 
