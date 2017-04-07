@@ -21,3 +21,5 @@ P_grid_err <- plot_error(grid_err, 'labels')
 
 ggsave(snakemake@output$err_pop, P_dist_err, width=CC$width, height=CC$height)
 ggsave(snakemake@output$err_grid, P_grid_err, width=3, height=3)
+saveRDS(P_dist_err,snakemake@output$err_pop_rds)
+saveRDS(P_grid_err,snakemake@output$err_grid_rds)

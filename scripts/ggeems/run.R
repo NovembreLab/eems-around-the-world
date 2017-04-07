@@ -41,6 +41,7 @@ if(C$sign_add_pts) m2 <- m2 + ggadd.pts(g, "#444444dd")
 #m2 = gg_add_samples_true(m, pop_geo, pop_display)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.png", name, nruns), m2,
        width=WIDTH, height=HEIGHT)
+saveRDS(m2,sprintf("eemsout_gg/%s_nruns%s-mrates01.rds", name, nruns))
 #ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.pdf", name, nruns), m2,
 #       width=WIDTH, height=HEIGHT)
 m = make_map(mcmcpath, C$zoom, is.mrates=T, fancy_proj=C$fancy, 

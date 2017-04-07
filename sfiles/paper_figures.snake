@@ -180,3 +180,20 @@ rule paper_fig:
         subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns4.png"),
 #        subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns3.png", subset0=True )
 	
+
+rule composite_fig:
+    input:
+        errors="eemsout_gg/{name}_nruns4-error-pop01.rds",
+        map1="eemsout_gg/{name}_nruns4-mrates01.rds",
+        map2="eemsout_gg/{name}_nruns4-mrates02.rds",
+        map3="figures/paper/map_{name}.rds",
+        pc1="figures/pca/2d/{name}_pc1.rds",
+        pc2="figures/pca/2d/{name}_pc3.rds",
+        scatter="figures/dists/{name}.rds",
+        pve="figures/pca/pve/{name}.rds",
+        script="scripts/composite_fig.R",
+    output:
+        png="figures/paper/{name}.png",
+#        pdf="figures/paper/{name}.pdf"
+    script:
+        "../" + "scripts/composite_fig.R"

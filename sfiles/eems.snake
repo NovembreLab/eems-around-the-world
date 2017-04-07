@@ -409,7 +409,9 @@ rule ggplot_eems:
 	runscript="scripts/ggeems/run.R",
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
-        m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png"
+        m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png",
+        mrds="eemsout_gg/{name}_nruns{nruns}-mrates01.rds",
+        m2rds="eemsout_gg/{name}_nruns{nruns}-mrates02.rds",
     script: "../" + "scripts/ggeems/run.R"
 
 rule ggeems_errors:
@@ -423,6 +425,8 @@ rule ggeems_errors:
     output:
         err_pop="eemsout_gg/{name}_nruns{nruns, \d+}-error-pop01.png",
         err_grid="eemsout_gg/{name}_nruns{nruns, \d+}-error-grid01.png",
+        err_pop_rds="eemsout_gg/{name}_nruns{nruns, \d+}-error-pop01.rds",
+        err_grid_rds="eemsout_gg/{name}_nruns{nruns, \d+}-error-grid01.rds",
     script: "../scripts/ggeems/run_error.R"
     #run:
     #    s =  "%s scripts/ggeems/run_scatter.R" % config['EXE']['R']
