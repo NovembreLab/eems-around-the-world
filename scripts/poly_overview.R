@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
 library(maps)
 library(RColorBrewer)
 library(dplyr)
+source("scripts/assign_color_by_coord.R")
 })
 
 load_snakemake <- function(){
@@ -57,6 +58,7 @@ plot_polys <- function(pops){
     m <- map(add=T, col='black')
     m$x <- m$x+360
     lines(m, col='black')
+    pops$color <- get_cols_wrap(pops)
     cv <- pops$color
     cv[pops[,"excluded"] == T] <- 'red'
     cv <- adjustcolor(cv, alpha.f=0.7)

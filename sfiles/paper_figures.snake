@@ -3,13 +3,13 @@ __script__1="scripts/poly_overview.R"
 rule subset_all_polygon_plot:
     input:
         polys=subset_paper_fun(prefix='subset/', ext='.polygon'),
-        pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=True),
+        pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=False),
         pop_display=config['DATA']['meta'] + '.pop_display',
         excluded='subset/excluded.txt',
 	script= __script__1
     output:
         png="paper/polygon_plot.pdf"
-    script: __script__1
+    script: "../" + __script__1
 
 __script__2="scripts/table_panels.R"
 rule table_panels:
@@ -37,12 +37,19 @@ __script__4="scripts/table_loc.R"
 rule table_locations:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
-        pop_geo="../meta/pgs/gvar.pop_geo",
-        pop_display ="../meta/pgs/gvar.pop_display",
+        pop_geo=config['DATA']['meta'] + ".pop_geo",
+        pop_display=config['DATA']['meta'] + ".pop_display",
 	script= __script__4
     output:
         csv='paper/table_loc.csv'
     script: "../" + __script__4
+
+rule all_tables:
+    input:
+        "paper/polygon_plot.pdf",
+        'paper/table_sources.csv',
+        "paper/table_panel.csv",
+        'paper/table_loc.csv',
 
 rule tex_blurb:
     output: "blurbs/{name}.tex",
@@ -152,6 +159,20 @@ rule pca_fig:
     output:
         "figures/paper/pca2.png"
     script: "../" + __script__5
+
+rule list_exclusion_rules:
+    input:
+        pop_display=config['DATA']['meta'] + '.pop_display',
+    output: "excl/{name}.excl"
+    run:
+        import pandas as pd
+        cfg = load_subset_config(config['subset'], wildcards.name)
+        print(cfg['exclude_pop'])
+        x = pd.read_csv(input.pop_display)
+        x = x[x.popId.isin(cfg['exclude_pop'])]
+        x['run'] = wildcards.name
+        x.to_csv(output[0], index=False)
+        
 
 
 rule paper_fig:

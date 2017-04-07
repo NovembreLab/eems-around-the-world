@@ -15,6 +15,7 @@ pop_geo <- snakemake@input$pop_geo
 indiv_label <- snakemake@input$indiv_label
 
 C <- get_config(snakemake, 'eems')
+RES <- C$RES
 print(C)
 
 alpha_limits <- c(C$min_alpha, C$max_alpha)
@@ -42,7 +43,7 @@ ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.png", name, nruns), m2,
        width=WIDTH, height=HEIGHT)
 #ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.pdf", name, nruns), m2,
 #       width=WIDTH, height=HEIGHT)
-m = make_map(mcmcpath, ZOOM, is.mrates=T, fancy_proj=C$fancy, 
+m = make_map(mcmcpath, C$zoom, is.mrates=T, fancy_proj=C$fancy, 
 	     alpha_limits=alpha_limits, fancy_proj_pars=C$fancy_proj_pars,
 	     signplot=F, alpha_null=alpha_null)
 m3 <- m + null_theme
@@ -57,7 +58,7 @@ ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates02.png", name, nruns), m3 ,
 
 
 if(C$do_q_plots){
-m = make_map(mcmcpath, ZOOM, is.mrates=F, fancy_proj=C$fancy,
+m = make_map(mcmcpath, C$zoom, is.mrates=F, fancy_proj=C$fancy,
 	     alpha_limits)
 m2 = gg_add_samples_true(m, pop_geo, pop_display)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates01.png", name, nruns), m2,

@@ -2,6 +2,8 @@ require(ggplot2)
 require(gridExtra)
 require(ggmap)
 
+alpha_limits <- c(0.3, 1)
+
 PANEL='global2'
 if(length(commandArgs(T))>0){PANEL <- commandArgs(T)[1]}
 
@@ -35,13 +37,13 @@ null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
 
 world_map <- readRDS(sprintf("eemsout_gg/%s_nruns4-mrates02.rds", PANEL))
 #world_map <- readRDS("test.rds")
-pc1 <- readRDS(sprintf("figures/pca/pc2d_%s.rds", PANEL))[[1]] + global_theme
-pc2 <- readRDS(sprintf("figures/pca/pc2d_%s.rds", PANEL))[[2]] + global_theme
-pve <- readRDS(sprintf("figures/pca/pve_%s.rds", PANEL)) + global_theme
+pc1 <- readRDS(sprintf("figures/pca/2d/%s_pc1.rds", PANEL)) + global_theme
+pc2 <- readRDS(sprintf("figures/pca/2d/%s_pc3.rds", PANEL)) + global_theme
+pve <- readRDS(sprintf("figures/pca/pve/%s.rds", PANEL)) + global_theme
 map <- readRDS(sprintf("figures/paper/map_%s.rds", PANEL)) + global_theme
 #map <- map + coord_map("mollweide",orientation=c(90,10, 40)) + xlim(-20, 195)
 
-l <- readRDS(sprintf("figures/paper/scatter_%s_nruns4.rds", PANEL))
+l <- readRDS(sprintf("figures/dists/%s.rds", PANEL))
 
 wmap = world_map + null_theme + global_theme + 
     scale_size_continuous(guide='none', range=c(.2,2)) +
@@ -54,12 +56,12 @@ g <-grid.arrange(wmap + ggtitle("A"),
 		 map + ggtitle("B"), 
 		 pc1 + ggtitle("C"), 
 		 pc2 + ggtitle("D"),
-		 l[[1]] +ggtitle("F"), 
-                 l[[2]] + ggtitle("G"),
-                 l[[3]] + ggtitle("H"),
+		 l +ggtitle("F"), 
+                 l + ggtitle("G"),
+                 l + ggtitle("H"),
                  #l[[4]] + ggtitle("I"),
 		 pve + ggtitle("I"),
-                 l[[5]] + ggtitle("J"),
+                 l + ggtitle("J"),
                  layout_matrix=layout_mat, 
 		 heights=list(0.8,1.2,1.2,.9,.9),
 		 widths=c(1,1,1,1)) 

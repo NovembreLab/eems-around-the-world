@@ -4,7 +4,7 @@ require(mapdata)
 options(bitmapType='cairo')
 
 
-RES <- 40 #the number of tiles along each axis.
+#RES <- 40 #the number of tiles along each axis.
 
 
 get.z <- function(mcmcpath, dimns, is.mrates, longlat=F){

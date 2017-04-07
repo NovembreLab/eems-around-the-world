@@ -5,6 +5,7 @@ EPS = 0.00001
 
 base = lambda x: os.path.splitext(x)[0]
 
+localrules: make_pilot0_ini_file, make_post_pilot0_ini
 
 rule run_eems0_single_run:
     input:

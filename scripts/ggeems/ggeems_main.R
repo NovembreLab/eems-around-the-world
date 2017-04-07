@@ -5,7 +5,7 @@ source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 
 
-RES=20
+#RES=20
 
 medi_folder <- '../../../../results/Hussein/eemsplots/3-25-16/'
 mcmcpath_medi <- sprintf("%s/medit/runs_w_basque/run_%s/", medi_folder, 0:5)

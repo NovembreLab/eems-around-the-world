@@ -16,15 +16,21 @@ include: 'sfiles/distances.snake'
 
 
 subsets_paper = [
-"global2",
-"africa4",
-"centralasiacer22",
-"easia5pccer22",
-"europe2",
-"india5noonge",
-"medi1",
-"seasia3c",
-"southafrica1"
+    "global2", #reruning global0b
+    "eumedi1", #running eumedi4, eumedi2
+    "easia5pccer22", #waiting for easiacer20b
+
+    "northafrica0", #waiting for 0b/0c
+    "africa4", #waiting for 0b/0c
+    "seasia3c", #waiting for seasia0c
+
+    "medi0", #completely done
+    "europe3", #completely done
+
+    "centralasiacer22", #completely done
+    "india5noonge", #completely done
+
+    "southafrica1" #completely done
 ]
 subsets0 = ['africa0', 
     'medi0',
@@ -38,6 +44,25 @@ subsets0 = ['africa0',
 #    "ncasia0",
 #    "northasia0",
 #    "ncasia0",
+]
+
+excluded_sets = [
+'centralasia3pccer11',
+'centralasia5pccer11',
+"easia1",
+"easiacer11",
+"seasia4c",
+"africa5pc1",
+"africa5pc2",
+"eumedi0",
+
+#currently running
+"global3",
+"eumedi3",
+"northafrica0b",
+"northafrica0c",
+"eumedi2",
+"seasia0c"
 ]
 
 #subsets_paper.extend(subsets0)
@@ -170,13 +195,18 @@ def subset_paper_fun(ext, prefix='', subset0=False):
 include: 'sfiles/eems.snake'
 include: 'sfiles/eems0.snake'
 
-def subset_all_fun(ext, prefix=''):
+def subset_all_fun(ext, prefix='', force=False):
     def ss(wildcards):
         #print('subset_all_fun called')
         subsets = config['subset'].keys()
         #print(subsets)
+        local_excluded = excluded_sets
+        if(force): local_excluded = []
+        for s in subsets:
+            if s in local_excluded:
+                print("excluded " + s)
         infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
-            if not s == '__default__']
+            if not (s == '__default__' or s in local_excluded)]
         return infiles
     return ss
     
@@ -264,10 +294,32 @@ rule subset_all_ini10:
 rule subset_all_diagnostic_mds:
     input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
 
+rule subset_paper_newplots:
+    input : 
+        subset_paper_fun(prefix='figures/pca/pve/', ext='.png'),
+        subset_paper_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
+
+rule subset_all_newplots:
+    input : 
+        subset_all_fun(prefix='figures/pca/pve/', ext='.png'),
+        subset_all_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
+        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
+        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
 
 
 rule subset_admixture_k2:
     input: subset_all_fun_reps(prefix='admixture/{i}/', ext='.2.P')
+
+rule subset_all_error_plot:
+    input: subset_all_fun(prefix="eemsout_gg/", ext="_nruns4-error-pop01.png")
+
+rule subset_all_scatter_plot:
+    input: subset_all_fun(prefix="figures/dists/", ext=".png")
+
+rule subset_all_excluded:
+    input: subset_all_fun(prefix="excl/", ext=".excl", force=True)
         
 
 # rules that do the data partitioning

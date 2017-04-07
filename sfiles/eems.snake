@@ -155,6 +155,8 @@ rule run_eems_single_run:
         xcoord='eemsout/{i, \d+}/{name}/mcmcxcoord.txt',
         ycoord='eemsout/{i, \d+}/{name}/mcmcycoord.txt',
         zcoord='eemsout/{i, \d+}/{name}/mcmczcoord.txt',
+        Dobs='eemsout/{i, \d+}/{name}/rdistJtDobsJ.txt',
+        Dhat='eemsout/{i, \d+}/{name}/rdistJtDhatJ.txt',
     run:
         wc = wildcards.name, wildcards.i
         new_diff = 'eems/%s-run%s.diffs' % wc
@@ -182,6 +184,8 @@ eems_output_files = ['demes.txt',
     'mcmcmxcoord.txt',
     'mcmcmycoord.txt',
     'mcmcmzcoord.txt',
+    'rdistJtDobsJ.txt',
+    'rdistJtDhatJ.txt',
     'mcmcmwcoord.txt']
 eems_last_files = ['demes.txt', 
     'edges.txt',
@@ -271,7 +275,6 @@ rule make_pilot_ini_file:
             n_demes=n_demes, **cfg)
 
 def get_pilot_runs_input(wildcards):
-    print(wildcards)
     name = wildcards.name
     try:
         n_pilots = int(config['eems'][name]['n_pilots'])
@@ -298,7 +301,6 @@ rule make_post_pilot_ini:
     output:
         inifile='eems/{name}-run{i, \d+}.ini'
     run:
-        print(wildcards)
         from subsetter.eems import create_diffs_file, create_ini_file
         from subsetter.load import load_pop_geo, load_indiv_meta
         from subsetter.intersect import intersect
@@ -412,10 +414,10 @@ rule ggplot_eems:
 
 rule ggeems_errors:
     input:
-        dist="dists/global2.dist",
-        grid="dists/global2.grid",
+        dist="dists/{name}.dist",
+        grid="dists/{name}.grid",
         pop_display=config['DATA']['meta'] + '.pop_display',
-        popgrid="dists/global2.popgrid",
+        popgrid="dists/{name}.popgrid",
         script='scripts/ggeems/error.R',
         runscript='scripts/ggeems/run_error.R',
     output:
@@ -455,18 +457,19 @@ rule ggeems_scatter_hlex:
 rule panel_figs:
     input:
         "eemsout_gg/{name}_nruns4-mrates01.png",
+        "eemsout_gg/{name}_nruns4-error-grid01.png",
         "eemsout/{name}_nruns4-mrates01.png",
-        "eemsout_gg/{name}_nruns4-scatter-grid01.png",
-        "figures/pcvsgrid/{name}_pc1-10.png",
-        "figures/pcvsgrid/{name}_pc1-2.png",
-        "figures/pca/pc1d_{name}_pc1.png",
-        "figures/pca/loadings_{name}_pc20.png"
+        "figures/pca/2d/{name}_pc1.png",
+        "figures/pca/pve/{name}.png",
+        "figures/pca/loadings_{name}_pc20.png",
+        "figures/dists/{name}.png"
     output:
         "{name}.figs"
     shell:
         "touch {output}"
 
 rule all_figs:
+    version: 1
     input:
         subset_paper_fun(prefix="", ext=".figs")
 

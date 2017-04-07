@@ -1,7 +1,9 @@
+suppressPackageStartupMessages({
 library(dplyr)
 library(reshape2)
 require(fields)
 source("scripts/load_pop_meta.R")
+})
 
 f <- function(x, n){
     median(rep(x, n))
@@ -18,7 +20,9 @@ n_pcs <- snakemake@wildcards$npc
 
 pc_medians <- read.csv(pcs_file)
 popgrid <- read.csv(popgrid_file)
+#pc_medians %>% left_join(popgrid) %>% group_by(grid) %>% saveRDS("test.rds")
 pc_medians %>% left_join(popgrid) %>% group_by(grid) %>%
+    filter(!is.na(grid)) %>%
     summarize_at(.cols=vars(starts_with("PC")), .funs=
 		 funs(f(., n=n))
 		 ) %>% ungroup  -> pc_medians
