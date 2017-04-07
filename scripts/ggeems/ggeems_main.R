@@ -161,7 +161,12 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
 
     require(ggrepel)
     map + geom_label_repel(data=pm, aes(label=abbrev, x=longitude, y=latitude),
-		    color='#222222dd', size=2, fill="#ffffff70") 
+		    color='#222222dd', size=2.5, fill="#ffffff50",
+		     label.padding = unit(0.001, "lines"),
+		     label.r = unit(0.001, "lines"),
+		     label.size= unit(0, "lines"),
+		        point.padding = unit(0.001, "lines"),
+		           segment.color = 'grey50')	
 }
 
 

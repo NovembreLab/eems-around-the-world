@@ -4,8 +4,9 @@ require(ggmap)
 
 alpha_limits <- c(0.3, 1)
 
-PANEL='global2'
-if(length(commandArgs(T))>0){PANEL <- commandArgs(T)[1]}
+#PANEL='global2'
+#if(length(commandArgs(T))>0){PANEL <- commandArgs(T)[1]}
+PANEL=snakemake@wildcards$name
 
 global_theme = theme(text=element_text(size=7), 
                  plot.title=element_text(size=10, face="bold", hjust=-.2),
@@ -52,10 +53,10 @@ bmap = barrier_map + null_theme + global_theme +
     theme(
           legend.position="none")
 
-png(sprintf("figures/paper/%s.png", PANEL), 
-    width=7*500, height=5.2*500, res=500)
+#png(sprintf("figures/paper/%s.png", PANEL), 
+#    width=7*500, height=5.2*500, res=500)
 #pdf("test.pdf", width=7, height=3)
-g <-grid.arrange(wmap,
+g <-arrangeGrob(wmap,
                  bmap,
                  dists,
                  errors,
@@ -66,6 +67,7 @@ g <-grid.arrange(wmap,
                  layout_matrix=layout_mat, 
 		 heights=list(2,2,1,1),
 		 widths=c(1,1,1,1, 1, 1) * 1.2) 
-dev.off()
+#dev.off()
+ggsave(snakemake@output$png, g, width=14, height=14)
 
 

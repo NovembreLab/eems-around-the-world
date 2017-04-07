@@ -17,7 +17,7 @@ include: 'sfiles/distances.snake'
 
 subsets_paper = [
     "global2", #reruning global0b
-    "eumedi1", #running eumedi4, eumedi2
+#    "eumedi1", #running eumedi4, eumedi2
     "easia5pccer22", #waiting for easiacer20b
 
     "northafrica0", #waiting for 0b/0c
@@ -175,7 +175,9 @@ def snakemake_subsetter(input, output, name):
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
                             missing=float(params['max_missing']), 
+                            per_ind_missing=float(params['max_missing_ind']),
                             plink=PLINK_EXE,
+                            max_per_pop=int(params['max_per_pop']),
                             outfile=outname)
     
     meta_data[POP_GEO_COLS].drop_duplicates().to_csv(output.pop_geo, index=False)
@@ -296,16 +298,13 @@ rule subset_all_diagnostic_mds:
 
 rule subset_paper_newplots:
     input : 
-        subset_paper_fun(prefix='figures/pca/pve/', ext='.png'),
-        subset_paper_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
-        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
-        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
+        subset_paper_fun(prefix='figures/paper/', ext='.png'),
 
 rule subset_all_newplots:
     input : 
-        subset_all_fun(prefix='figures/pca/pve/', ext='.png'),
-        subset_all_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
-        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
+        subset_all_fun(prefix='figures/paper/', ext='.png'),
+#        subset_all_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
+#        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
         subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
 
 
