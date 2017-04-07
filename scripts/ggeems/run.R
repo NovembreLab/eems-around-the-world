@@ -36,8 +36,8 @@ m = make_map(mcmcpath, C$zoom, is.mrates=T, fancy_proj=C$fancy,
 	     alpha_limits=alpha_limits, fancy_proj_pars=C$fancy_proj_pars,
 	     signplot=T, alpha_null=alpha_null)
 m2 <- m + null_theme
-if(C$add_graph) m2 <- m2 +ggadd.graph(g)
-if(C$add_pts) m2 <- m2 + ggadd.pts(g)
+if(C$sign_add_graph) m2 <- m2 +ggadd.graph(g, "#eeeeee50")
+if(C$sign_add_pts) m2 <- m2 + ggadd.pts(g, "#444444dd")
 #m2 = gg_add_samples_true(m, pop_geo, pop_display)
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.png", name, nruns), m2,
        width=WIDTH, height=HEIGHT)

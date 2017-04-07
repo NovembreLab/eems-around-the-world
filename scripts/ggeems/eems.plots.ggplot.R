@@ -41,10 +41,9 @@ get.sign <- function(mcmcpath, dimns, is.mrates, longlat=F){
     Zneg <- Zneg/niter
 
     Z <- matrix(0.000,dimns$nxmrks,dimns$nymrks)
-    Z[Zpos > .95] <- 1.99
+    Z[Zpos > 1.95] <- 1.99
     Z[Zneg > .95] <- -1.99
 
-    print(Zpos)
     return(Z)
 }
 
