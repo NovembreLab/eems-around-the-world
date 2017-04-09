@@ -3,9 +3,16 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(fields)
     library(scales)
+    source("scripts/load_pop_meta.R")
 })
 
 
+get_worst_errors <- function(dist, pop_display){
+    d0 <- load_dists(snakemake@input$dist, snakemake@input$pop_display) %>%
+	mutate(label=sprintf("%s|%s", abbrev.x, abbrev.y)) %>%
+	mutate(err=abs(eemsdist-gendist)/(gendist+0.001))  %>%
+	arrange(-err)
+}
 
 get_marginal <- function(dist, pop_display){
     d2 <- dist %>% mutate(tmp = popId.y, popId.y = popId.x, popId.x=tmp) %>% 
