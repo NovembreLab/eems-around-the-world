@@ -282,6 +282,8 @@ rule make_pilot_ini_file:
 
 def get_pilot_runs_input(wildcards):
     name = wildcards.name
+    if 'continue' in config['eems'][name]:
+        return get_continue_runs_input(wildcards)
     try:
         n_pilots = int(config['eems'][name]['n_pilots'])
     except KeyError:
@@ -289,6 +291,17 @@ def get_pilot_runs_input(wildcards):
     l = expand("eemspilot/{i}/{name}/{fname}",
             i=range(n_pilots),
             name=[name],
+            fname=['lastpilogl.txt'])
+    return l
+
+def get_continue_runs_input(wildcards):
+    name = wildcards.name
+    continue_name = config['eems'][name]['continue']
+    print("continuing run" + continue_name)
+    n_pilots = 4
+    l = expand("eemsout/{i}/{name}/{fname}",
+            i=range(n_pilots),
+            name=[continue_name],
             fname=['lastpilogl.txt'])
     return l
 
@@ -336,7 +349,10 @@ rule make_post_pilot_ini:
         cfg['nSites'] = n_sites
         mcmcpath='eemsout/' + wildcards.i + "/" + wildcards.name + '/'
 
-        datapath = 'eems/%s-run%s' % (wildcards.name, best_run_id)
+        if 'continue' in config['eems'][wildcards.name]:
+            datapath = 'eems/%s-run%s' % (wildcards.name, wildcards.i)
+        else:
+            datapath = 'eems/%s-run%s' % (wildcards.name, best_run_id)
         coordfile = '%s.coord' % datapath
         ini = base(output.inifile)
         meta_data= pd.read_table(coordfile, header=None)
