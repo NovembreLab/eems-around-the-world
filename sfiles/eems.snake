@@ -14,6 +14,8 @@ rule bed2diffs:
     output:
         diffs='eems/{name}.diffs',
         order='eems/{name}.order',
+    benchmark:
+        'eems/{name}/bd2_bm.json',
     threads: 4
     run:
         from subsetter.eems import create_diffs_file, create_ini_file
@@ -138,6 +140,8 @@ rule run_eems_single_run:
         inifile='eems/{name}-run{i, \d+}.ini',
     log:
         'eemsout/{i, \d+}/{name}/log.txt',
+    benchmark:
+        'eemsout/{i, \d+}/{name}/bm.json',
     output:
         demes='eemsout/{i, \d+}/{name}/demes.txt',
         edges='eemsout/{i, \d+}/{name}/edges.txt',
@@ -211,6 +215,8 @@ rule run_eems_single_pilot_run:
         inifile='eemspilot/{name}-pilot{i, \d+}.ini',
     log:
         'eemspilot/{i, \d+}/{name}/log.txt',
+    benchmark:
+        'eemspilot/{i, \d+}/{name}/bm.json',
     output:
         expand("eemspilot/{i}/{name}/{fname}",
             i=["{i, \d+}"],

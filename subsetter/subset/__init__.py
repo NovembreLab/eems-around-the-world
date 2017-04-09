@@ -72,7 +72,7 @@ def filter_data(meta_data, bedfile, missing=0.001, plink="plink",
     run_plink(plink, flags)
 
     flags['bfile'] = outfile
-    flags['geno'] = '%s' % float(missing)  * 2
+    flags['geno'] = '%s' % (float(missing)  * 2)
 
     run_plink(plink, flags)
 
