@@ -3,6 +3,7 @@ library(ggplot2)
 library(data.table)
 library(dplyr)
 library(viridis)
+library(ggrepel)
 source("scripts/load_pop_meta.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
@@ -57,18 +58,36 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 
         idm1 <- sprintf("%s_M", id1)
         idm2 <- sprintf("%s_M", id2)
-        if(C$median){
-            g <- g + geom_point(data=medians, 
-                                aes_string(x=idm1, y=idm2,color='color'), 
-                                size=C$median_size, alpha=C$median_alpha)
-        }
+	if(F){
 
         if(C$median_label){
             if(C$median_label_grey) medians$color <- '#404040'
             g <- g+  geom_text(data=medians, aes_string(x=idm1, y=idm2, 
                           color='color'),
                           size=C$median_size, alpha=C$median_alpha ) 
+        }}
+        if(C$median){
+            g <- g + geom_point(data=medians, 
+                                aes_string(x=idm1, y=idm2,color='color'), 
+                                size=C$median_size, alpha=C$median_alpha)
         }
+
+	if(C$median_label){
+
+	   g <- g + geom_label_repel(data=medians,
+                                aes_string(x=idm1, y=idm2,
+					    fill='color'), 
+                            size=C$median_label_size, alpha=C$median_alpha,
+		     fill="#dddddd50",
+		     label.padding = unit(C$median_label_size/20, "lines"),
+		     box.padding = unit(0.001, "lines"),
+		     label.r = unit(0.001, "lines"),
+		     label.size= unit(0, "lines"),
+		     segment.size = 0.2,
+			  
+		        point.padding = unit(0.001, "lines")
+		          )	
+	}
 
         g <- g + theme_classic() + scale_color_identity() + scale_fill_identity()
         g <- g + theme(legend.position='none')
