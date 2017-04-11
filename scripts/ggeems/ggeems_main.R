@@ -1,8 +1,10 @@
 #library(rgdal)
 #library(jpeg)
+suppressPackageStartupMessages({
 require(maps)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
+})
 
 
 #RES=20
@@ -98,6 +100,9 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
         a = ggplot()
     }
 
+    xlim_map <- c(bbox[c('left', 'right')])
+    ylim_map <- c(bbox[c('bottom', 'top')])
+
     #FORMAT axis                                                                            
     a=a+scale_x_continuous("Longitude")
     a=a+ scale_y_continuous("Latitude")
@@ -125,7 +130,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
 	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
 	}
         a = a + coord_map("mollweide",orientation=fancy_proj_pars,
-			  xlim=c(-20, 195), ylim=c(-30,80)) + xlim(-20,195)
+			  xlim=xlim_map, ylim=ylim_map) + xlim(-50, 195)+ ylim(-30, 80)
 	print("plotting fancy")
         a = a + theme_classic() #+ theme(panel.background = element_rect(colour = "#efefef")
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap

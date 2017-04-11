@@ -73,5 +73,6 @@ ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates02.png", name, nruns), m3,
        width=WIDTH, height=HEIGHT)
 #ggsave(sprintf("eemsout_gg/%s_nruns%s-qrates02.pdf", name, nruns), m3,
 #       width=WIDTH, height=HEIGHT)
+warnings()
 }
 

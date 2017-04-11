@@ -11,10 +11,10 @@ indiv_meta <- lapply(indiv_meta_files, read.csv)
 indiv_all <- do.call(rbind, indiv_meta)
 indiv_all %>% left_join(inner_join(pop_geo, pop_display))  %>%
 		group_by(popId) %>%
-		summarize(name=first(name), 
+		summarize(abbrev=first(abbrev), name=first(name), 
 			  longitude=first(longitude), latitude=first(latitude),
-			  sample_size = n_distinct(sampleId),
-			  uncertainty = first(accuracy)) %>%
+			  sample_size = n_distinct(sampleId)
+			  ) %>%
 		ungroup() %>% select(-popId) %>%
 		write.csv(outname, row.names=F, quote=F)
 

@@ -16,21 +16,15 @@ include: 'sfiles/distances.snake'
 
 
 subsets_paper = [
-    "global2", #reruning global0b
-#    "eumedi1", #running eumedi4, eumedi2
-    "easia5pccer22", #waiting for easiacer20b
+    "global2s", #reruning global0b
+    "eumedi0sb", #running eumedi4, eumedi2
+    "easia1s", #waiting for easiacer20b
 
-    "northafrica0", #waiting for 0b/0c
-    "africa4", #waiting for 0b/0c
-    "seasia3c", #waiting for seasia0c
+    "africa1s", #waiting for 0b/0c
+    "seasia3s", #waiting for seasia0c
 
-    "medi0", #completely done
-    "europe3", #completely done
-
-    "centralasiacer22", #completely done
-    "india5noonge", #completely done
-
-    "southafrica1" #completely done
+    "casia0sd", #completely done
+    "southafrica1s" #completely done
 ]
 subsets0 = ['africa0', 
     'medi0',

@@ -44,7 +44,8 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
         #first step: is color grey or data-derived?
         if(C$point_grey) data$color <- "#bbbbbb"
         g <- ggplot(data, aes_string(id1, id2, color='color', 
-                                         label=C$text_field))
+                                         label=C$text_field),
+                    alpha=C$point_alpha)
 
 
         #second: points or text?
@@ -59,20 +60,20 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
         idm1 <- sprintf("%s_M", id1)
         idm2 <- sprintf("%s_M", id2)
 	if(F){
-
         if(C$median_label){
             if(C$median_label_grey) medians$color <- '#404040'
             g <- g+  geom_text(data=medians, aes_string(x=idm1, y=idm2, 
                           color='color'),
                           size=C$median_size, alpha=C$median_alpha ) 
-        }}
-        if(C$median){
-            g <- g + geom_point(data=medians, 
-                                aes_string(x=idm1, y=idm2,color='color'), 
-                                size=C$median_size, alpha=C$median_alpha)
-        }
+    }}
+    if(C$median){
+        g <- g + geom_point(data=medians, 
+                            aes_string(x=idm1, y=idm2,color='color'), 
+                            size=C$median_size, alpha=C$median_alpha)
+    }
 
 	if(C$median_label){
+        print("median label")
 
 	   g <- g + geom_label_repel(data=medians,
                                 aes_string(x=idm1, y=idm2,
