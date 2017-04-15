@@ -5,23 +5,11 @@ library(dplyr)
 library(viridis)
 library(ggrepel)
 source("scripts/load_pop_meta.R")
+source("scripts/themes.R")
 })
 #! called from snakefiles/pca.snake:make_pc_plots
 
 
-make1PC <- function(data, n, col, field='abbrev'){
-    f = sprintf('%s' , field)
-    id <- sprintf('PC%d', n)
-    G <- ggplot(data, aes_string(f, id, fill=field, color=field))
-    G <- G + geom_violin(adjust=.2) + col
-    G <- G + theme_classic()
-    G <- G + theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
-              axis.title.x = element_blank(),
-              legend.position=0
-              )
-    G <- G + theme(legend.position=0)
-    G
-}
 
 make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
     id1 <- sprintf('PC%d', i)
@@ -33,12 +21,12 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
         g <- ggplot(data2,aes_string(id1, id2, color='wasDerivedFrom', label='abbrev'))+
             theme_classic() + 
             viridis::scale_color_viridis(discrete=T) + 
-            geom_text(size=1.5) + 
             theme(legend.position="bottom",
                   legend.key.size=unit(.5, "cm"),
                   legend.text=element_text(size=5),
                   legend.title=element_blank()) +
             guides(color=guide_legend(nrow=4,byrow=TRUE)) 
+
     }
     else {
         #first step: is color grey or data-derived?
@@ -76,27 +64,27 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
         print("median label")
 
 	   g <- g + geom_label_repel(data=medians,
-                                aes_string(x=idm1, y=idm2,
-					    fill='color'), 
+                                aes_string(x=idm1, y=idm2
+					    ), 
                             size=C$median_label_size, alpha=C$median_alpha,
-		     fill="#dddddd50",
+		     fill=NA,#"#dddddd50",
 		     label.padding = unit(C$median_label_size/20, "lines"),
 		     box.padding = unit(0.001, "lines"),
 		     label.r = unit(0.001, "lines"),
 		     label.size= unit(0, "lines"),
-		     segment.size = 0.2,
+		     segment.size = 0.1,
+		     segment.type = 2,
 			  
 		        point.padding = unit(0.001, "lines")
 		          )	
-	}
+	} 
 
-        g <- g + theme_classic() + scale_color_identity() + scale_fill_identity()
-        g <- g + theme(legend.position='none')
-        #g <- g + guides(colour=guide_legend(override.aes=list(alpha=1)))
+        g <- g + pca_2d_theme(base_size=C$theme_size)
+
     }
 }
 
-plot_map <- function(medians, outpng, outrds){
+plot_map <- function(medians, col, outpng, outrds){
     TOL=2
     require(maps)
     m = map_data("world") %>% filter(region!='Antarctica')
@@ -119,19 +107,11 @@ plot_map <- function(medians, outpng, outrds){
 	ylim(range(data$latitude) + c(-TOL, TOL)) +
 	scale_x_continuous(expand = c(-.02, -.02))+
 	scale_y_continuous(expand = c(-.02, -.02)) +
-	theme_classic() +
-	theme(axis.line=element_blank(),axis.text.x=element_blank(),
-	    axis.text.y=element_blank(),axis.ticks=element_blank(),
-	    axis.title.x=element_blank(),
-	    axis.title.y=element_blank(),legend.position="none",
-	    panel.background=element_blank(),
-	    panel.border=element_blank(),
-	    panel.grid.major=element_blank(),
-	    panel.grid.minor=element_blank(),
-	    plot.background=element_blank()) +
-	theme(legend.position='none')
+        map_inlet_theme(base_size=C$theme_size)
     ggsave(outpng, map_bit, width=1.5, height=1.5, dpi=300)
     saveRDS(map_bit, outrds)
 }
+
+
 
 

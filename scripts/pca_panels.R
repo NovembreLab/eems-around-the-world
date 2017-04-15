@@ -1,13 +1,6 @@
 require(ggplot2)
 library(gridExtra)
-global_theme = theme(text=element_text(size=7), 
-                     plot.title=element_text(size=10, face="bold", hjust=-.1),
-                     axis.title=element_text(size=7),
-                     #axis.text=element_text(size=rel(.8)),
-                     panel.margin=unit(c(0,rep(0, 3)), "inches"),
-                     plot.margin=unit(c(0,rep(0, 3)), "inches")#unit(rep(0, 4), "inches") +
-
-                     )
+source("scripts/themes.R")
 panels<-c("africa3",
 "medi4",
 "europe3",

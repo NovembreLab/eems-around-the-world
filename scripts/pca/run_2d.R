@@ -41,14 +41,15 @@ if (C$color == 'wdf'){
 		scale_fill_manual(values=cv))
 
 }
-plot_map(medians, out_map_png, out_map_rds)
+plot_map(medians, col, out_map_png, out_map_rds)
 
 #main loop
 for(i in seq(1, C$max_n_pc, 2)){
     fig <- make2PC(data, medians, i, i+1, C)
     cur_file <- pc2[[i %/% 2 + 1]]
     cur_rds <- pc2rds[[i %/% 2 + 1]]
-    ggsave(cur_file, fig, width=C$width, height=C$width)
+    ggsave(cur_file, fig, width=C$width, height=C$height)
     saveRDS(fig, cur_rds)
 }
+print(warnings())
 
