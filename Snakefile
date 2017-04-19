@@ -109,8 +109,8 @@ def snakemake_subsetter(input, output, name):
         see the rule `subset` for an example.
         it assumes that output is in a folder named `subset/`
     input : snakemake.input
-        input.plink : a triple of plink format genetic data files
-        input.meta : a path to pgs-type meta-data
+        input.bed/bim/fam : a triple of plink format genetic data files
+        input.* : a path to pgs-type meta-data
         input.map : path to a shapefile map
     output : snakemake.output
         output.indiv_meta : indiv_meta file of subset
@@ -129,8 +129,8 @@ def snakemake_subsetter(input, output, name):
     outname = base(output.bed)
 
     params = load_subset_config(config['subset'], name)
-    location_data = load_pop_geo(input.meta[0], wrap=False)
-    sample_data = load_indiv_meta(input.meta[1])
+    location_data = load_pop_geo(input.pop_geo, wrap=False)
+    sample_data = load_indiv_meta(input.indiv_meta)
     meta_data = sample_data.merge(location_data)
 
     from collections import Counter
@@ -165,7 +165,7 @@ def snakemake_subsetter(input, output, name):
         add_pop = params['add_pop'],
                 _map=input.map)
 
-    bed = os.path.splitext(input.plink[0])[0]
+    bed = os.path.splitext(input.bed)[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
                             missing=float(params['max_missing']), 
@@ -259,6 +259,9 @@ rule subset_all_eems_plot:
 rule subset_all_pca:
     input:
         subset_all_fun(ext='_pc20.png', prefix='figures/pca/pc1d_'),
+rule subset_all_loadings:
+    input:
+        subset_all_fun(ext='_pc20.png', prefix='figures/pca/loadings_'),
 
 rule subset_all_pca_wdf:
     input:
@@ -316,11 +319,30 @@ rule subset_all_excluded:
         
 
 # rules that do the data partitioning
+def subset_inputfn(wildcards):
+    d = dict()
+    params = load_subset_config(config['subset'], wildcards.name)
+    if 'source_file' in params:
+        print("custom source")
+        src = config['DATA']['genotypes']
+        print(src, len(src))
+        
+        source_file = src[params['source_file']]
+    else:
+        print("default source")
+        source_file = PLINK_SRC
+            
+
+    for ext in PLINK_EXT:
+        d[ext] = "%s.%s" % (source_file, ext)
+    for ext in META_EXT:
+        d[ext] = "%s.%s" % (META_SRC,ext)
+    d['map']=config['DATA']['map']
+    print(d)
+    return d
 rule subset_nopca:
     input:
-        plink=expand("%s.{ext}"% PLINK_SRC, ext=PLINK_EXT),
-        meta=expand("%s.{ext}"% META_SRC, ext=META_EXT),
-        map=config['DATA']['map']
+        unpack(subset_inputfn)
     output:
         pop_geo='subset/{name}.pop_geo',
         indiv_meta='subset/{name}.indiv_meta',
@@ -329,7 +351,7 @@ rule subset_nopca:
         bim='subset_nopca/{name}.bim',
         fam='subset_nopca/{name}.fam',
         incl='subset_nopca/{name}.incl'
-    version: "2"
+    version: "3"
     run:
         snakemake_subsetter(input, output, wildcards.name)
 
