@@ -1,4 +1,5 @@
-EEMSO_FACTOR = 20
+EEMSO_FACTOR = 5
+ALLOW_CONTINUE = False
 
 GRID_PATH = 'subsetter/maps/grid%s.shp'
 EPS = 0.00001
@@ -16,6 +17,8 @@ rule run_eems0_single_run:
         inifile='eems0/{name}-run{i, \d+}.ini',
     log:
         'eemsout0/{i, \d+}/{name}/log.txt',
+    benchmark:
+        'eemsout0/{i, \d+}/{name}/bm.json',
     output:
         demes='eemsout0/{i, \d+}/{name}/demes.txt',
         edges='eemsout0/{i, \d+}/{name}/edges.txt',
@@ -33,6 +36,8 @@ rule run_eems0_single_run:
         xcoord='eemsout0/{i, \d+}/{name}/mcmcxcoord.txt',
         ycoord='eemsout0/{i, \d+}/{name}/mcmcycoord.txt',
         zcoord='eemsout0/{i, \d+}/{name}/mcmczcoord.txt',
+        Dobs='eemsout0/{i, \d+}/{name}/rdistJtDobsJ.txt',
+        Dhat='eemsout0/{i, \d+}/{name}/rdistJtDhatJ.txt',
     run:
         wc = wildcards.name, wildcards.i
         new_diff = 'eems/%s-run%s.diffs' % wc
@@ -85,6 +90,8 @@ rule run_eems_single_pilot0_run:
         inifile='eemspilot0/{name}-pilot{i, \d+}.ini',
     log:
         'eemspilot0/{i, \d+}/{name}/log.txt',
+    benchmark:
+        'eemspilot0/{i, \d+}/{name}/bm.json',
     output:
         expand("eemspilot0/{i}/{name}/{fname}",
             i=["{i, \d+}"],
@@ -140,7 +147,10 @@ rule make_pilot0_ini_file:
         ini = base(output.inifile)
         meta_data= pd.read_table(input.coord, header=None)
 
-        cfg['gridpath'] = datapath
+        if "gridsrc" in cfg and cfg['gridsrc'] == 'auto':
+            pass
+        else:
+            cfg['gridpath'] = datapath
 
         #adapt ini
         cfg['numBurnIter'] = int(cfg['numBurnIter'] /EEMSO_FACTOR)
@@ -153,6 +163,8 @@ rule make_pilot0_ini_file:
 
 def get_pilot0_runs_input(wildcards):
     name = wildcards.name
+    if 'continue' in config['eems'][name] and ALLOW_CONTINUE:
+        return get_continue0_runs_input(wildcards)
     try:
         n_pilots = int(config['eems'][name]['n_pilots'])
     except KeyError:
@@ -160,6 +172,17 @@ def get_pilot0_runs_input(wildcards):
     l = expand("eemspilot0/{i}/{name}/{fname}",
             i=range(n_pilots),
             name=[name],
+            fname=['lastpilogl.txt'])
+    return l
+
+def get_continue0_runs_input(wildcards):
+    name = wildcards.name
+    continue_name = config['eems'][name]['continue']
+    print("continuing run" + continue_name)
+    n_pilots = 4
+    l = expand("eemsout0/{i}/{name}/{fname}",
+            i=range(n_pilots),
+            name=[continue_name],
             fname=['lastpilogl.txt'])
     return l
 
@@ -207,7 +230,10 @@ rule make_post_pilot0_ini:
         cfg['nSites'] = n_sites
         mcmcpath='eemsout0/' + wildcards.i + "/" + wildcards.name + '/'
 
-        datapath = 'eems/%s-run%s' % (wildcards.name, best_run_id)
+        if 'continue' in config['eems'][wildcards.name] and ALLOW_CONTINUE:
+            datapath = 'eems/%s-run%s' % (wildcards.name, wildcards.i)
+        else:
+            datapath = 'eems/%s-run%s' % (wildcards.name, best_run_id)
         coordfile = '%s.coord' % datapath
         ini = base(output.inifile)
         meta_data= pd.read_table(coordfile, header=None)

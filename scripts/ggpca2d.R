@@ -60,10 +60,10 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
                             size=C$median_size, alpha=C$median_alpha)
     }
 
-	if(C$median_label){
+	if(C$median_label && C$median_repel){
         print("median label")
 
-	   g <- g + geom_label_repel(data=medians,
+           g <- g + geom_label_repel(data=medians,
                                 aes_string(x=idm1, y=idm2
 					    ), 
                             size=C$median_label_size, alpha=C$median_alpha,
@@ -74,6 +74,22 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 		     label.size= unit(0, "lines"),
 		     segment.size = 0.1,
 		     segment.type = 2,
+			  
+		        point.padding = unit(0.001, "lines")
+		          )	
+	} 
+	if(C$median_label && !C$median_repel){
+        print("median label no repel")
+
+           g <- g + geom_label(data=medians,
+                                aes_string(x=idm1, y=idm2
+					    ), 
+                            size=C$median_label_size, alpha=C$median_alpha,
+		     fill=NA,#"#dddddd50",
+		     label.padding = unit(C$median_label_size/20, "lines"),
+		     box.padding = unit(0.001, "lines"),
+		     label.r = unit(0.001, "lines"),
+		     label.size= unit(0, "lines"),
 			  
 		        point.padding = unit(0.001, "lines")
 		          )	

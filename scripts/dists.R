@@ -50,9 +50,7 @@ residuals_df %>% melt(value.name="residual") -> residuals_melt
 dists %>%  
     melt(id.vars=c(C$yvar, "label")) %>%
     bind_cols(residuals_melt %>% select(residual)) ->d2
-levels(d2$variable) <- c("geographic", 
-                         "EEMS-fitted",
-                         "PCA-fitted")
+levels(d2$variable) <- C$xnames
 reg.df <- data.frame(t(reg.var), variable=levels(d2$variable))
 
 
@@ -96,7 +94,7 @@ g <- g + theme_classic() +
                ) + coord_flip()
 } else{
 g <- g + theme_classic() +
-    facet_wrap(~variable, scales="free_x", ncol=3)
+    facet_wrap(~variable, scales="free_x", ncol=length(C$xvars))
 }
 
 #add regression stuff
@@ -124,10 +122,11 @@ g <- g + theme_classic(base_size=8) +
         theme(legend.position="none") +
         scale_y_continuous(breaks=breaks_factory(3)) +
         scale_x_continuous(breaks=breaks_factory(3, 0, 10000))
+if(C$no_panel){
+    g <- g + theme(strip.text=element_blank())
+}
+
 
 
 ggsave(snakemake@output$png, g, width=C$width, height=C$height)
 saveRDS(g, snakemake@output$rds)
-
-save.image("debug.rdata")
-

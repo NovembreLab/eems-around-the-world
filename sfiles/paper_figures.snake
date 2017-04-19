@@ -1,3 +1,19 @@
+rule get_excluded:
+    input:
+        pop_display=config['DATA']['meta'] + '.pop_display',
+        __script = "scripts/get_excluded.R"
+    output:
+        excluded='subset/excluded.txt',
+    script:
+        "../scripts/get_excluded.R"
+
+rule table_excluded:
+    input:
+        excluded='subset/excluded.txt',
+    output:
+        "paper/table_excluded.csv"
+    shell: "cp {input} {output}"
+
 
 __script__1="scripts/poly_overview.R"
 rule subset_all_polygon_plot:

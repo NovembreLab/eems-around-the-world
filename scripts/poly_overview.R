@@ -11,7 +11,7 @@ load_snakemake <- function(){
     pop_display_file <<- snakemake@input$pop_display
     excluded <<- snakemake@input$excluded
 
-    ex <- read.csv(excluded)[,1]
+    ex <- read.csv(excluded)$popId
     e2 <- data.frame(popId=ex, excluded=T)
 
     polys <<- lapply(poly_files, read.table)

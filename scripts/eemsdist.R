@@ -6,6 +6,8 @@ require(abind)
 source("scripts/load_pop_meta.R")
 
 
+statname <- snakemake@params$statname
+if(is.null(statname))statname <- 'eemsdist'
 
 Dhat <- snakemake@input$Dhat
 order <- snakemake@input$order
@@ -49,7 +51,7 @@ for(i in 1:n_pops){for(j in 1:n_pops){
 rownames(res) <- unique_pops
 colnames(res) <- unique_pops   
 v <- melt(res)
-names(v) <- c('popId.x', 'popId.y', 'eemsdist')
+names(v) <- c('popId.x', 'popId.y', statname)
 v <- v %>% filter(popId.x < popId.y)
 write.csv(v, outname, row.names=F)
 

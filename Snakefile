@@ -3,6 +3,7 @@ configfile: "config/eems.json"
 configfile: "config/config.json"
 configfile: "config/data.json"
 configfile: "config/plots.yaml"
+configfile: "config/paper.yaml"
 
 include: 'sfiles/utils.snake'
 include: 'sfiles/treemix.snake'

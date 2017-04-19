@@ -35,6 +35,16 @@ if (C$color == 'wdf'){
 	medians$color <- get_cols_wrap(medians)
     }
 
+    if(C$color == 'exclusion'){
+	source("scripts/assign_color_by_coord.R")
+	data$color <- get_cols_wrap(data)
+	medians$color <- get_cols_wrap(medians)
+	excl <- read.csv("subset/excluded.txt") %>% 
+	    filter(full==snakemake@wildcards$name)
+	data$color[data$popId %in% excl$popId] <- 'red'
+	medians$color[medians$popId %in% excl$popId] <- 'red'
+    }
+
     cv <- as.character(medians$color)
     names(cv) <- medians$abbrev
     col <- list(scale_color_manual(values=cv),

@@ -53,6 +53,24 @@ rule eems_pop_dist:
     output:
         "dists/{name}.eemsdist",
         "dists/{name}.popgrid",
+    params:
+        statname='eemsdist'
+    script: "../" + eemsdistscript
+
+rule eems0_pop_dist:
+    input:
+        Dhat=expand("eemsout0/{i}/{name}/rdistJtDhatJ.txt",
+            i = range(N_EEMS_RUNS), 
+            name = ['{name}']),
+        ipmap='eemsout0/0/{name}/ipmap.txt',
+        order="eems/{name}.order",
+        indiv_meta="subset/{name}.indiv_meta",
+        script=eemsdistscript
+    params:
+        statname='eems0dist'
+    output:
+        "dists/{name}.eems0dist",
+        "dists/{name}.popgrid0",
     script: "../" + eemsdistscript
 
 eemsgridscript="scripts/eems_grid_dist.R"
@@ -106,6 +124,7 @@ rule dist_all:
     input:
         "dists/{name}.gendist",
         "dists/{name}.eemsdist",
+        "dists/{name}.eems0dist",
         "dists/{name}_dim10.pcdist",
         "dists/{name}_dim2.pcdist",
         "dists/{name}.geodist",
