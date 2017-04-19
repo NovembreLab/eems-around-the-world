@@ -99,6 +99,7 @@ rule plot_treemix_best:
         for b in bases:
             with open("%s.llik" %b) as f:
                 x = f.read().split()
+                print(x, len(x))
                 ll = float(x[len(x)-1])
                 if ll > max_llik[1]:
                     max_llik = b, ll
