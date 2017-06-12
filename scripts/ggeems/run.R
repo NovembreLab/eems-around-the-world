@@ -39,7 +39,7 @@ m = make_map(mcmcpath, C$zoom, is.mrates=T, fancy_proj=C$fancy,
      signplot=T, alpha_null=alpha_null)
 m2 <- m + null_theme
 if(C$sign_add_graph) m2 <- m2 +ggadd.graph(g, "#eeeeee50")
-if(C$sign_add_pts) m2 <- m2 + ggadd.pts(g, "#eeeeee50")
+if(C$sign_add_pts) m2 <- m2 + ggadd.pts(g, "#eeeeee99")
 if(C$sign_add_label) m2 <- gg_add_samples_true(m2, pop_geo, pop_display)
 
 ggsave(sprintf("eemsout_gg/%s_nruns%s-mrates01.png", name, nruns), m2,

@@ -67,7 +67,7 @@ rule sample_plot:
         poly="subset/{name}.polygon",
         pop_geo="subset/{name}.pop_geo"
     output:
-        plot="subset/{name}_sample_map.pdf"
+        plot="subset/{name}_sample_map.png"
     shell:
         "Rscript scripts/sample_plot.R {wildcards.name}"
 

@@ -1,4 +1,4 @@
-EEMSO_FACTOR = 5
+EEMSO_FACTOR = 8
 ALLOW_CONTINUE = False
 
 GRID_PATH = 'subsetter/maps/grid%s.shp'
@@ -279,7 +279,7 @@ def eems0in(wildcards):
 rule plot_eems0:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     output:
@@ -301,7 +301,7 @@ rule all_eems0:
 rule ggplot_eems0:
     input:
         eems0in,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
@@ -321,7 +321,7 @@ rule ggplot_eems0:
 rule ggeems_scatter:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
         diffs='eems/{name}.diffs',
@@ -348,7 +348,7 @@ rule ggeems_scatter:
 rule ggeems_scatter_hlex:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
         exfam='subset/{exname}.fam',

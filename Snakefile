@@ -1,19 +1,9 @@
+configfile: "config/config.json"
 configfile: "config/subset.json"
 configfile: "config/eems.json"
-configfile: "config/config.json"
-configfile: "config/data.json"
+configfile: "config/data.yaml"
 configfile: "config/plots.yaml"
 configfile: "config/paper.yaml"
-
-include: 'sfiles/utils.snake'
-include: 'sfiles/treemix.snake'
-include: 'sfiles/pong.snake'
-include: 'sfiles/pca.snake'
-include: 'sfiles/spacemix.snake'
-include: 'sfiles/paintings.snake'
-include: 'sfiles/tess.snake'
-include: 'sfiles/fst.snake'
-include: 'sfiles/distances.snake'
 
 
 subsets_paper = [
@@ -40,6 +30,10 @@ subsets0 = ['africa0',
 #    "northasia0",
 #    "ncasia0",
 ]
+
+subsets = config['paper']
+subsets_paper = [v['main'] for k,v in subsets.items()]
+subsets0 = [v['full'] if v['full'] else v['main'] for k,v in subsets.items()]
 
 excluded_sets = [
 'centralasia3pccer11',
@@ -74,8 +68,20 @@ POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy']
 
 PLINK_EXE = config['EXE']['plink']
 PLINK_SRC = config['DATA']['genotypes']
-META_SRC = config['DATA']['meta']
+_META_ = config['DATA']['meta']
+_POP_DISPLAY_ = _META_ + ".pop_display"
+_POP_GEO_ = _META_ + ".pop_geo"
 
+
+include: 'sfiles/utils.snake'
+include: 'sfiles/treemix.snake'
+include: 'sfiles/pong.snake'
+include: 'sfiles/pca.snake'
+include: 'sfiles/spacemix.snake'
+include: 'sfiles/paintings.snake'
+include: 'sfiles/tess.snake'
+include: 'sfiles/fst.snake'
+include: 'sfiles/distances.snake'
 
 base = lambda x: os.path.splitext(x)[0]
 
@@ -150,7 +156,13 @@ def snakemake_subsetter(input, output, name):
 
     if "exclude_pop" not in params:
         print("NO POPS EXCLUDED")
-        params['exclude_pop'] = None
+        params['exclude_pop'] = []
+
+    if "filter" in params:
+        for f in params["filter"]:
+            filter_set = config["filter"][f]
+            print("filtering %s" % f)
+            params["exclude_pop"].extend(filter_set)
 
 
     polygon, meta_data = _get_subset_area(meta_data = meta_data,
@@ -324,9 +336,9 @@ def subset_inputfn(wildcards):
     d = dict()
     params = load_subset_config(config['subset'], wildcards.name)
     if 'source_file' in params:
-        print("custom source")
+        #print("custom source")
         src = config['DATA']['genotypes']
-        print(src, len(src))
+        #print(src, len(src))
         
         source_file = src[params['source_file']]
     else:
@@ -337,10 +349,10 @@ def subset_inputfn(wildcards):
     for ext in PLINK_EXT:
         d[ext] = "%s.%s" % (source_file, ext)
     for ext in META_EXT:
-        d[ext] = "%s.%s" % (META_SRC,ext)
+        d[ext] = "%s.%s" % (_META_, ext)
     d['map']=config['DATA']['map']
-    print(d)
     return d
+
 rule subset_nopca:
     input:
         unpack(subset_inputfn)
@@ -395,7 +407,7 @@ rule diagnostic_pca:
         pc='pca/flash_{name}_dim20.pc',
         order='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         __script__='scripts/diagnostic_pca.R',
         __lib__='scripts/pw_plot.R'
     output:

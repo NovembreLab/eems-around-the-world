@@ -19,11 +19,13 @@ color_mat <- function(col_top=c("black", "darkblue", "darkgreen", 'goldenrod'),
 }
 get_cols_wrap <-function(pop_geo, cmat=color_mat()){
     to_wrap <- pop_geo$longitude < -34
+    to_wrap[is.na(to_wrap)] <- F
     saveRDS(pop_geo, "DEBUG.rds")
     pop_geo$longitude[to_wrap] <-pop_geo$longitude[to_wrap]  + 360
     cols <- get_cols(pop_geo$longitude, pop_geo$latitude)
     cols <- get_cols(pmin(pop_geo$longitude, 180), pop_geo$latitude)
     to_wrap <- pop_geo$longitude > 180
+    to_wrap[is.na(to_wrap)] <- F
     pop_geo$longitude[to_wrap] <-pop_geo$longitude[to_wrap]  - 360
     print(length(cols))
     cols

@@ -15,9 +15,9 @@ indiv_all %>% left_join(inner_join(pop_geo, pop_display))  %>%
               src=paste(unique(wasDerivedFrom), collapse=","),
 			  longitude=first(longitude), latitude=first(latitude),
 			  sample_size = n_distinct(sampleId)
-			  ) %>% ungroup ->i
+			  ) %>% 
 		ungroup() %>% select(-popId) %>%
-		write.csv(outname, row.names=F, quote=F)
+		write.csv(outname, row.names=F, quote=T)
 
 
 

@@ -55,8 +55,8 @@ rule make_pc_plots_wdf:
         pc='pca/flash_{name}_dim20.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
-        pop_geo=config['DATA']['meta'] + '.pop_geo',
+        pop_display=_POP_DISPLAY_,
+        pop_geo=_POP_GEO_,
         pop_order="subset/{name}.pop_order",
         __script__6='scripts/ggpca.R'
     params:
@@ -79,9 +79,9 @@ rule make_pc_plots:
         pc='pca/flash_{name}_dim20.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_order="subset/{name}.pop_order",
-        pop_geo=config['DATA']['meta'] + '.pop_geo',
+        pop_geo=_POP_GEO_,
         __script__='scripts/ggpca.R'
     params:
         wdf=False
@@ -103,9 +103,9 @@ rule make_2d_pc_plots:
         median='pca/median_{name}_dim20.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_order="subset/{name}.pop_order",
-        pop_geo=config['DATA']['meta'] + '.pop_geo',
+        pop_geo=_POP_GEO_,
         __script__='scripts/pca/run_2d.R',
         _libscript='scripts/ggpca2d.R',
     params:
@@ -119,6 +119,38 @@ rule make_2d_pc_plots:
         out_map_png="figures/paper/map_{name}.png",
     script: "../" +"scripts/pca/run_2d.R"
 
+rule make_2d_pc_plots_supersetcolor:
+    """
+        this rule is for making a 2d plot that uses colors from a different run
+        this is e.g. needed when I use Europe and Europe+Medi runs in the same 
+        figure, i.e. I want the colors in Europe to be the subset in the above
+    """
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        median='pca/median_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+
+        super_pc="pca/flash_{super}_dim20.pc",
+        super_median='pca/median_{super}_dim20.pc',
+        super_fam='subset/{super}.fam',
+        super_indiv_meta='subset/{super}.indiv_meta',
+
+        pop_display=_POP_DISPLAY_,
+        pop_order="subset/{name}.pop_order",
+        pop_geo=_POP_GEO_,
+        __script__='scripts/pca/run_2d.R',
+        _libscript='scripts/ggpca2d.R',
+    params:
+        wdf=False
+    output:
+        pc2=expand('figures/pca/super/{super}/{name}_pc{PC}.png', 
+            PC=range(1,5,2), name=['{name}'], super=['{super}']),
+        pc2rds=expand('figures/pca/super/{super}/{name}_pc{PC}.rds', 
+            PC=range(1,5,2), name=['{name}'], super=['{super}']),
+        out_map_rds="figures/paper/super/map_{super}_{name}.rds",
+        out_map_png="figures/paper/super/map_{super}_{name}.png",
+    script: "../" +"scripts/pca/run_2d.R"
 rule make_pve_plot:
     input:
         pve_file="pca/flash_{name}_dim20.pve",
@@ -135,7 +167,7 @@ rule pca_median:
         pc='pca/flash_{name}_dim20.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         __script__=script_median
     output:
         pc='pca/median_{name}_dim20.pc'
@@ -147,8 +179,8 @@ rule make_pc_plots_highlight_excluded:
         fam='subset/{name}.fam',
         exfam='subset/{exname}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
-        pop_geo=config['DATA']['meta'] + '.pop_geo',
+        pop_display=_POP_DISPLAY_,
+        pop_geo=_POP_GEO_,
         pop_order="subset/{name}.pop_order",
         __script__='scripts/ggpca.R'
     params:
@@ -195,7 +227,7 @@ rule pca_vs_gen:
         ipmap='eemsout/0/{name}/ipmap.txt',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_order="subset/{name}.pop_order",
         pop_geo='subset/{name}.pop_geo',
         diffs='eems/{name}.diffs',
@@ -210,3 +242,18 @@ rule pca_vs_gen:
         ggrsq='figures/rsq/{name}_pc1-{npcs}.rds',
     script: "../" +__script__9
 
+
+rule synthmap:
+    input:
+        pc='pca/flash_{name}_dim20.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=_POP_DISPLAY_,
+        pop_order="subset/{name}.pop_order",
+        polygon="subset/{name}.polygon",
+        pop_geo=_POP_GEO_,
+        __script__='scripts/run_synthmap.R',
+        _libscript='scripts/synthmap.R',
+    output:
+        plot0="figures/pca/synthmap/{name}_PC1.png",
+    script: "../" + "scripts/run_synthmap.R"

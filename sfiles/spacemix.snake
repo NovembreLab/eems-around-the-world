@@ -63,7 +63,7 @@ rule plot_spacemix_geospace:
     input:
         spacemix_output = "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj",
         pop_geo='{name}.pop_geo',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         __script__='scripts/plot_spacemix.R'
     output:
         'spacemix/{name}/{model}_geospace.png'

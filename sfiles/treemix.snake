@@ -82,9 +82,9 @@ rule run_treemix_set:
 
 rule plot_treemix_best:
     input: 
-        'scripts/plot_treemix_lib.R',
-        config['DATA']['meta'] + '.pop_display',
         rules.run_treemix_set.input,
+        'scripts/plot_treemix_lib.R',
+        pop_display=_POP_DISPLAY_,
     output: 
         treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
         residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',

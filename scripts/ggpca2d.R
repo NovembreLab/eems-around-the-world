@@ -71,7 +71,7 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 		     label.padding = unit(C$median_label_size/20, "lines"),
 		     box.padding = unit(0.001, "lines"),
 		     label.r = unit(0.001, "lines"),
-		     label.size= unit(0, "lines"),
+		     label.size= unit(0.00001, "lines"),
 		     segment.size = 0.1,
 		     segment.type = 2,
 			  
@@ -89,7 +89,7 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 		     label.padding = unit(C$median_label_size/20, "lines"),
 		     box.padding = unit(0.001, "lines"),
 		     label.r = unit(0.001, "lines"),
-		     label.size= unit(0, "lines"),
+		     label.size= unit(0.00001, "lines"),
 			  
 		        point.padding = unit(0.001, "lines")
 		          )	
@@ -102,21 +102,24 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 
 plot_map <- function(medians, col, outpng, outrds){
     TOL=2
+    print("_-------------")
+    print(names(medians))
+    if(!"shape" %in% names(medians)) medians$shape <- "a"
     require(maps)
     m = map_data("world") %>% filter(region!='Antarctica')
     m$long[m$long< -30] <- m$long[m$long< -30] +360   
     lower_boundary <- m$lat < -38
     m$lat[m$lat< -38] <- -38
 
-    m$lat <- pmin(m$lat, TOL+max(data$latitude))
-    m$lat <- pmax(m$lat, -TOL+min(data$latitude))
-    m$long <- pmin(m$long, TOL+max(data$longitude))
-    m$long <- pmax(m$long, -TOL+min(data$longitude))
+    m$lat <- pmin(m$lat, TOL+max(medians$latitude))
+    m$lat <- pmax(m$lat, -TOL+min(medians$latitude))
+    m$long <- pmin(m$long, TOL+max(medians$longitude))
+    m$long <- pmax(m$long, -TOL+min(medians$longitude))
     map_bit <- ggplot() +
 	geom_path(data=m, aes(x=long, y=lat, group=group), size=0.3 ,color='#222222dd') +
 	geom_polygon(data=m, aes(x=long, y=lat, group=group), fill='#eeeeee') +
-	geom_point(data=medians, aes(x=longitude, y=latitude,
-					color=abbrev), size=1) + 
+	geom_point(data=medians, aes(x=longitude, y=latitude, shape=shape,
+					color=abbrev), size=2) + 
 	col +
 	coord_fixed() + 
 	xlim(range(data$longitude)+ c(-TOL, TOL)) + 

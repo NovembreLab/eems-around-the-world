@@ -41,11 +41,12 @@ class CountryContainer(object):
             self.countries[c.gu_a3.lower()] = c
             self.countries[c.postal.lower()] = c
     
-        self.regions[c.sovereignt.lower()].append(c)
-        self.regions[c.continent.lower()].append(c)
-        self.regions[c.region_un.lower()].append(c)
-        self.regions[c.subregion.lower()].append(c)
-        self.regions[c.region_wb.lower()].append(c)
+        if c.name.lower() != 'madagascar' :
+            self.regions[c.sovereignt.lower()].append(c)
+            self.regions[c.continent.lower()].append(c)
+            self.regions[c.region_un.lower()].append(c)
+            self.regions[c.subregion.lower()].append(c)
+            self.regions[c.region_wb.lower()].append(c)
 
         self.regions[c.name.lower()].append(c)
 
@@ -53,6 +54,7 @@ class CountryContainer(object):
                 c.name not in ['Greenland', 'Madagascar', 'Argentina', 'Chile']:
             self.regions['world'].append(c)
             self.regions['World'].append(c)
+
 
     def add_countries(self, countries, **kwargs):
         for c in countries:
@@ -327,6 +329,11 @@ def handle_special_countries(c):
                                              c['Ireland'].patch]).convex_hull
     c['Madagascar'].patch = ops.cascaded_union([c['Madagascar'].patch,
                                              c['Mozambique'].patch]).convex_hull
+    c['Madagascar'].continent = ''
+    c['Madagascar'].region_un = ''
+    c['Madagascar'].subregion = ''
+    c['Madagascar'].region_wb = ''
+
     c['North I.'].patch = ops.cascaded_union([c['North I.'].patch,
                                              c['South I.'].patch]).convex_hull
     c['North I.'].patch = ops.cascaded_union([c['North I.'].patch,
@@ -372,6 +379,7 @@ def load_countries(s, wrap_americas=True, remove_northern_islans=True):
         for r in russia:
             r = countries[r]
             r.remove_northern_islands(limit=72)
+
 
     return countries
 

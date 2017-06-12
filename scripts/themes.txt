@@ -1,0 +1,102 @@
+./dists.R:g <- g + theme_classic() +
+./ggpca2d.R:    G <- G + theme_classic()
+./ggpca2d.R:    G <- G + theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
+./ggpca2d.R:    G <- G + theme(legend.position=0)
+./ggpca2d.R:            theme_classic() + 
+./ggpca2d.R:            theme(legend.position="bottom",
+./ggpca2d.R:        g <- g + theme_classic() + scale_color_identity() + scale_fill_identity()
+./ggpca2d.R:        g <- g + theme(legend.position='none')
+./ggpca2d.R:	theme_classic() +
+./ggpca2d.R:	theme(axis.line=element_blank(),axis.text.x=element_blank(),
+./ggpca2d.R:	theme(legend.position='none')
+./composite_fig.R:global_theme = theme(text=element_text(size=7), 
+./composite_fig.R:null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
+./composite_fig.R:pc1 <- readRDS(sprintf("figures/pca/2d/%s_pc1.rds", PANEL)) + global_theme
+./composite_fig.R:pc2 <- readRDS(sprintf("figures/pca/2d/%s_pc3.rds", PANEL)) + global_theme
+./composite_fig.R:pve <- readRDS(sprintf("figures/pca/pve/%s.rds", PANEL)) + global_theme
+./composite_fig.R:map <- readRDS(sprintf("figures/paper/map_%s.rds", PANEL)) + global_theme
+./composite_fig.R:wmap = world_map + null_theme + global_theme + 
+./composite_fig.R:    theme(
+./composite_fig.R:bmap = barrier_map + null_theme + global_theme + 
+./composite_fig.R:    theme(
+./pca_panels.R:global_theme = theme(text=element_text(size=7), 
+./pca_panels.R:plots <- lapply(1:length(plots), function(i)plots[[i]][[1]]+ggtitle(titles[i]) + global_theme)
+./pca_panels.R:              global_theme + xlab("PC") + 
+./pca_panels.R:              theme(axis.text=element_text(size=5)) +
+./pca_panels.R:#plots <- lapply(1:length(plots), function(i)plots[[i]]+ggtitle(titles[i]) + global_theme)
+./pca/pve.R:	theme_classic()  +
+./pca/pve.R:#	theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
+./ggpca.R:    G <- G + theme_classic()
+./ggpca.R:    G <- G + theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1),
+./ggpca.R:    G <- G + theme(legend.position=0)
+./ggpca.R:            theme_classic() + 
+./ggpca.R:            theme(legend.position="bottom",
+./ggpca.R:        g <- g + col + theme_classic()
+./ggpca.R:        g <- g + theme(legend.position='none')
+./ggpca.R:            theme_classic() +
+./ggpca.R:            theme(axis.line=element_blank(),axis.text.x=element_blank(),
+./ggpca.R:            theme(legend.position='none')
+./pcaloadings.R:            theme(axis.text.x = element_blank(),
+./pcaloadings.R:            theme(axis.text.x = element_blank(),
+./ggeems/run_just_map.R:null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
+./ggeems/run_just_map.R:m3 = m + ggadd.graph(g, color="#40404080") + ggadd.pts(g)+ null_theme
+./ggeems/Sardinia_towns.R:a=a+theme(axis.text.x=element_text(size=25),axis.title.x=element_text(size=25))
+./ggeems/Sardinia_towns.R:a=a+theme(axis.text.y=element_text(size=25),axis.title.y=element_text(size=25))
+./ggeems/Sardinia_towns.R:a = a+theme(legend.position="none")
+./ggeems/run.R:null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
+./ggeems/run.R:m2 <- m + null_theme
+./ggeems/run.R:m3 <- m + null_theme
+./ggeems/scatter.R:    global_theme = theme(text=element_text(size=7), 
+./ggeems/scatter.R:    global_theme = list()
+./ggeems/scatter.R:        cm  + theme_classic() + 
+./ggeems/scatter.R:        theme(legend.position=0) +
+./ggeems/scatter.R:	theme(plot.title = element_text(size = rel(.5), hjust=0))
+./ggeems/scatter.R:    P <- P + theme_classic() + 
+./ggeems/scatter.R:        theme(legend.position=0) +
+./ggeems/scatter.R:        theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+./ggeems/scatter.R:        theme_classic() + 
+./ggeems/scatter.R:        theme(legend.position=0) +
+./ggeems/scatter.R:theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+./ggeems/scatter.R:        theme_classic() + 
+./ggeems/scatter.R:        theme(legend.position=0) + cm + 
+./ggeems/scatter.R:	theme(plot.title = element_text(size = rel(.5), hjust=0)) + 
+./ggeems/scatter.R:    P <- P + theme_classic()
+./ggeems/scatter.R:    P <- P + theme(axis.text.x = element_text(size = rel(1), angle = 90))
+./ggeems/scatter.R:    P <- P + theme(legend.position=0) 
+./ggeems/scatter.R:    p1 <- plot_pw(df) + global_theme +  ggtitle( "B")  
+./ggeems/scatter.R:    p2 <- plot_vs_true(df) + global_theme+  ggtitle( "A") 
+./ggeems/scatter.R:    p4 <- plot_median_error(grid_error, nmax=10) + global_theme+  ggtitle( "D") + 
+./ggeems/scatter.R:        theme(axis.text.x=element_text(size=rel(.6)), plot.margin=unit(c(0,0,-0.4,0), "cm"))
+./ggeems/scatter.R:    p5 <- readRDS(RDS1) + global_theme+  ggtitle( "C") 
+./ggeems/scatter.R:    p6 <- readRDS(RDS2) + global_theme+  ggtitle( "E")  + 
+./ggeems/scatter.R:        theme(plot.margin=unit(c(-0.5,0,0,0), "cm"), 
+./ggeems/ggeems_main.R:    a=a+theme(axis.text.x=element_text(size=12),axis.title.x=element_text(size=12))         
+./ggeems/ggeems_main.R:    a=a+theme(axis.text.y=element_text(size=12),axis.title.y=element_text(size=12))         
+./ggeems/ggeems_main.R:        a = a + theme_classic() #+ theme(panel.background = element_rect(colour = "#efefef")
+./ggeems/error.R:    P <- P + theme_classic()
+./ggeems/error.R:    P <- P + theme(legend.position=0) 
+./ggeems/error.R:    P <- P + theme(axis.text.x = element_text(size=rel(.6), angle=90))
+./ggeems/error.R:    P <- P + theme_classic() + 
+./ggeems/error.R:        theme(legend.position=0) +
+./ggeems/error.R:        theme(plot.title = element_text(size = rel(.5), hjust=0)) +
+./ggeems/scatter_explo.R:    global_theme = theme(text=element_text(size=7), 
+./ggeems/scatter_explo.R:    global_theme = list()
+./ggeems/scatter_explo.R:        cm  + theme_classic() + 
+./ggeems/scatter_explo.R:        theme(legend.position=0) +
+./ggeems/scatter_explo.R:	theme(plot.title = element_text(size = rel(.5), hjust=0))
+./ggeems/scatter_explo.R:        theme_classic() + 
+./ggeems/scatter_explo.R:        theme(legend.position=0) +
+./ggeems/scatter_explo.R:        theme(plot.title = element_text(size = rel(.5), hjust=0))
+./ggeems/scatter_explo.R:        theme_classic() + 
+./ggeems/scatter_explo.R:        theme(legend.position=0) +
+./ggeems/scatter_explo.R:	theme(plot.title = element_text(size = rel(.5), hjust=0))
+./ggeems/scatter_explo.R:        theme_classic() + 
+./ggeems/scatter_explo.R:        theme(legend.position=0) + cm + 
+./ggeems/scatter_explo.R:	theme(plot.title = element_text(size = rel(.5), hjust=0))
+./ggeems/scatter_explo.R:    P <- P + theme_classic()
+./ggeems/scatter_explo.R:    P <- P + theme(axis.text.x = element_text(size = rel(1), angle = 90))
+./ggeems/scatter_explo.R:    P <- P + theme(legend.position=0)
+./ggeems/scatter_explo.R:    ggsave(outnames[1], plot_pw(df) + global_theme, width=out_width, height=out_h1, scale=.9)
+./pca_vs_geo.R:        theme_classic() + 
+./pca_vs_geo.R:#         theme(axis.text.x = element_text(size=rel(.4), angle = 90, hjust = 1))
+./eems_plot/eems.plots.ggplot.R:    theme(panel.background = element_rect(fill = 'white' )) +

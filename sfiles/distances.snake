@@ -124,7 +124,7 @@ rule dist_all:
     input:
         "dists/{name}.gendist",
         "dists/{name}.eemsdist",
-        "dists/{name}.eems0dist",
+#        "dists/{name}.eems0dist",
         "dists/{name}_dim10.pcdist",
         "dists/{name}_dim2.pcdist",
         "dists/{name}.geodist",
@@ -135,7 +135,7 @@ rule dist_all:
 rule dist_plot:
     input:
         dists="dists/{name}.dist",
-        pop_display=config['DATA']['meta'] + ".pop_display",
+        pop_display=_POP_DISPLAY_,
         script="scripts/dists.R"
     output:
         png="figures/dists/{name}.png",

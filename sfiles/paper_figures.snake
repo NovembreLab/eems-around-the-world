@@ -1,6 +1,6 @@
 rule get_excluded:
     input:
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         __script = "scripts/get_excluded.R"
     output:
         excluded='subset/excluded.txt',
@@ -20,7 +20,7 @@ rule subset_all_polygon_plot:
     input:
         polys=subset_paper_fun(prefix='subset/', ext='.polygon'),
         pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=False),
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         excluded='subset/excluded.txt',
 	script= __script__1
     output:
@@ -53,8 +53,8 @@ __script__4="scripts/table_loc.R"
 rule table_locations:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
-        pop_geo=config['DATA']['meta'] + ".pop_geo",
-        pop_display=config['DATA']['meta'] + ".pop_display",
+        pop_geo=_POP_GEO_,
+        pop_display=_POP_DISPLAY_,
 	script= __script__4
     output:
         csv='paper/table_loc.csv'
@@ -178,7 +178,7 @@ rule pca_fig:
 
 rule list_exclusion_rules:
     input:
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
     output: "excl/{name}.excl"
     run:
         import pandas as pd

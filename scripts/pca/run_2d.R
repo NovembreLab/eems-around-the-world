@@ -16,10 +16,38 @@ medians <- read.csv(median)
 pg <- read.csv(pop_geo)
 
 data <- left_join(data, pg)
-data <- data %>% select(-order) %>% left_join(read.csv(pop_order))
-medians <- left_join(medians, pg) %>% left_join(read.csv(pop_display))
+if("order" %in% names(data)) data <- data %>% select(-order) 
+data <- data %>% left_join(read.csv(pop_order))
 
-if (C$color == 'wdf'){
+
+
+pd <- read.csv(pop_display)
+medians <- left_join(medians, pg)
+medians <- medians %>% left_join(pd)
+
+if(exists("super_pc")){
+#if(C$color == "location_superset"){
+    source("scripts/assign_color_by_coord.R")
+    super_data <- load_pca_data(super_pc, super_fam, super_indiv_meta, pop_display)
+    super_data <- left_join(super_data, pg)
+
+    #distinguish the two sources, used later in map plot
+    super_data$shape <- "a"
+    data$shape <- "b"
+
+    super_data <- bind_rows(super_data, data)
+
+    super_data$color <- get_cols_wrap(super_data)
+
+    data <- data %>% select(-color) %>% left_join(super_data %>% select(popId, color))
+    medians <- medians %>% select(-color) %>% left_join(super_data %>% select(popId, color))
+    cv <- as.character(super_data$color)
+    names(cv) <- super_data$abbrev
+    col <- list(scale_color_manual(values=cv),
+		scale_fill_manual(values=cv))
+    plot_map(super_data, col, out_map_png, out_map_rds)
+    save.image("test")
+} else if (C$color == 'wdf'){
     col_list <- data %>% group_by(wasDerivedFrom) %>% 
 	summarize(color=first(color), order=mean(order)) %>% 
 	arrange(order)
@@ -34,6 +62,7 @@ if (C$color == 'wdf'){
 	data$color <- get_cols_wrap(data)
 	medians$color <- get_cols_wrap(medians)
     }
+
 
     if(C$color == 'exclusion'){
 	source("scripts/assign_color_by_coord.R")
@@ -51,7 +80,10 @@ if (C$color == 'wdf'){
 		scale_fill_manual(values=cv))
 
 }
-plot_map(medians, col, out_map_png, out_map_rds)
+
+if(!exists("super_data")){
+    plot_map(medians, col, out_map_png, out_map_rds)
+}
 
 #main loop
 for(i in seq(1, C$max_n_pc, 2)){

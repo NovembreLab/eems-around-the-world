@@ -130,7 +130,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
 	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
 	}
         a = a + coord_map("mollweide",orientation=fancy_proj_pars,
-			  xlim=xlim_map, ylim=ylim_map) + xlim(-50, 195)+ ylim(-30, 80)
+			  xlim=xlim_map, ylim=ylim_map) + xlim(-50, 195)+ ylim(-60, 80)
 	print("plotting fancy")
         a = a + theme_classic() #+ theme(panel.background = element_rect(colour = "#efefef")
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap

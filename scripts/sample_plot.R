@@ -5,8 +5,9 @@ p <- read.table(sprintf("subset/%s.polygon", name))
 a <- read.csv(sprintf("subset/%s.pop_geo", name))                     
 
 
-pdf(sprintf("subset/%s_sample_map.pdf", name), width=8)
-plot(p, type='l', col='red', lty=2, lwd=2); map(add=T)                           
+#pdf(sprintf("subset/%s_sample_map.pdf", name), width=8)
+png(sprintf("subset/%s_sample_map.png", name), height=5*300, width=5*300)
+plot(p, type='l', col='red', lty=2, lwd=2, asp=1); map(add=T)                           
 text(a$longitude, a$latitude, a$popId, col='black', pch=16, cex=2) 
 dev.off()
 }

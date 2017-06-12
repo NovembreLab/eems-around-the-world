@@ -386,7 +386,7 @@ rule diagnostic_mds:
         diffs='eems/{name}.diffs',
         order='eems/{name}.order',
         indiv_meta='subset/{name}.indiv_meta',
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
     output:
         pdf='eems/figures/{name}-mds.pdf'
     script: __script__0
@@ -407,7 +407,7 @@ def eemsin(wildcards):
 rule plot_eems:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
         script='scripts/eems_plot/make_plots.r'
@@ -423,12 +423,12 @@ rule plot_eems:
 rule ggplot_eems:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
-	libscript="scripts/ggeems/ggeems_main.R",
-	libscript2="scripts/ggeems/eems.plots.ggplot.R",
-	runscript="scripts/ggeems/run.R",
+        libscript="scripts/ggeems/ggeems_main.R",
+        libscript2="scripts/ggeems/eems.plots.ggplot.R",
+        runscript="scripts/ggeems/run.R",
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-mrates01.png",
         m2plot="eemsout_gg/{name}_nruns{nruns}-mrates02.png",
@@ -440,7 +440,7 @@ rule ggeems_errors:
     input:
         dist="dists/{name}.dist",
         grid="dists/{name}.grid",
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         popgrid="dists/{name}.popgrid",
         script='scripts/ggeems/error.R',
         runscript='scripts/ggeems/run_error.R',
@@ -462,7 +462,7 @@ rule ggeems_errors:
 rule ggeems_scatter_hlex:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta',
         exfam='subset/{exname}.fam',
@@ -490,6 +490,7 @@ rule panel_figs:
         "figures/pca/2d/{name}_pc1.png",
         "figures/pca/pve/{name}.png",
         "figures/pca/loadings_{name}_pc20.png",
+        "subset/{name}_sample_map.png",
         "figures/dists/{name}.png"
     output:
         "{name}.figs"
@@ -505,13 +506,13 @@ rule all_figs:
 rule ggeems_map:
     input:
         eemsin,
-        pop_display=config['DATA']['meta'] + '.pop_display',
+        pop_display=_POP_DISPLAY_,
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
         RES=100,
         ZOOM=3,
-        fancy=0
+        fancy=1
     output:
         mplot="eemsout_gg/{name}_nruns{nruns}-map01.png",
         m2plot="eemsout_gg/{name}_nruns{nruns}-map02.png"

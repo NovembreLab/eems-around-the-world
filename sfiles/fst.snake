@@ -9,7 +9,6 @@ rule make_within_file:
         within = indiv_meta[['sampleId', 'sampleId', 'popId']]
         within.to_csv(output.within, sep=" ", header=False, index=False)
 
-"""
 rule plink_fst:
     input:
         bed='{name}.bed',
@@ -23,7 +22,6 @@ rule plink_fst:
         s = [PLINK_EXE, '--bfile',  name, '--fst --out', name,  
             '--within', input.within]
         shell(" ".join(s))
-"""
 
 rule makefrqstrat:
     input:
@@ -39,18 +37,20 @@ rule makefrqstrat:
             '--within', input.within]
         shell(" ".join(s))
 
+"""
 rule fstmat:
     input:
         frqstrat="{name}.frq.strat.gz"
     output:
         fstmat="{name}.pw.fst"
     script: '../scripts/get_pi_mat.py'
+"""
 
 
 rule plot_fst:
     input:
         fstmat="subset/{name}.pw.fst",
-        pop_display=config['DATA']['meta'] + ".pop_display"
+        pop_display=_POP_DISPLAY_,
     output:
         png="figures/fst/{name}.fst.png"
     script: "../scripts/plot_fst_mat.R"
