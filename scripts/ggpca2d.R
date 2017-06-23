@@ -11,11 +11,15 @@ source("scripts/themes.R")
 
 
 
+
 make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
     
     data <- data[sample.int(nrow(data), nrow(data)),]
+
+    if(!"shape" %in% names(data)) data$shape <- "a"
+    if(!"shape" %in% names(medians)) medians$shape <- "a"
 
     if(C$color == 'wdf'){
         g <- ggplot(data2,aes_string(id1, id2, color='wasDerivedFrom', label='abbrev'))+
@@ -31,7 +35,7 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
     else {
         #first step: is color grey or data-derived?
         if(C$point_grey) data$color <- "#bbbbbb"
-        g <- ggplot(data, aes_string(id1, id2, color='color', 
+        g <- ggplot(data, aes_string(id1, id2, color='color', shape="shape",
                                          label=C$text_field),
                     alpha=C$point_alpha)
 
@@ -56,7 +60,7 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
     }}
     if(C$median){
         g <- g + geom_point(data=medians, 
-                            aes_string(x=idm1, y=idm2,color='color'), 
+                            aes_string(x=idm1, y=idm2,color='color', shape="shape"), 
                             size=C$median_size, alpha=C$median_alpha)
     }
 
@@ -130,7 +134,3 @@ plot_map <- function(medians, col, outpng, outrds){
     ggsave(outpng, map_bit, width=1.5, height=1.5, dpi=300)
     saveRDS(map_bit, outrds)
 }
-
-
-
-

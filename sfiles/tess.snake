@@ -36,6 +36,8 @@ rule run_tess_single:
     input:
         geno='{name}.tess_in',
         coords='{name}.tess_coords'
+    benchmark:
+        'tess/{name}.{K, \d+}_run{RUN, \d+}.BM',
     output:
         Q='tess/{name}.{K, \d+}_run{RUN, \d+}.Q',
         G='tess/{name}.{K, \d+}_run{RUN, \d+}.G',
@@ -75,14 +77,15 @@ rule plot_tess:
         pop_geo="{name}.pop_geo",
         boundary="{name}.polygon",
         pop_display=_POP_DISPLAY_,
-        __script__='scripts/plot_tess.R',
+        __script__='scripts/plot_tess2.R',
     output:
         plot="tess/{name}_n{n}_run{run}.png"
-    run:
-        l = [config['EXE']['R'], input.__script__, 
-            input.pop_display,
-            wildcards.name, wildcards.n, wildcards.run,
-            output.plot]
-	shell(" ".join(l))
+    script: "../" + "scripts/plot_tess2.R"
+    #run:
+    #    l = [config['EXE']['R'], input.__script__, 
+    #       input.pop_display,
+    #       wildcards.name, wildcards.n, wildcards.run,
+    #       output.plot]
+	#hell(" ".join(l))
 
         

@@ -6,11 +6,17 @@ output_tess <- args[4]
 
 fam <- read.table(input_fam)                                                       
 fam <- data.frame(sampleId=fam[,1], n=1:nrow(fam))                                     
+print(dim(fam))
 indiv_meta <- read.csv(input_indiv_meta)                                           
+print(dim(indiv_meta))
 pop_geo <- read.csv(input_pop_geo)                                                 
+print(dim(pop_geo))
 indiv_meta <- merge(indiv_meta, pop_geo)                                               
+print(dim(indiv_meta))
 m <- merge(fam, indiv_meta)                                                            
+print(dim(m))
 m <- m[order(m$n),]                                                                    
 print(names(m))                                                                        
+print(dim(m))
 write.table(m[,c('longitude', 'latitude')], output_tess, row.names=F, col.names=F) 
 

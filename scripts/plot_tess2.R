@@ -1,4 +1,6 @@
 library(gridExtra)
+library(dplyr)
+library(RColorBrewer)
 
 source("scripts/tessplot.r")
 source("scripts/interpolate_pca.R")
@@ -10,8 +12,10 @@ load.data <- function(pc, fam,
     indiv <- merge(indiv_meta, pop_display, all.x=T)     
                                                          
     fam <- read.table(fam)[,1]                           
+    print(length(fam))
                                                          
     data <- data.frame(fread(pc))                        
+    data <- data[1:length(fam),]
     names(data) <- paste0("TESSPOP", 1:ncol(data))            
                                                          
     data <- cbind(fam, data, n=1:length(fam))            
@@ -23,16 +27,14 @@ load.data <- function(pc, fam,
 }                                                        
 
 
-make_subset_data <- function(subset, n=3,
-	pop_display="/data/popres_data/popres.pop_display",
-	run=0){
-    data <- load.data(sprintf("tess/%s.%s_run%s.Q", subset, n, run),
-                      sprintf("%s.fam", subset),
-                      sprintf("%s.indiv_meta", subset),
+make_subset_data <- function(snakemake, pop_display){
+    data <- load.data(snakemake@input$tess,
+                      snakemake@input$fam,
+                      snakemake@input$indiv_meta,
                       pop_display)
-    loc <- read.csv(sprintf("%s.pop_geo", subset))
+    loc <- read.csv(snakemake@input$pop_geo)
     data <- merge(data,loc)
-    boundary <- read.table(sprintf("%s.polygon", subset))
+    boundary <- read.table(snakemake@input$boundary)
     names(boundary) <- c('x', 'y')
 
 
@@ -43,26 +45,31 @@ make_subset_data <- function(subset, n=3,
     list(data=d2, boundary=boundary)
 }
 
-plot_tess <- function(subset, n, pop_display, ...){ 
+plot_tess <- function(snakemake, pop_display, ...){ 
     n <- as.numeric(n)
-    d <- make_subset_data(subset, n, pop_display)
+    d <- make_subset_data(snakemake, pop_display)
     l <- lapply(1:n, function(i){
-	col <- sprintf('TESSPOP%s', i) 
+        col <- sprintf('TESSPOP%s', i) 
         plot_factor_interpolation(d$data, d$boundary, col)
 	})
 
     do.call(arrangeGrob,l)
 }
 
-plot_tess_multi <- function(...){
+plot_tess_multi <- function(snakemake, pop_display, ...){ 
+    n <- as.numeric(n)
+    d <- make_subset_data(snakemake, pop_display)
+    plot_factor_interpolation_multi(d$data, d$boundary)
+
 }
 
-args <- commandArgs(T)
-print(args)
-if(length(args)>3){
-    n = as.numeric(args[3])
-    p <- plot_tess(subset=args[2], n=n,
-        pop_display=args[1], run=args[4])
-    nrow = ceiling(n/2)
-    ggsave(args[5], p, width=8, height = 4 * nrow)
-}
+n <- as.numeric(snakemake@wildcards$n)
+subset <- snakemake@input$tess
+pop_display <- snakemake@input$pop_display
+run <- as.numeric(snakemake@wildcards$run)
+outfile <- snakemake@output$plot
+nrow = 1
+
+p <- plot_tess_multi(snakemake,
+    pop_display=pop_display)
+ggsave(outfile, p, width=8, height = 4 * nrow)

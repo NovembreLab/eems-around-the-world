@@ -22,7 +22,7 @@ rule subset_all_polygon_plot:
         pop_geo=subset_paper_fun(prefix='subset/', ext='.pop_geo', subset0=False),
         pop_display=_POP_DISPLAY_,
         excluded='subset/excluded.txt',
-	script= __script__1
+        script= __script__1
     output:
         png="paper/polygon_plot.pdf"
     script: "../" + __script__1
@@ -32,32 +32,44 @@ rule table_panels:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         bim=subset_paper_fun(prefix='subset/', ext='.bim'),
-        subset_file = "config/subset.json",
-	script= __script__2
+        fst=subset_paper_fun(prefix='subset/', ext='.fstall'),
+        script= __script__2
     params:
-        panels=subsets_paper
+        panels=subsets_paper,
+        abbrev=subsets_abbrev,
+        names=subsets_names
     output:
-        csv="paper/table_panel.csv"
+        csv="rawtables/table_panel.csv"
     script: "../" + __script__2
+
+rule remove_underscore:
+    input : "rawtables/{name}.csv"
+    output: "paper/{name}.csv"
+    shell : "sed -e 's/_/ /g; s/\"//g' {input} >{output}"
 
 __script__3="scripts/table_sources.R"
 rule table_sources:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
-	script= __script__3
+        script= __script__3
     output:
-        csv='paper/table_sources.csv'
+        csv='rawtables/table_sources.csv'
     script: "../" + __script__3
 
 __script__4="scripts/table_loc.R"
 rule table_locations:
     input:
+        indiv_meta0 = _INDIV_META_,
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         pop_geo=_POP_GEO_,
         pop_display=_POP_DISPLAY_,
-	script= __script__4
+        script= __script__4
+    params:
+        panels=subsets_paper,
+        abbrev=subsets_abbrev,
+        names=subsets_names
     output:
-        csv='paper/table_loc.csv'
+        csv='rawtables/table_loc.csv'
     script: "../" + __script__4
 
 rule all_tables:
@@ -195,7 +207,6 @@ rule paper_fig:
     input: 
         subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns4.png"),
 #        subset_paper_fun(prefix="figures/paper/scatter_", ext="_nruns3.png", subset0=True )
-	
 
 rule composite_fig:
     input:

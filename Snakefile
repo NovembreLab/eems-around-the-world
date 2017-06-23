@@ -32,6 +32,8 @@ subsets0 = ['africa0',
 ]
 
 subsets = config['paper']
+subsets_names = [k for k,v in subsets.items()]
+subsets_abbrev = [v['abbrev'] for k,v in subsets.items()]
 subsets_paper = [v['main'] for k,v in subsets.items()]
 subsets0 = [v['full'] if v['full'] else v['main'] for k,v in subsets.items()]
 
@@ -71,6 +73,7 @@ PLINK_SRC = config['DATA']['genotypes']
 _META_ = config['DATA']['meta']
 _POP_DISPLAY_ = _META_ + ".pop_display"
 _POP_GEO_ = _META_ + ".pop_geo"
+_INDIV_META_ = _META_ + ".indiv_meta"
 
 
 include: 'sfiles/utils.snake'
@@ -178,6 +181,14 @@ def snakemake_subsetter(input, output, name):
         add_pop = params['add_pop'],
                 _map=input.map)
 
+    # exclucde some individuals
+    if 'exclude_samples' in params:
+        excl = params['exclude_samples']
+        print("excluding stuff, from %s rows ..."% meta_data.shape[0])
+        meta_data = meta_data[~meta_data['sampleId'].isin(excl)]
+        print("to %s rows ..."% meta_data.shape[0])
+
+
     bed = os.path.splitext(input.bed)[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
@@ -264,6 +275,12 @@ rule subset_all_eems:
 rule subset_all_eems_ggplot:
     input:
         subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+rule subset_paper_eems_ggplot:
+    input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+rule subset_paper_figs:
+    input:
+        subset_paper_fun(prefix='', ext='.figs')
 
 rule subset_all_eems_plot:
     input:
@@ -294,6 +311,8 @@ rule subset_paper_treemix:
 
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
+rule subset_paper_tess:
+    input: subset_paper_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 
 
 # rules that run testing or partial stuff for all subsets

@@ -22,7 +22,7 @@ pca_2d_theme <- function(...){
           plot.margin = margin(1, 1, 1, 1, 'mm'),
           axis.title = element_text(size=rel(.8), margin(.1, .1, .1, .1, 'mm')),
           axis.text = element_text(size=rel(.8)),
-          axis.line = element_line(size=unit(.1, 'mm')),
+#          axis.line = element_line(size=unit(.1, 'mm')),
           axis.ticks = element_line(size=rel(.8))
           )
     )

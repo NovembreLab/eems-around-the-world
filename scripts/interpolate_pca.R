@@ -37,8 +37,51 @@ plot_factor_interpolation <- function(d2, boundary, PC, ...){
 
     ggplot() %>%
         add_krig(k, boundary) %>%
-        map_plot() %>%
-        add_original_points(d2, PC)
+        map_plot() 
+        #add_original_points(d2, PC)
+}
+
+get_fake_colors <- function(data, columns){
+    data$max <- apply(data[,columns], 1, which.max)
+    print(data$max)
+    print("MASDFX")
+    n_columns <- length(columns)
+    cols <- brewer.pal(n_columns, "Dark2")
+    data$col <- NA
+
+    for(i in 1:n_columns){
+	COL = names(data[,columns])
+	f <- colorRamp(c("white", cols[i]))
+	X <- data$max == i
+	data$col[X]  <- rgb(f(data[,COL[i]][X])/256)
+    }
+    data$col
+}
+
+plot_factor_interpolation_multi <- function(d2, boundary, ...){
+    TESS_COLS <- which(substr(names(d2), 1, 4) == "TESS")
+    TESS_COLS_NAMES <- names(d2)[TESS_COLS]
+    N_TESS_COLS <- length(TESS_COLS)
+
+    interpolations <- lapply(TESS_COLS_NAMES, function(PC)
+			     get_interpolation(data=d2, PC=PC, boundary=boundary) %>%
+			     as.data.frame)
+
+    i_red <- interpolations[[1]]
+    for(i in interpolations[-1]){
+	i_red <- inner_join(i_red, i)
+    }
+
+    i_red$col <- get_fake_colors(data=i_red, columns = TESS_COLS_NAMES)
+    print("ASDFA")
+    
+    G <- ggplot() +
+	geom_tile(data=i_red, aes(x=x1, y=x2, fill=col), color=NA) + 
+	scale_fill_identity() + 
+        scale_x_continuous(expand = c(0,0), limits=range(boundary[,1])) +
+        scale_y_continuous(expand = c(0,0), limits=range(boundary[,2]))
+    G <- map_plot(G) 
+    add_original_points_multi(G, d2, TESS_COLS_NAMES)
 }
 
 
@@ -46,7 +89,7 @@ map_plot <- function(G){
     m <- getMap("low")
         G + geom_path(data = m, aes(x=long, y=lat, group = group),            
                              color = 'black') +                 
-        coord_fixed() 
+        coord_map() 
 #        geom_polygon(data=boundary, aes(x=x, y=y), fill='red', alpha=.2)
 }
 
@@ -60,6 +103,13 @@ add_krig <- function(G, k, boundary, column=3){
         scale_y_continuous(expand = c(0,0), limits=range(boundary[,2])) 
 }
 
+add_original_points_multi <- function(G, data, PC="PC1"){
+    data <- as.data.frame(data)
+    data$col <- get_fake_colors(data, columns=PC)
+    G + geom_point(data=as.data.frame(data),
+                   aes(x=longitude, y=latitude, fill=col),
+              size=3, shape=21, stroke=1, colour="black") + scale_fill_identity()
+}
 add_original_points <- function(G, data, PC="PC1"){
     G + geom_point(data=as.data.frame(data),
                    aes_(x=~longitude, y=~latitude, fill=as.name(PC)),

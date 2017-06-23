@@ -510,7 +510,7 @@ rule ggeems_map:
         pop_geo='subset/{name}.pop_geo',
         indiv_label='subset/{name}.indiv_meta'
     params:
-        RES=100,
+        RES=50,
         ZOOM=3,
         fancy=1
     output:

@@ -16,12 +16,14 @@ rule plink_fst:
         fam='{name}.fam',
         within='{name}.within'
     output:
-        fst='{name}.fst'
+        fst='{name}.fst',
+        fstall='{name}.fstall'
     run:
         name = wildcards.name
         s = [PLINK_EXE, '--bfile',  name, '--fst --out', name,  
             '--within', input.within]
-        shell(" ".join(s))
+        sgrep = " |grep Mean | cut -f4 -d' ' > {output.fstall}"
+        shell(" ".join(s) + sgrep)
 
 rule makefrqstrat:
     input:

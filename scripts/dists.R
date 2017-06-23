@@ -114,11 +114,12 @@ g <- g + geom_text( data=reg.df, aes(label=rsq), x=Inf, y=-Inf,
                     hjust=1, vjust=-0.3, size=C$rsq_size)
 }
 
+
 #    facet_grid(.~variable, scales="free_x")
 g <- g + theme_classic(base_size=8) + 
     theme(axis.title=element_blank(), 
           strip.background=element_blank(),
-         axis.text = element_text(size=rel(.8))) + 
+         axis.text = element_text(size=rel(.75))) + 
         theme(legend.position="none") +
         scale_y_continuous(breaks=breaks_factory(3)) +
         scale_x_continuous(breaks=breaks_factory(3, 0, 10000))

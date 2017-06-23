@@ -31,22 +31,44 @@ if(exists("super_pc")){
     super_data <- load_pca_data(super_pc, super_fam, super_indiv_meta, pop_display)
     super_data <- left_join(super_data, pg)
 
+    super_medians <- read.csv(super_median)
+    super_medians <- left_join(super_medians, pg)
+    super_medians <- super_medians %>% left_join(pd)
+
+    super_data$color <- get_cols_wrap(super_data)
+    super_medians$color <- get_cols_wrap(super_medians)
+
     #distinguish the two sources, used later in map plot
     super_data$shape <- "a"
     data$shape <- "b"
+    super_medians$shape <- "a"
+    medians$shape <- "b"
 
-    super_data <- bind_rows(super_data, data)
+    super_data <- super_data %>% mutate(shape=ifelse(sampleId %in% data$sampleId, "b", "a"))
+    print(table(super_data$shape))
+    super_medians <- super_medians %>% mutate(shape=ifelse(popId %in% data$popId, "b", "a"))
 
     super_data$color <- get_cols_wrap(super_data)
+    super_medians$color <- get_cols_wrap(super_medians)
 
-    data <- data %>% select(-color) %>% left_join(super_data %>% select(popId, color))
-    medians <- medians %>% select(-color) %>% left_join(super_data %>% select(popId, color))
+    data <- data %>% select(-color) %>% left_join(super_data %>% select(popId, color) %>% unique) 
+    medians <- medians %>% select(-color) %>% left_join(super_medians %>% select(popId, color) %>% unique)
     cv <- as.character(super_data$color)
     names(cv) <- super_data$abbrev
     col <- list(scale_color_manual(values=cv),
 		scale_fill_manual(values=cv))
-    plot_map(super_data, col, out_map_png, out_map_rds)
+    plot_map(super_data, col, out_map_both_png, out_map_both_rds)
+
+    #main loop copied. Should do PCA with subdata marked
+    for(i in seq(1, C$max_n_pc, 2)){
+        fig <- make2PC(super_data, super_medians, i, i+1, C)
+        cur_file <- pc2_both[[i %/% 2 + 1]]
+        cur_rds <- pc2rds_both[[i %/% 2 + 1]]
+        ggsave(cur_file, fig, width=C$width, height=C$height)
+        saveRDS(fig, cur_rds)
+    }
     save.image("test")
+
 } else if (C$color == 'wdf'){
     col_list <- data %>% group_by(wasDerivedFrom) %>% 
 	summarize(color=first(color), order=mean(order)) %>% 
@@ -81,9 +103,9 @@ if(exists("super_pc")){
 
 }
 
-if(!exists("super_data")){
-    plot_map(medians, col, out_map_png, out_map_rds)
-}
+#if(!exists("super_data")){
+plot_map(medians, col, out_map_png, out_map_rds)
+#}
 
 #main loop
 for(i in seq(1, C$max_n_pc, 2)){

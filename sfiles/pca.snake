@@ -148,6 +148,14 @@ rule make_2d_pc_plots_supersetcolor:
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
         pc2rds=expand('figures/pca/super/{super}/{name}_pc{PC}.rds', 
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
+
+        pc2_both=expand('figures/pca/both/{super}/{name}_pc{PC}.png', 
+            PC=range(1,5,2), name=['{name}'], super=['{super}']),
+        pc2rds_both=expand('figures/pca/both/{super}/{name}_pc{PC}.rds', 
+            PC=range(1,5,2), name=['{name}'], super=['{super}']),
+
+        out_map_both_rds="figures/paper/super/map_both_{super}_{name}.rds",
+        out_map_both_png="figures/paper/super/map_both_{super}_{name}.png",
         out_map_rds="figures/paper/super/map_{super}_{name}.rds",
         out_map_png="figures/paper/super/map_{super}_{name}.png",
     script: "../" +"scripts/pca/run_2d.R"
