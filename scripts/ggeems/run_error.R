@@ -20,7 +20,7 @@ grid_err <- get_marginal_grid(grid, pg, pd)
 P_grid_err <- plot_error(grid_err, 'labels')
 
 worst_errors <- get_worst_errors(dist, pd)
-P_worst_err <- plot_error(worst_errors, 'label')
+P_worst_err <- plot_error(worst_errors, 'label', CC$nmax)
 
 ggsave(snakemake@output$err_pop, P_dist_err, width=CC$width, height=CC$height)
 ggsave(snakemake@output$err_grid, P_grid_err, width=3, height=3)

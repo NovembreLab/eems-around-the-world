@@ -9,7 +9,7 @@ suppressPackageStartupMessages({
 
 get_worst_errors <- function(dist, pop_display){
     d0 <- load_dists(snakemake@input$dist, snakemake@input$pop_display) %>%
-	mutate(label=sprintf("%s|%s", abbrev.x, abbrev.y)) %>%
+	mutate(label=sprintf("%s|%s", name.x, name.y)) %>%
 	mutate(err=abs(eemsdist-gendist)/(gendist+0.001))  %>%
 	arrange(-err)
 }
@@ -17,7 +17,6 @@ get_worst_errors <- function(dist, pop_display){
 get_marginal <- function(dist, pop_display){
     d2 <- dist %>% mutate(tmp = popId.y, popId.y = popId.x, popId.x=tmp) %>% 
         select(-tmp) %>% bind_rows(dist) %>%
-        mutate(pcfit=pcDist10*0.0023+0.7073) %>%
         mutate(err=abs(eemsdist-gendist)/(gendist+0.001)) %>%
             group_by(popId.x) %>% summarize(err=median(err)) %>%
             arrange(-err) %>% rename(popId=popId.x) %>%

@@ -115,7 +115,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
 
     if(fancy_proj){
 	if(interior){
-	    a = a + geom_polygon(data=m_fill, aes(x=long, y=lat, group=group),  color='black',
+	    a = a + geom_polygon(data=m_fill, aes(x=long, y=lat, group=group),  color='#dedede',
 				 fill='#aaaaaa')
 	} else {
 	    a = a + geom_polygon(data=m_fill, aes(x=long, y=lat, group=group),  color='#aaaaaa',
@@ -125,7 +125,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
 	    a = add_eems_overlay(a, mcmcpath, is.mrates, ...)
 	}
 	if(interior){
-	    a = a + geom_path(data=m_fill, aes(x=long, y=lat, group=group),  color='#222222dd')
+	    a = a + geom_path(data=m_fill, aes(x=long, y=lat, group=group),  color='#dedededd')
 	}else {
 	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
 	}
@@ -164,14 +164,40 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
     pm <- pm[!is.na(pm$longitude),]                                          
     pm$longitude[pm$longitude < -30] <- pm$longitude[pm$longitude< -30]+360  
 
+    map <- .gg_add_samples_true(map, pm, type="pointscol")
+    map <- .gg_add_samples_true(map, pm)
+
+}
+
+.gg_add_samples_true <- function(map, pm, type="label_repel", ...){
+    if(type== "label_repel"){
     require(ggrepel)
-    map + geom_label_repel(data=pm, aes(label=abbrev, x=longitude, y=latitude),
-		    color='#222222dd', size=2.5, fill="#ffffff50",
+	m <- map + geom_text_repel(data=pm, aes(label=name, x=longitude, y=latitude),
+		    color='#222222dd', size=3.5, fill="#ffffff50",
 		     label.padding = unit(0.001, "lines"),
 		     label.r = unit(0.001, "lines"),
 		     label.size= unit(0, "lines"),
-		        point.padding = unit(0.001, "lines"),
-		           segment.color = 'grey50')	
+		        point.padding = NA,
+		           segment.color = 'grey50', ...)	
+	return(m)
+    }
+    if(type=="points"){
+	m <- map + geom_point(data=pm, aes(x=longitude, y=latitude), ...)
+    }
+    #hack for poster
+    if(type=="pointscol"){
+    source("scripts/assign_color_by_coord.R")
+    pm$color <- get_cols_wrap(pm)
+	m <- map + geom_point(data=pm, aes(x=longitude, y=latitude, color=color),
+                          size=4,
+                          ...) +
+		    geom_point(aes(x=longitude, y=latitude), data=pm, color="#efefef", pch=1, 
+                       stroke=.2, size=4) +
+		    scale_color_identity()+
+            scale_size_identity()
+    }
+
+    m
 }
 
 
@@ -207,6 +233,29 @@ ggadd.pts <- function(g, color="#efefefdd", const_size=T){
 	pts <- geom_point(aes(x=x, y=y), data=df, color=color, size=1.5)
     } else {
 	pts <- geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
+    }
+}
+
+ggadd.pts.color <- function(g, const_size=T){
+    tbl <- table(g$ipmap)
+    ind <- as.numeric(names(tbl))
+    sizes <- as.vector(tbl)
+
+    df <- data.frame(longitude=g$demes[ind,1], latitude=g$demes[ind,2], sizes=sizes)
+
+    source("scripts/assign_color_by_coord.R")
+    df$color <- get_cols_wrap(df)
+    df$x <- df$longitude
+    df$y <- df$latitude
+
+
+    if(const_size) {
+	pts <- list(geom_point(aes(x=x, y=y, color=color), data=df, size=1.5) , 
+		    scale_color_identity(),
+            scale_size_identity(),
+		    geom_point(aes(x=x, y=y), size=1.5, data=df, color="black", pch=1, stroke=.2))
+    } else {
+	pts <- list(geom_point(aes(x=x, y=y, size=sizes, color=color), data=df) , scale_color_identity())
     }
 }
 

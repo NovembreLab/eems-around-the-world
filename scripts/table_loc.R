@@ -12,6 +12,7 @@ hg$panel <- "HG"
 mig <- indiv_meta0 %>% filter(popId %in% filter$recent_migrant)
 mig$panel <- "ADMIX"
 
+pub <- read.csv(snakemake@input$pub_label)
 
 
 #indiv_meta_files <- snakemake@input$indiv_meta
@@ -28,10 +29,11 @@ indiv_all$panel <- snakemake@params$abbrev[as.numeric(indiv_all$panel)]
 indiv_all <- bind_rows(list(indiv_all, hg, mig))
 
 
-indiv_all %>% left_join(inner_join(pop_geo, pop_display))  %>%
+indiv_all %>% left_join(pub) %>% 
+        left_join(inner_join(pop_geo, pop_display))  %>%
 		group_by(popId) %>%
 		summarize(abbrev=as.character(first(abbrev)), name=first(name), 
-              src=paste(unique(wasDerivedFrom), collapse=";"),
+              src=paste(sort(unique(pub)), collapse="|"),
 			  longitude=first(longitude), latitude=first(latitude),
 			  sample_size = n_distinct(sampleId),
 			  panel=paste(unique(panel), collapse="|")

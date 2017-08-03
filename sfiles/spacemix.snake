@@ -40,6 +40,8 @@ rule run_spacemix:
         cts='spacemix/{name}.counts',
         pop_geo='{name}.pop_geo',
         __script__='scripts/run_spacemix.R'
+    benchmark:
+        "spacemix/{name}/mcmc/{model}/__LongRun/benchmark.BM"
     output:
         "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj"
     run:

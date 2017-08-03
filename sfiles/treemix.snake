@@ -49,6 +49,8 @@ rule run_treemix_single:
     input: rules.make_treemix_input.output
     params:
         seed_base=141
+    benchmark:
+        'treemix/{name}_m{m}_run{run}.BM'
     output:
         cov='treemix/{name}_m{m}_run{run}.cov.gz',
         covse='treemix/{name}_m{m}_run{run}.covse.gz',
@@ -83,17 +85,21 @@ rule run_treemix_set:
 rule plot_treemix_best:
     input: 
         rules.run_treemix_set.input,
-        'scripts/plot_treemix_lib.R',
-        pop_display=_POP_DISPLAY_,
+        #'scripts/plot_treemix_lib.R',
+        #pop_display=_POP_DISPLAY_,
     output: 
         treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
         residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',
         tmp='tmp{name}{mlower}{mupper}{nruns}.order'
     run:
         import numpy as np
-        __script__ = input[0]
-        pop_display = input[1]
-        infiles = input[2:]
+        __script__='scripts/plot_treemix_lib.R',
+        pop_display=_POP_DISPLAY_,
+        #__script__ = input.lib                 
+        #pop_display = input.pop_display        
+        print(input)
+        infiles = input
+
         bases = [base(base(s)) for s in infiles]
         max_llik = 'NONE', -np.inf
         for b in bases:

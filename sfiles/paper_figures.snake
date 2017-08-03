@@ -51,6 +51,7 @@ __script__3="scripts/table_sources.R"
 rule table_sources:
     input:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
+        pub_label="pgs/gvar3.pub",
         script= __script__3
     output:
         csv='rawtables/table_sources.csv'
@@ -63,7 +64,9 @@ rule table_locations:
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         pop_geo=_POP_GEO_,
         pop_display=_POP_DISPLAY_,
-        script= __script__4
+        script= __script__4,
+        pub_label="pgs/gvar3.pub",
+	
     params:
         panels=subsets_paper,
         abbrev=subsets_abbrev,

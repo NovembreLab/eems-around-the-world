@@ -4,6 +4,9 @@ suppressPackageStartupMessages({
 	source("scripts/config.R")
 	source("scripts/ggpca2d.R")
 })
+
+
+
 C <- get_config(snakemake, 'pca2d')
 input <- snakemake@input[names(snakemake@input) != '']
 output <- snakemake@output[names(snakemake@output) != '']

@@ -16,11 +16,11 @@ run.spacemix.analysis(
                         loci = ncol(cts),
 
 			###production option set
-                        ngen = 1e7,
+                        ngen = 5e6,
                         samplefreq = 1e4,
                         fast.MCMC.ngen = 5e5,
                         savefreq = 1e6,
-			n.fast.reps = 10,
+			n.fast.reps = 5,
 
 			###debug option set
                         #ngen = 1e5,

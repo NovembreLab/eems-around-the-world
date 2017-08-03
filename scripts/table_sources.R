@@ -8,8 +8,11 @@ outname <- snakemake@output$csv
 indiv_meta <- lapply(indiv_meta_files, read.csv)
 indiv_all <- do.call(rbind, indiv_meta)
 
+pub <- read.csv(snakemake@input$pub_label)
+
 indiv_all %>% filter(!duplicated(indiv_all$sampleId)) %>%
-	group_by(wasDerivedFrom) %>%
+        left_join(pub) %>%
+	group_by(pub) %>%
 	summarize(n_samp=length(sampleId), n_pops=n_distinct(popId)) %>%
     arrange(-n_samp) %>%
 	write.csv(outname, row.names=F, quote=F)

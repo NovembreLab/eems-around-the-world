@@ -267,6 +267,9 @@ rule subset_all_fst:
 rule subset_all_spacemix:
     input:
         subset_all_fun(prefix='spacemix/subset/', ext='.controller')
+rule subset_paper_spacemix:
+    input:
+        subset_paper_fun(prefix='spacemix/subset/', ext='.controller')
 
 rule subset_all_eems:
     input:
@@ -277,7 +280,14 @@ rule subset_all_eems_ggplot:
         subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
 rule subset_paper_eems_ggplot:
     input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates02.png'),
         subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+rule subset_paper_synth:
+    input:
+        subset_paper_fun(prefix='figures/pca/synthmap/', ext='_PC1.png'),
+rule subset_paper_map:
+    input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
 rule subset_paper_figs:
     input:
         subset_paper_fun(prefix='', ext='.figs')
@@ -307,12 +317,12 @@ rule subset_all_treemix:
     input : subset_all_fun(prefix='treemix/subset/', ext='_m0-8_runs4.tree.png')
 
 rule subset_paper_treemix:
-    input : subset_paper_fun(prefix='treemix/subset/', ext='_m0-8_runs4.tree.png')
+    input : subset_paper_fun(prefix='treemix/subset/', ext='_m0-2_runs3.tree.png')
 
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 rule subset_paper_tess:
-    input: subset_paper_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
+    input: subset_paper_fun(prefix='tess/subset/', ext='_K2-6_nruns3.controller')
 
 
 # rules that run testing or partial stuff for all subsets

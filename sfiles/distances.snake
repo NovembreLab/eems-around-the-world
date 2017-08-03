@@ -83,7 +83,7 @@ rule eems_grid_dist:
     params:
         statname='eemsdist'
     output:
-        "dists/{name}.eemsgriddist"
+        "dists/{name}.eemsgriddist",
     script: "../" + eemsgridscript
 
 rule gen_grid_dist:
@@ -142,3 +142,8 @@ rule dist_plot:
         rds="figures/dists/{name}.rds"
     script:
         "../" + "scripts/dists.R"
+
+rule dists_local_vs_global_eems:
+    input:
+        "dists/{name}.eemsdist",
+        "dists/{name}.popgrid",

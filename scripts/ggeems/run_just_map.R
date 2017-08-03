@@ -1,22 +1,31 @@
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/ggeems_main.R")
+source("scripts/config.R")
 
 WIDTH=20
 HEIGHT=20
 
-args <- commandArgs(T)
-nruns <- as.integer(args[1])
-name <- args[2]
+wildcards <- snakemake@wildcards
+
+nruns <- as.numeric(wildcards$nruns)
+name <- wildcards$name
 
 mcmcpath <- sprintf('eemsout/%d/%s/', 0:(nruns-1), name)
 
-pop_display <- args[3]
-pop_geo <- args[4]
-indiv_label <- args[5]
+pop_display <- snakemake@input$pop_display
+pop_geo <- snakemake@input$pop_geo
+indiv_lael <- snakemake@input$indiv_label
 
-RES <- as.integer(args[6])
-ZOOM <- as.integer(args[7])
-fancy <- as.integer(args[8])
+RES <- snakemake@params$RES
+ZOOM <- snakemake@params$ZOOM
+
+C <- get_config(snakemake, 'map')
+WIDTH <- C$width
+HEIGHT <- C$height
+
+fancy <- C$fancy
+interior <- C$interior
+
 
 null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
                                   axis.text.y=element_blank(),axis.ticks=element_blank(),
@@ -28,7 +37,8 @@ null_theme <- theme(axis.line=element_blank(),axis.text.x=element_blank(),
 
 g <- read.output.graph(mcmcpath[1])
 
-m = make_map(mcmcpath, ZOOM, is.mrates=T, fancy_proj=fancy, just_map=T)
+m = make_map(mcmcpath, ZOOM, is.mrates=T, fancy_proj=fancy, just_map=T,
+             interior=interior)
 dummy_df <- data.frame(xmin=-360, xmax=360, ymin=-360, ymax=360)
 dummy_df <- expand.grid(x=seq(-180,360,1), y=seq(-90,90, .5))
 #m = m + geom_tile(data=dummy_df, aes(x=x, y=y), color=NA,

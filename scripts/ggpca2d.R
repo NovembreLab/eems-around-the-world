@@ -7,7 +7,7 @@ library(ggrepel)
 source("scripts/load_pop_meta.R")
 source("scripts/themes.R")
 })
-#! called from snakefiles/pca.snake:make_pc_plots
+#!  called from snakefiles/pca.snake:make_pc_plots
 
 
 

@@ -71,7 +71,9 @@ g <- ggplot(inliers, aes(x=value, y=gendist, label=label))
 if(C$point_type == 'text'){
     g <- g + geom_text(color=C$color, size=C$size,  alpha=C$alpha)
 } else if (C$point_type == 'hex'){
+    if(is.null(C$n_bins)){
     n_bins <- max(C$height, C$width) * 10
+    } else {n_bins <- C$n_bins}
     g <- g + geom_hex( color=NA, size=C$size,bins=n_bins,  alpha=C$alpha)  +
         scale_fill_continuous(low = "gray85", high = "black", trans = sqrt_trans())
 
@@ -89,7 +91,7 @@ if(C$outlier_type == 'text'){
 }
 
 if(C$tall){
-g <- g + theme_classic() +
+g <- g + theme_classic()+
     facet_wrap(~variable, scales="free_y", ncol=1
                ) + coord_flip()
 } else{
@@ -116,7 +118,7 @@ g <- g + geom_text( data=reg.df, aes(label=rsq), x=Inf, y=-Inf,
 
 
 #    facet_grid(.~variable, scales="free_x")
-g <- g + theme_classic(base_size=8) + 
+g <- g + theme_classic(base_size=C$theme_size) + 
     theme(axis.title=element_blank(), 
           strip.background=element_blank(),
          axis.text = element_text(size=rel(.75))) + 
