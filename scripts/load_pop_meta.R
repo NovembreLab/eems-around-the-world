@@ -1,5 +1,6 @@
 require(dplyr)
 require(data.table)
+require(readr)
 
 load_pop_meta <- function(pop_geo_file, pop_display_file){
 	pg <- read.csv(pop_geo_file)
@@ -159,4 +160,9 @@ load_dists <- function(dist_file, pop_display){
     pd <- read.csv(pop_display)
     dists %>% left_join(pd, by=c(popId.x="popId")) %>% 
 	left_join(pd, by=c(popId.y="popId"))
+}
+
+load_ind_dists <- function(dist_file){
+	dists <- read_csv(dist_file) %>%
+		filter(geoDist>0)
 }

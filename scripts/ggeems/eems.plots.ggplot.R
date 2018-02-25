@@ -49,7 +49,7 @@ get.sign <- function(mcmcpath, dimns, is.mrates, longlat=F){
 
 
 average.eems.contours.ggplot <- function(P, mcmcpath,dimns,
-                                  is.mrates, signplot=F, ...) {
+                                  is.mrates, signplot=F, varplot=F, ...) {
     if (is.mrates) {
         message('Plotting effective migration rates m : posterior mean and variance')
         files <- c('/mcmcmtiles.txt','/mcmcmrates.txt', 
@@ -64,12 +64,21 @@ average.eems.contours.ggplot <- function(P, mcmcpath,dimns,
     n_runs <- length(mcmcpath)
     if (n_runs==0) { return(0) }
 
+
+    if(signplot & varplot){stop("sign and variance requested")}
     if(signplot){
         Z <- get.sign(mcmcpath, dimns, is.mrates, T)
         saveRDS(Z, "z.rds")
         return(add.one.eems.contour.ggplot(P, mcmcpath, dimns, Z, Zvar=NULL,
                                  is.mrates, ...))
-    }else{
+    }else if(varplot){
+	print("GOT VAR")
+        Z <- get.z(mcmcpath, dimns, is.mrates, T)
+        Zmean <- Z[[1]]
+        Zvar <- Z[[2]]
+        return(add.one.eems.contour.ggplot.var(P, mcmcpath, dimns, Zmean, Zvar,
+                                 is.mrates, ...))
+    }else {
         Z <- get.z(mcmcpath, dimns, is.mrates, T)
         Zmean <- Z[[1]]
         Zvar <- Z[[2]]
@@ -78,6 +87,57 @@ average.eems.contours.ggplot <- function(P, mcmcpath,dimns,
     }
 }
 
+add.one.eems.contour.ggplot.var <- function(P, mcmcpath, dimns, Zmean, Zvar,
+                                     is.mrates, alpha_limits=c(0,.1), 
+                                     alpha_null=0.6, ...){
+    y <- rep(dimns$ymrks, each=length(dimns$xmrks))       
+    x <- rep(dimns$xmrks, length(dimns$ymrks))
+
+    df <- data.frame(x=y, y=x, Zvar=c(Zvar), 
+                     filter=dimns$filter)
+    dff <- df[!df$filter,]
+    dff$alpha <- alpha_null
+    dff <<- dff
+
+    df <- df[df$filter,]
+
+    n_cuts <- max(min(101, length(unique(df$Zvar))), 2)
+    print(n_cuts)
+    df$alpha <- cut(df$Zvar, n_cuts)
+    alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), 
+                                      values=alpha, guide='none',
+                                      palette=function(n){
+                                          nhalf = n %/% 2
+                                          s <- seq(alpha_limits[2], 
+                                              alpha_limits[1], 
+                                              length.out=nhalf)
+                                          c(s, alpha_limits[1], rev(s))
+                                      })
+
+    #rescaling for debug
+    #df$y <- 8 + (df$y - min(df$y))/diff(range(df$y))*2.3
+    #df$x <- 38.85 + (df$x - min(df$x))/diff(range(df$x))*2.53
+
+
+
+    if(is.mrates){
+	#require(viridis)
+	require(RColorBrewer)
+    cv=colorRampPalette(brewer.pal(9,"Blues")[1:7])(100)
+	eems_colors <- scale_fill_gradientn(colours=cv,
+					    name="var(M)", limits=c(0,4))
+    } else {
+	eems_colors <- scale_fill_gradientn(colours=gray(0:100/100),
+					    name="q")
+    }
+    #P <- ggplot(data=df, aes(x=x, y=y)) +
+    tiles <- P + geom_tile(data=df, aes(x=y, y=x, fill=Zvar, alpha=alpha) ) +
+	eems_colors + alpha_scale 
+    tiles <- tiles + geom_tile(data=dff, aes(x=y, y=x),
+			       alpha=alpha_null, fill='white', color=NA)
+			    
+    return(tiles)
+}
 
 add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
                                      is.mrates, alpha_limits=c(0,.1), 
@@ -105,6 +165,7 @@ add.one.eems.contour.ggplot <- function(P, mcmcpath, dimns, Zmean, Zvar,
 
     n_cuts <- max(min(101, length(unique(df$Zmean))), 2)
     print(n_cuts)
+    print(unique(df$Zmean))
     df$alpha <- cut(df$Zmean, n_cuts)
     alpha_scale <- scale_alpha_manual(labels=levels(df$alpha), 
                                       values=alpha, guide='none',

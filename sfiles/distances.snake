@@ -1,10 +1,40 @@
 
 N_EEMS_RUNS=4
 
+gidscript="scripts/geoinddist.R"
+rule geo_ind_dist:
+    input:
+        geodist="dists/{name}.geodist0",
+        indiv_meta="subset/{name}.indiv_meta",
+        script=gidscript,
+    output:
+        "dists/{name}.geoinddist"
+    script: "../" + gidscript
+rule eems_ind_dist:
+    input:
+        geodist="dists/{name}.eemsdist0",
+        indiv_meta="subset/{name}.indiv_meta",
+        script=gidscript,
+    output:
+        "dists/{name}.eemsinddist"
+    script: "../" + gidscript
+
+pcindscript="scripts/pcinddist.R"
+rule pc_ind_dist:
+    input:
+        pc='pca/flash_{name}_dim100.pc',
+        fam='subset/{name}.fam',
+        indiv_meta='subset/{name}.indiv_meta',
+        pop_display=_POP_DISPLAY_,
+        script = pcindscript
+    output:
+        pcdist="dists/{name}_dim{npc, \d+}.pcinddist"
+    script:  "../" + pcindscript
+
 pcpopscript="scripts/pcdist.R"
 rule pc_pop_dist:
     input:
-        "pca/median_{name}_dim20.pc",
+        "pca/median_{name}_dim100.pc",
         script = pcpopscript
     output:
         "dists/{name}_dim{npc, \d+}.pcdist"
@@ -13,7 +43,7 @@ rule pc_pop_dist:
 pcgridscript="scripts/pcdistgrid.R"
 rule pc_grid_dist:
     input:
-        pcs="pca/median_{name}_dim20.pc",
+        pcs="pca/median_{name}_dim100.pc",
         popgrid="dists/{name}.popgrid",
         script = pcgridscript
     output:
@@ -26,7 +56,8 @@ rule geo_dist:
         "subset/{name}.pop_geo",
         script = geopopscript
     output:
-        "dists/{name}.geodist"
+        geodist="dists/{name}.geodist",
+        geodist0="dists/{name}.geodist0"
     script:  "../" + geopopscript
 
 gendistscript = "scripts/gendist.R"
@@ -37,7 +68,8 @@ rule gen_dist:
         order="eems/{name}.order",
         script=gendistscript
     output:
-        "dists/{name}.gendist"
+        "dists/{name}.gendist",
+        "dists/{name}.geninddist",
     script: "../" + gendistscript
 
 eemsdistscript = "scripts/eemsdist.R"
@@ -53,6 +85,7 @@ rule eems_pop_dist:
     output:
         "dists/{name}.eemsdist",
         "dists/{name}.popgrid",
+        "dists/{name}.eemsdist0",
     params:
         statname='eemsdist'
     script: "../" + eemsdistscript
@@ -125,12 +158,56 @@ rule dist_all:
         "dists/{name}.gendist",
         "dists/{name}.eemsdist",
 #        "dists/{name}.eems0dist",
+        "dists/{name}_dim100.pcdist",
         "dists/{name}_dim10.pcdist",
         "dists/{name}_dim2.pcdist",
         "dists/{name}.geodist",
     output:
         "dists/{name}.dist"
     script: "../" + "scripts/merge_dists.R"
+
+rule dist_ind_all:
+    input:
+        "dists/{name}.geninddist",
+        "dists/{name}.eemsinddist",
+#        "dists/{name}.eems0dist",
+        "dists/{name}_dim100.pcinddist",
+        "dists/{name}_dim10.pcinddist",
+        "dists/{name}_dim2.pcinddist",
+        "dists/{name}.geoinddist",
+    output:
+        "dists/{name}.inddist"
+    script: "../" + "scripts/merge_dists.R"
+
+rule rsqs:
+    input:
+        dists="dists/{name}.dist",
+        pop_display=_POP_DISPLAY_,
+        script="scripts/dist_rsq.R"
+    output:
+        rsq="dists/{name}.rsq"
+    script:
+        "../" + "scripts/dist_rsq.R"
+
+rule rsqs_decile:
+    input:
+        dists="dists/{name}.dist",
+        pop_display=_POP_DISPLAY_,
+        script="scripts/dist_decile_rsq.R"
+    output:
+        rsq="dists/{name}.drsq"
+    script:
+        "../" + "scripts/dist_decile_rsq.R"
+
+rule dist_ind:
+    input:
+        dists="dists/{name}.inddist",
+        script="scripts/inddists.R"
+    output:
+        png="figures/inddists/{name}.png",
+        rds="figures/inddists/{name}.rds"
+    script:
+        "../" + "scripts/inddists.R"
 
 rule dist_plot:
     input:

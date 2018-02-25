@@ -52,7 +52,7 @@ rule get_pca_outliers:
 __script__6='scripts/ggpca.R'
 rule make_pc_plots_wdf:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -72,11 +72,11 @@ rule make_pc_plots_wdf:
     script: "../" +__script__6
     #shell: config['EXE']['R']  + " {input.__script__} {input.pc} {input.fam}"
     #    " {input.indiv_meta} {input.pop_display} "
-    #    " {output.pc1} {output.pc2} 20"
+    #    " {output.pc1} {output.pc2} {NPC, \d+}"
 
 rule make_pc_plots:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -99,12 +99,13 @@ rule make_pc_plots:
 
 rule make_2d_pc_plots:
     input:
-        pc='pca/flash_{name}_dim20.pc',
-        median='pca/median_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim100.pc',
+        median='pca/median_{name}_dim100.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
         pop_order="subset/{name}.pop_order",
+        pve="pca/flash_{name}_dim100.pve",
         pop_geo=_POP_GEO_,
         __script__='scripts/pca/run_2d.R',
         _libscript='scripts/ggpca2d.R',
@@ -126,13 +127,15 @@ rule make_2d_pc_plots_supersetcolor:
         figure, i.e. I want the colors in Europe to be the subset in the above
     """
     input:
-        pc='pca/flash_{name}_dim20.pc',
-        median='pca/median_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim100.pc',
+        pve="pca/flash_{name}_dim100.pve",
+        median='pca/median_{name}_dim100.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
 
-        super_pc="pca/flash_{super}_dim20.pc",
-        super_median='pca/median_{super}_dim20.pc',
+        super_pc="pca/flash_{super}_dim100.pc",
+        super_pve="pca/flash_{super}_dim100.pve",
+        super_median='pca/median_{super}_dim100.pc',
         super_fam='subset/{super}.fam',
         super_indiv_meta='subset/{super}.indiv_meta',
 
@@ -161,7 +164,7 @@ rule make_2d_pc_plots_supersetcolor:
     script: "../" +"scripts/pca/run_2d.R"
 rule make_pve_plot:
     input:
-        pve_file="pca/flash_{name}_dim20.pve",
+        pve_file="pca/flash_{name}_dim100.pve",
         script="scripts/pca/pve.R"
     output:
         png="figures/pca/pve/{name}.png",
@@ -172,18 +175,18 @@ rule make_pve_plot:
 script_median='scripts/get_pc_median.R'
 rule pca_median:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
         __script__=script_median
     output:
-        pc='pca/median_{name}_dim20.pc'
+        pc='pca/median_{name}_dim{NPC, \d+}.pc'
     script: "../" + script_median
 
 rule make_pc_plots_highlight_excluded:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         exfam='subset/{exname}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -203,7 +206,7 @@ rule make_pc_plots_highlight_excluded:
 __script__7='scripts/pcaloadings.R'
 rule make_loadings_plots:
     input:
-        load='pca/flash_{name}_dim20.load',
+        load='pca/flash_{name}_dim100.load',
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
@@ -231,7 +234,7 @@ rule get_pca_derived_order:
 __script__9='scripts/pca_vs_geo.R'
 rule pca_vs_gen:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         ipmap='eemsout/0/{name}/ipmap.txt',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -253,7 +256,7 @@ rule pca_vs_gen:
 
 rule synthmap:
     input:
-        pc='pca/flash_{name}_dim20.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,

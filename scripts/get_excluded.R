@@ -1,5 +1,6 @@
 library(dplyr)
 
+old <- function(){
 C <- snakemake@config$paper
 panels <- names(C)
 
@@ -43,3 +44,4 @@ write.csv(excluded_table, file=outfile, row.names=F)
 
 
 save.image(".excluded.rdebug")
+}

@@ -56,3 +56,4 @@ rule plot_fst:
     output:
         png="figures/fst/{name}.fst.png"
     script: "../scripts/plot_fst_mat.R"
+

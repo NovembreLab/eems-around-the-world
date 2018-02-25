@@ -16,6 +16,7 @@ ipmap_file <- snakemake@input$ipmap
 
 outname <- snakemake@output[[1]]
 outname2 <- snakemake@output[[2]]
+outname3 <- snakemake@output[[3]]
 
 
 #load mats
@@ -52,8 +53,13 @@ rownames(res) <- unique_pops
 colnames(res) <- unique_pops   
 v <- melt(res)
 names(v) <- c('popId.x', 'popId.y', statname)
+
+v2 <- v %>% filter(popId.x <= popId.y)
+write.csv(v2, outname3, row.names=F)
+
 v <- v %>% filter(popId.x < popId.y)
 write.csv(v, outname, row.names=F)
+
 
 save.image(".rsnakemakedebug")
 

@@ -1,0 +1,5 @@
+p0 <- mean(read.table(snakemake@input$pilogl0)[,1])
+p1 <- mean(read.table(snakemake@input$pilogl1)[,1])
+ll0 <- mean(read.table(snakemake@input$pilogl0)[,2])
+ll1 <- mean(read.table(snakemake@input$pilogl1)[,2])
+write.csv(p0-p1+ll0-ll1, file=snakemake@output$x, row.names=F, col.names=F, quote=F)

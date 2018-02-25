@@ -45,7 +45,7 @@ rule table_panels:
 rule remove_underscore:
     input : "rawtables/{name}.csv"
     output: "paper/{name}.csv"
-    shell : "sed -e 's/_/ /g; s/\"//g' {input} >{output}"
+    shell : "sed -e 's/_/ /g; ' {input} >{output}"
 
 __script__3="scripts/table_sources.R"
 rule table_sources:
@@ -61,12 +61,13 @@ __script__4="scripts/table_loc.R"
 rule table_locations:
     input:
         indiv_meta0 = _INDIV_META_,
+        languages = _META_ + ".language2",
         indiv_meta=subset_paper_fun(prefix='subset/', ext='.indiv_meta'),
         pop_geo=_POP_GEO_,
         pop_display=_POP_DISPLAY_,
         script= __script__4,
         pub_label="pgs/gvar3.pub",
-	
+        loc_src="pgs/gvar3.locsrc",
     params:
         panels=subsets_paper,
         abbrev=subsets_abbrev,
@@ -227,3 +228,12 @@ rule composite_fig:
 #        pdf="figures/paper/{name}.pdf"
     script:
         "../" + "scripts/composite_fig.R"
+
+
+rule highres_figs:
+    input:
+        subset_paper_fun(prefix="eemsout_gg/", ext="_nruns4-mrates01.png")
+    output:
+        "paper/highres_figs.tar.gz"
+    shell:
+        "tar czvf {output} {input}"

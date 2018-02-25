@@ -18,6 +18,8 @@ data <- load_pca_data(pc, fam, indiv_meta, pop_display)
 medians <- read.csv(median)
 pg <- read.csv(pop_geo)
 
+pve_data <- read.table(pve)[,1]
+
 data <- left_join(data, pg)
 if("order" %in% names(data)) data <- data %>% select(-order) 
 data <- data %>% left_join(read.csv(pop_order))
@@ -64,7 +66,7 @@ if(exists("super_pc")){
 
     #main loop copied. Should do PCA with subdata marked
     for(i in seq(1, C$max_n_pc, 2)){
-        fig <- make2PC(super_data, super_medians, i, i+1, C)
+        fig <- make2PC(super_data, super_medians, i, i+1, C, pve_data=pve_data)
         cur_file <- pc2_both[[i %/% 2 + 1]]
         cur_rds <- pc2rds_both[[i %/% 2 + 1]]
         ggsave(cur_file, fig, width=C$width, height=C$height)
@@ -112,7 +114,7 @@ plot_map(medians, col, out_map_png, out_map_rds)
 
 #main loop
 for(i in seq(1, C$max_n_pc, 2)){
-    fig <- make2PC(data, medians, i, i+1, C)
+    fig <- make2PC(data, medians, i, i+1, C, pve_data=pve_data)
     cur_file <- pc2[[i %/% 2 + 1]]
     cur_rds <- pc2rds[[i %/% 2 + 1]]
     ggsave(cur_file, fig, width=C$width, height=C$height)

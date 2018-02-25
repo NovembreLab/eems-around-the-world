@@ -28,7 +28,7 @@ library(RColorBrewer)
     #grid <- sapply(panels, function(p) config_eems$eems[[p]]$grid)
     config_eems <-  jsonlite::fromJSON("config/eems.json")   
     grid_res <- sapply(panels, function(i)config_eems$eems[[i]]$grid) * 2
-    grid <- sapply(panels, function(p) nrow(read.table(sprintf("eemspilot/0/%s/demes.txt", p))))
+    grid <- sapply(panels, function(p) nrow(read.table(sprintf("eemsout/0/%s/demes.txt", p))))
 #    max_missing <- sapply(panels, function(p) config_subset$subset[[p]]$max_missing)
 #    max_missing[sapply(max_missing, is.null)] <- config_subset$subset[['__default__']]$max_missing
     max_missing <- 0

@@ -1,10 +1,12 @@
 from .polygon import get_subset_area
 from ..utils.plink import run_plink
 import pandas as pd
+import tempfile
 import numpy as np
 from numpy.random import randn
 
 def filter_data(meta_data, bedfile, missing=0.001, plink="plink",
+                exclude_loci=[],
                 has_dataset=False, outfile='TMP_PLINK', per_ind_missing=1.,
                 max_per_pop=5000):
     """filter_data
@@ -73,6 +75,13 @@ def filter_data(meta_data, bedfile, missing=0.001, plink="plink",
     flags['out'] = outfile
     flags['keep'] = include_name
     flags['indiv-sort'] = 'f %s' % include_name
+    if exclude_loci != []:
+        exclude_loci_file = tempfile.NamedTemporaryFile(delete=False, mode="w")
+        for locus in exclude_loci:
+            exclude_loci_file.write("%s\n"% locus)
+        exclude_loci_file.close()
+        flags['exclude'] = exclude_loci_file.name
+        print("excluding loci %s " % exclude_loci_file.name)
 
     run_plink(plink, flags)
 

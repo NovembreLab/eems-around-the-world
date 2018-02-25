@@ -47,6 +47,8 @@ class CountryContainer(object):
             self.regions[c.region_un.lower()].append(c)
             self.regions[c.subregion.lower()].append(c)
             self.regions[c.region_wb.lower()].append(c)
+        else:
+            self.regions[c.sovereignt.lower()].append(c)
 
         self.regions[c.name.lower()].append(c)
 

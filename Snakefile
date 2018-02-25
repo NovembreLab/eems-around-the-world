@@ -88,7 +88,7 @@ include: 'sfiles/distances.snake'
 
 base = lambda x: os.path.splitext(x)[0]
 
-def load_subset_config(config, name, verbose=True):
+def load_subset_config(config, name, verbose=False):
     """ recursively load subset info """
     if verbose:
         print("loading subset %s" % name)
@@ -188,6 +188,11 @@ def snakemake_subsetter(input, output, name):
         meta_data = meta_data[~meta_data['sampleId'].isin(excl)]
         print("to %s rows ..."% meta_data.shape[0])
 
+    if 'exclude_loci' not in params:
+        exclude_loci = []
+    else:
+        exclude_loci = params['exclude_loci']
+
 
     bed = os.path.splitext(input.bed)[0]
     meta_data = filter_data(meta_data=meta_data,
@@ -195,6 +200,7 @@ def snakemake_subsetter(input, output, name):
                             missing=float(params['max_missing']), 
                             per_ind_missing=float(params['max_missing_ind']),
                             plink=PLINK_EXE,
+                            exclude_loci=exclude_loci,
                             max_per_pop=int(params['max_per_pop']),
                             outfile=outname)
     
@@ -256,9 +262,9 @@ rule subset_all_bed1:
         subset_all_fun(prefix='subset_nopca/', ext='.fam'),
         subset_all_fun(prefix='subset_nopca/', ext='.bed')
 
-rule subset_all_diffs:
+rule subset_paper_diffs:
     input:
-        subset_all_fun(prefix='eems/', ext='.diffs')
+        subset_paper_fun(prefix='eems/', ext='.diffs')
 
 rule subset_all_fst:
     input:
@@ -282,26 +288,43 @@ rule subset_paper_eems_ggplot:
     input:
         subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates02.png'),
         subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+rule subset_paper_eems_ggplot1:
+    input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png')
+rule subset_paper_eems_ggplot2:
+    input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates02.png'),
+rule subset_paper_eems_ggplot_var:
+    input:
+        subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-mrates03.png'),
 rule subset_paper_synth:
     input:
         subset_paper_fun(prefix='figures/pca/synthmap/', ext='_PC1.png'),
 rule subset_paper_map:
     input:
         subset_paper_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
-rule subset_paper_figs:
-    input:
-        subset_paper_fun(prefix='', ext='.figs')
 
 rule subset_all_eems_plot:
     input:
         subset_all_fun(prefix='eemsout/', ext='_nruns4-mrates01.png')
+rule subset_paper_eems0_plot:
+    input:
+        subset_paper_fun(prefix='eemsout0/', ext='_nruns4-mrates01.png')
+rule subset_paper_bf:
+    input:
+        subset_paper_fun(prefix='eemsout/1/', ext='/bf.txt')
+rule all_rsqs:
+    input:
+        subset_paper_fun(prefix="dists/", ext=".rsq")
+    output: "dists/all_rsqs.txt"
+    shell: "tail {input} > {output}"
 
 rule subset_all_pca:
     input:
-        subset_all_fun(ext='_pc20.png', prefix='figures/pca/pc1d_'),
+        subset_all_fun(ext='_pc100.png', prefix='figures/pca/pc1d_'),
 rule subset_all_loadings:
     input:
-        subset_all_fun(ext='_pc20.png', prefix='figures/pca/loadings_'),
+        subset_all_fun(ext='_pc100.png', prefix='figures/pca/loadings_'),
 
 rule subset_all_pca_wdf:
     input:
@@ -319,6 +342,9 @@ rule subset_all_treemix:
 rule subset_paper_treemix:
     input : subset_paper_fun(prefix='treemix/subset/', ext='_m0-2_runs3.tree.png')
 
+rule subset_paper_pca:
+    input : subset_paper_fun(prefix='figures/pca/2d/', ext='_pc3.png')
+
 rule subset_all_tess:
     input: subset_all_fun(prefix='tess/subset/', ext='_K2-8_nruns3.controller')
 rule subset_paper_tess:
@@ -335,26 +361,26 @@ rule subset_all_ini10:
 rule subset_all_diagnostic_mds:
     input: subset_all_fun(ext='-mds.pdf', prefix='eems/figures/')
 
-rule subset_paper_newplots:
-    input : 
-        subset_paper_fun(prefix='figures/paper/', ext='.png'),
-
-rule subset_all_newplots:
-    input : 
-        subset_all_fun(prefix='figures/paper/', ext='.png'),
-#        subset_all_fun(prefix='figures/pca/2d/', ext='_pc1.png'),
-#        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-mrates01.png'),
-        subset_all_fun(prefix='eemsout_gg/', ext='_nruns4-map01.png'),
-
-
 rule subset_admixture_k2:
     input: subset_all_fun_reps(prefix='admixture/{i}/', ext='.2.P')
 
-rule subset_all_error_plot:
-    input: subset_all_fun(prefix="eemsout_gg/", ext="_nruns4-error-pop01.png")
+rule subset_paper_error_plot:
+    input: subset_paper_fun(prefix="eemsout_gg/", ext="_nruns4-error-pop01.png")
+rule subset_paper_scatterind:
+    input: subset_paper_fun(prefix="figures/inddists/", ext=".png")
+
+rule subset_paper_hwe:
+    input:
+        subset_paper_fun(prefix="figures/hwe/", ext=".png"),
+        subset_paper_fun(prefix="subset/", ext=".hwemin")
 
 rule subset_all_scatter_plot:
     input: subset_all_fun(prefix="figures/dists/", ext=".png")
+rule subset_paper_scatter_plot:
+    input: subset_paper_fun(prefix="figures/dists/", ext=".png")
+
+rule subset_sample_map:
+    input: subset_paper_fun(prefix="subset/", ext="_sample_map.png")
 
 rule subset_all_excluded:
     input: subset_all_fun(prefix="excl/", ext=".excl", force=True)
@@ -443,40 +469,16 @@ rule diagnostic_pca:
         pdf='pca/figures/{name}-pca.pdf'
     script: __script__11
 
-"""
-rule run_eems:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
-
-rule run_treemix:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
-
-rule run_treelets:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
-
-rule run_tess:
-    input:
-        bed='{name}.bed',
-        bim='{name}.bim',
-        fam='{name}.fam',
-
-
-
-
-"""
 rule all:
     input:
-        rules.subset_all_spacemix.input,
-        rules.subset_all_pca.input,
-        rules.subset_all_eems_plot.input,
-        rules.subset_all_pong.input,
-        rules.subset_all_treemix.input,
-        rules.subset_all_tess.input,
+        subset_paper_fun(prefix="eemsout/", ext=".ifst"),
+        subset_paper_fun(prefix='eemsout/0/', ext='/bf.txt'),
+        subset_paper_fun(prefix="figures/hwe/", ext=".png"),
+        subset_paper_fun(prefix="subset/", ext=".hwemin"),
+        subset_paper_fun(prefix="", ext=".figs"),
+        subset_paper_fun(prefix="eemsout_gg/", ext="_nruns4-map01.png"),
+        subset_paper_fun(prefix="subset/", ext=".fstall"),
+        "paper/polygon_plot.pdf",
+        'paper/table_sources.csv',
+        "paper/table_panel.csv",
+        'paper/table_loc.csv',

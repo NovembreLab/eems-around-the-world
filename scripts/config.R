@@ -13,6 +13,7 @@ update_config <- function(config, full_config, id){
 get_config <- function(snakemake,  plotname,
 		       name=snakemake@wildcards$name){
     print('---;')
+    print(c(name, plotname))
 
     #get global default
     config <- snakemake@config$plot[['__default__']]
@@ -43,12 +44,13 @@ get_config <- function(snakemake,  plotname,
     }
 
     if(name %in% names(plot_config)){
+	print(sprintf("loading cfg for %s", name))
         config <- update_config(config, plot_config, name)
     }
-    print("####################################")
-    print("#####          CFG               ###")
-    print(config)
-    print("####################################")
+#    print("####################################")
+#    print("#####          CFG               ###")
+#    print(config)
+#    print("####################################")
     return(config)
 }
 

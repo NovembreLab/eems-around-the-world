@@ -16,10 +16,23 @@ order <- snakemake@input$order
 indiv_meta_file <- snakemake@input$indiv_meta
 
 outname <- snakemake@output[[1]]
+outname2 <- snakemake@output[[2]]
 
 dmat <- read_delim(diffs, col_names=F, delim=" ")
 dmat <- as.matrix(dmat[,-1])
 inds <- read_delim(order, col_names=F, delim=" ")[,1]
+rownames(dmat) <- inds$X1
+colnames(dmat) <- inds$X1
+q <- melt(dmat)
+names(q) <- c('sampleId.x', 'sampleId.y', 'gendist')
+q$sampleId.x <- as.character(q$sampleId.x)
+q$sampleId.y <- as.character(q$sampleId.y)
+q <- q %>% filter(sampleId.x < sampleId.y)
+write.csv(q, outname2, row.names=F)
+
+
+
+
 names(inds) <- 'sampleId'
 indiv_meta <- read_csv(indiv_meta_file)
 inds %>% left_join(indiv_meta) -> inds

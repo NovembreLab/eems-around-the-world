@@ -2,15 +2,18 @@ suppressPackageStartupMessages({
 	library(dplyr)
 	library(yaml)
 })
+
+save.image(".debug")
 filter <- yaml::yaml.load_file("config/data.yaml")$filter
 print(snakemake@input$indiv_meta0)
 indiv_meta0 <- read.csv(snakemake@input$indiv_meta0)
+languages <- read.csv(snakemake@input$languages) %>% select(-abbrev)  
 
 hg <- indiv_meta0 %>% filter(popId %in% filter$hg)
 hg$panel <- "HG"
 
 mig <- indiv_meta0 %>% filter(popId %in% filter$recent_migrant)
-mig$panel <- "ADMIX"
+mig$panel <- "ADMIX/DISP"
 
 pub <- read.csv(snakemake@input$pub_label)
 
@@ -26,10 +29,11 @@ indiv_meta <- lapply(indiv_meta_files, read.csv, strings=F)
 indiv_all <-bind_rows(indiv_meta, .id="panel")
 indiv_all$panel <- snakemake@params$abbrev[as.numeric(indiv_all$panel)]
 
-indiv_all <- bind_rows(list(indiv_all, hg, mig))
+#indiv_all <- bind_rows(list(indiv_all, hg, mig))
+indiv_all <- bind_rows(list(indiv_all))
 
 
-indiv_all %>% left_join(pub) %>% 
+indiv_all %>% left_join(pub) %>%  
         left_join(inner_join(pop_geo, pop_display))  %>%
 		group_by(popId) %>%
 		summarize(abbrev=as.character(first(abbrev)), name=first(name), 
@@ -38,14 +42,14 @@ indiv_all %>% left_join(pub) %>%
 			  sample_size = n_distinct(sampleId),
 			  panel=paste(unique(panel), collapse="|")
 			  ) %>% 
-		ungroup() %>% select(-popId) %>%
+		ungroup()%>% left_join(languages)  %>% select(-popId) %>%
 		arrange(abbrev) -> x
-		write.csv(x, outname, row.names=F, quote=T)
-
+        x <- x %>% left_join(read.csv(snakemake@input$loc_src)) 
+		write.csv(x, outname, row.names=F, quote=T, na="")
 
 
 #load_snakemake()
 #plot_polys()
-save.image("test")
+#save.image("test")
 
 

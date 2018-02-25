@@ -1,3 +1,4 @@
+from snakemake.utils import R
 
 rule get_pop_frq:
     input:
@@ -71,3 +72,35 @@ rule sample_plot:
     shell:
         "Rscript scripts/sample_plot.R {wildcards.name}"
 
+rule hwe_plot:
+    input:
+        hwe="subset/{name}.hwe",
+    output:
+        fig="figures/hwe/{name}.png"
+    script : "../scripts/hwe.R"
+
+    
+rule hwe_test:
+    input:
+        bed="subset/{name}.bed",
+    output:
+        hwe="subset/{name}.hwe",
+    run:
+        inname = base(input.bed)
+        outname = base(output.hwe)
+        s = [PLINK_EXE, '--bfile', inname, '--hardy', '--out', outname]
+        shell(" ".join(s))
+
+rule hwe_min:
+    input:
+        hwe="subset/{name}.hwe",
+    output:
+        hwe="subset/{name}.hwemin",
+
+    run:
+        s = """a <- read.table("{input.hwe}", as.is=T, header=T)
+            
+            cat(min(a[a[,7] > a[,8],9], na.rm=T), file="{output.hwe}")"""
+        R(s)
+
+    

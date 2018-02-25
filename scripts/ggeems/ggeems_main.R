@@ -2,6 +2,7 @@
 #library(jpeg)
 suppressPackageStartupMessages({
 require(maps)
+require(ggrepel)
 source("scripts/load_pop_meta.R") #load raw
 source("scripts/ggeems/eems.plots.ggplot.R")
 })
@@ -81,7 +82,7 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
     boundary <- read.table(sprintf("%s/outer.txt", mcmcpath[1]))
     bbox <- c(left=min(boundary[1]), right=max(boundary[1]),
               bottom=min(boundary[2]), top=max(boundary[2]))
-    bbox['top'] <- pmin(bbox['top'], 83)
+    bbox['top'] <- pmin(bbox['top'], 85)
 
     if(!fancy_proj){
 	library(ggmapcustom)
@@ -130,7 +131,8 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
 	    a = a + geom_path(data=m_boundary, aes(x=long, y=lat, group=group),  color='#222222dd')
 	}
         a = a + coord_map("mollweide",orientation=fancy_proj_pars,
-			  xlim=xlim_map, ylim=ylim_map) + xlim(-50, 195)+ ylim(-60, 80)
+			  xlim=xlim_map, ylim=ylim_map) + xlim(-24, 193)+ ylim(-40, 78)
+
 	print("plotting fancy")
         a = a + theme_classic() #+ theme(panel.background = element_rect(colour = "#efefef")
         #a = a + coord_map("mollweide",orientation=c(90,40, 110)) #worldmap
@@ -159,27 +161,33 @@ make_map <- function(mcmcpath, zoom=6, is.mrates=T, fancy_proj=F, just_map=F, in
     return(a)
 }
 
-gg_add_samples_true <- function(map, popgeo, popdisplay){
+
+gg_add_samples_true <- function(map, popgeo, popdisplay, size=4){
     pm <- load_pop_meta(popgeo, popdisplay)
     pm <- pm[!is.na(pm$longitude),]                                          
     pm$longitude[pm$longitude < -30] <- pm$longitude[pm$longitude< -30]+360  
 
     map <- .gg_add_samples_true(map, pm, type="pointscol")
-    map <- .gg_add_samples_true(map, pm)
+    map <- .gg_add_samples_true(map, pm, size=size)
 
 }
 
-.gg_add_samples_true <- function(map, pm, type="label_repel", ...){
+.gg_add_samples_true <- function(map, pm, type="label_repel", size=4, ...){
     if(type== "label_repel"){
-    require(ggrepel)
-	m <- map + geom_text_repel(data=pm, aes(label=name, x=longitude, y=latitude),
-		    color='#222222dd', size=3.5, fill="#ffffff50",
-		     label.padding = unit(0.001, "lines"),
-		     label.r = unit(0.001, "lines"),
-		     label.size= unit(0, "lines"),
-		        point.padding = NA,
-		           segment.color = 'grey50', ...)	
+	m <- map + geom_label_repel(data=pm, aes(label=abbrev, x=longitude, y=latitude),
+		    color='#222222dd', size=size, fill="#ffffff10",
+			family="Arial",
+			label.padding = unit(1e-9, "lines"),
+			label.r=unit(1e-9, "lines"),
+			label.size=0,
+			min.segment.length=unit(0,"lines"),
+			segment.size=0.2,
+			box.padding = unit(0.01, "lines"),
+			force=.5,
+			max.iter=10000,
+		           segment.color = 'black', ...)	
 	return(m)
+
     }
     if(type=="points"){
 	m <- map + geom_point(data=pm, aes(x=longitude, y=latitude), ...)
@@ -189,10 +197,8 @@ gg_add_samples_true <- function(map, popgeo, popdisplay){
     source("scripts/assign_color_by_coord.R")
     pm$color <- get_cols_wrap(pm)
 	m <- map + geom_point(data=pm, aes(x=longitude, y=latitude, color=color),
-                          size=4,
+                          size=1,
                           ...) +
-		    geom_point(aes(x=longitude, y=latitude), data=pm, color="#efefef", pch=1, 
-                       stroke=.2, size=4) +
 		    scale_color_identity()+
             scale_size_identity()
     }
@@ -230,7 +236,7 @@ ggadd.pts <- function(g, color="#efefefdd", const_size=T){
     sizes <- as.vector(tbl)
     df <- data.frame(x=g$demes[ind,1], y=g$demes[ind,2], sizes=sizes)
     if(const_size) {
-	pts <- geom_point(aes(x=x, y=y), data=df, color=color, size=1.5)
+	pts <- geom_point(aes(x=x, y=y), data=df, color=color, size=1.8)
     } else {
 	pts <- geom_point(aes(x=x, y=y, size=sizes), data=df, color=color)
     }
@@ -250,10 +256,10 @@ ggadd.pts.color <- function(g, const_size=T){
 
 
     if(const_size) {
-	pts <- list(geom_point(aes(x=x, y=y, color=color), data=df, size=1.5) , 
+	pts <- list(geom_point(aes(x=x, y=y, color=color), data=df, size=2.0) , 
 		    scale_color_identity(),
             scale_size_identity(),
-		    geom_point(aes(x=x, y=y), size=1.5, data=df, color="black", pch=1, stroke=.2))
+		    geom_point(aes(x=x, y=y), size=2.0, data=df, color="black", pch=1, stroke=.2))
     } else {
 	pts <- list(geom_point(aes(x=x, y=y, size=sizes, color=color), data=df) , scale_color_identity())
     }

@@ -45,7 +45,7 @@ plot.pc.loadings <- function(i, pcs, bim, cutoff=0.9){
 
 make.plots <- function(pcs, bim, output){
     print(dim(pcs))
-    l <- lapply(1:ncol(pcs), plot.pc.loadings, pcs, bim)
+    l <- lapply(1:20, plot.pc.loadings, pcs, bim)
     for(i in 1:length(l)){
 	ggsave(output[i], l[[i]], width=7, height=4)
     }

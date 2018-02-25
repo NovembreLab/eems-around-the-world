@@ -172,6 +172,18 @@ rule run_eems_single_run:
         s = config['EXE']['eems'] + " --params " + input.inifile 
         shell(s + " 2> {log}")
 
+rule induced_fst:
+    input:
+        mcmcm=expand('eemsout/{i}/{name}/mcmcmhyper.txt',
+            i = range(4), name=["{name}"]),
+        script="scripts/get_induced_fst.R"
+    output: fst="eemsout/{name}.ifst"
+    script: "../" + "scripts/get_induced_fst.R"
+    
+rule all_induced_fst:
+    input:
+        subset_paper_fun(prefix="eemsout/", ext=".ifst")
+
 
 eems_output_files = ['demes.txt', 
     'edges.txt',
@@ -420,6 +432,20 @@ rule plot_eems:
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
         shell(s)
         
+rule ggplot_eems_var:
+    input:
+        eemsin,
+        pop_display=_POP_DISPLAY_,
+        pop_geo='subset/{name}.pop_geo',
+        indiv_label='subset/{name}.indiv_meta',
+        libscript="scripts/ggeems/ggeems_main.R",
+        libscript2="scripts/ggeems/eems.plots.ggplot.R",
+        runscript="scripts/ggeems/run_var.R",
+    output:
+        m2plot="eemsout_gg/{name}_nruns{nruns}-mrates03.png",
+        m2rds="eemsout_gg/{name}_nruns{nruns}-mrates03.rds",
+    script: "../" + "scripts/ggeems/run_var.R"
+
 rule ggplot_eems2:
     input:
         eemsin,
@@ -451,8 +477,10 @@ rule ggplot_eems:
 rule ggeems_errors:
     input:
         dist="dists/{name}.dist",
+        inddist="dists/{name}.inddist",
         grid="dists/{name}.grid",
         pop_display=_POP_DISPLAY_,
+	ind_meta = "subset/{name}.indiv_meta",
         popgrid="dists/{name}.popgrid",
         script='scripts/ggeems/error.R',
         runscript='scripts/ggeems/run_error.R',
@@ -460,6 +488,8 @@ rule ggeems_errors:
         err_pop="eemsout_gg/{name}_nruns{nruns, \d+}-error-pop01.png",
         err_grid="eemsout_gg/{name}_nruns{nruns, \d+}-error-grid01.png",
         err_worst="eemsout_gg/{name}_nruns{nruns, \d+}-error-pw01.png",
+        err_ind="eemsout_gg/{name}_nruns{nruns, \d+}-error-ind01.png",
+        err_worst_ind="eemsout_gg/{name}_nruns{nruns, \d+}-error-pwind01.png",
         err_pop_rds="eemsout_gg/{name}_nruns{nruns, \d+}-error-pop01.rds",
         err_grid_rds="eemsout_gg/{name}_nruns{nruns, \d+}-error-grid01.rds",
         err_worst_rds="eemsout_gg/{name}_nruns{nruns, \d+}-error-pw01.rds",
@@ -497,23 +527,30 @@ rule ggeems_scatter_hlex:
 rule panel_figs:
     input:
         "eemsout_gg/{name}_nruns4-mrates01.png",
+        "eemsout_gg/{name}_nruns4-mrates02.png",
+        "eemsout_gg/{name}_nruns4-mrates03.png",
         "eemsout_gg/{name}_nruns4-error-grid01.png",
         "eemsout/{name}_nruns4-mrates01.png",
         "figures/pca/2d/{name}_pc1.png",
         "figures/pca/pve/{name}.png",
         "figures/pca/loadings_{name}_pc20.png",
         "subset/{name}_sample_map.png",
-        "figures/dists/{name}.png"
+        "figures/dists/{name}.png",
     output:
         "{name}.figs"
     shell:
         "touch {output}"
 
-rule all_figs:
+rule all_paper_stuff:
     version: 1
     input:
-        subset_paper_fun(prefix="", ext=".figs")
-
+        subset_paper_fun(prefix="", ext=".all"),
+        subset_paper_fun(prefix="eemsout_gg", ext="_nrums4-map01.png"),
+        "paper/polygon_plot.pdf",
+        'paper/table_sources.csv',
+        "paper/table_panel.csv",
+        'paper/table_loc.csv',
+        
 
 rule ggeems_map:
     input:

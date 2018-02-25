@@ -12,11 +12,23 @@ source("scripts/themes.R")
 
 
 
-make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
+make2PC <- function(data, medians=NULL, i=1, j=2, C=list(), pve_data=NULL){
     id1 <- sprintf('PC%d', i)
     id2 <- sprintf('PC%d', j)
+    idm1 <- sprintf("%s_M", id1)
+    idm2 <- sprintf("%s_M", id2)
+
+    if (i %in% C$flip){data[,id1] <- -data[,id1]}
+    if (j %in% C$flip){data[,id2] <- -data[,id2]}
+    if (i %in% C$flip){medians[,idm1] <- -medians[,idm1]}
+    if (j %in% C$flip){medians[,idm2] <- -medians[,idm2]}
+    if(C$rotate){tmp <- id1; id1 <- id2; id2 <- tmp}
+    if(C$rotate){tmp <- idm1; idm1 <- idm2; idm2 <- tmp}
+    if(C$rotate){tmp <- i; i <- j; j <- tmp}
     
     data <- data[sample.int(nrow(data), nrow(data)),]
+
+
 
     if(!"shape" %in% names(data)) data$shape <- "a"
     if(!"shape" %in% names(medians)) medians$shape <- "a"
@@ -49,8 +61,6 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
             g <- g + geom_point(size=C$text_size)
         }
 
-        idm1 <- sprintf("%s_M", id1)
-        idm2 <- sprintf("%s_M", id2)
 	if(F){
         if(C$median_label){
             if(C$median_label_grey) medians$color <- '#404040'
@@ -98,6 +108,14 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list()){
 		        point.padding = unit(0.001, "lines")
 		          )	
 	} 
+
+        #rename ids s.t. percent variance explained is plotted is added
+        #probably could use a rename all treatment
+        if(!is.null(pve_data)){
+            id1_label <- sprintf("%s (%2.2f%%)", id1, pve_data[i]*100)
+            id2_label <- sprintf("%s (%2.2f%%)", id2, pve_data[j]*100)
+            g <- g + xlab(id1_label) + ylab(id2_label)
+        }
 
         g <- g + pca_2d_theme(base_size=C$theme_size)
 
