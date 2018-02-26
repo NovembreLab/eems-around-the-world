@@ -43,8 +43,10 @@ def filter_data(meta_data, bedfile, missing=0.001, plink="plink",
     extract_data.index = extract_data.sampleId
     print("subsetting: ", extract_data.shape)
     largest = extract_data.groupby('popId')['random'].nlargest(max_per_pop)
+    print(largest)
     #largest = extract_data.groupby('popId')['random'].nlargest(5)
-    largest= pd.DataFrame(largest.index.levels[1])
+    largest= pd.DataFrame(largest.index)
+    print(largest)
     print("subsetting: ", largest.shape, largest.columns)
     extract_data = extract_data.merge(largest, on="sampleId", how="inner")
     print("subsetting: ", extract_data.shape, largest.shape)

@@ -48,7 +48,8 @@ rule make_treemix_input:
 rule run_treemix_single:
     input: rules.make_treemix_input.output
     params:
-        seed_base=141
+        seed_base=141,
+        blocksize=500,
     benchmark:
         'treemix/{name}_m{m}_run{run}.BM'
     output:
@@ -66,8 +67,9 @@ rule run_treemix_single:
         s = config['EXE']['treemix'] + ' -i {input} '
         s += '-m {wildcards.m} '
         s += '-o {outname} '
+        s += '-k {params.blocksize} '
         s += '-seed {seed} '
-        s += '2> {log} '
+        s += '2> {log} > /dev/null'
         shell(s)
 
 def treemix_setfun(wildcards):
@@ -90,8 +92,11 @@ rule plot_treemix_best:
     output: 
         treeplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.tree.png',
         residplot='treemix/{name}_m{mlower, \d+}-{mupper, \d+}_runs{nruns, \d+}.resid.png',
-        tmp='tmp{name}{mlower}{mupper}{nruns}.order'
+        tmp='tmp{name}{mlower}{mupper}{nruns}.order',
+        p1=temp("treemix/{name}_{mlower}_{mupper}_{nruns}.1.R"),
+        p2=temp("treemix/{name}_{mlower}_{mupper}_{nruns}.2.R"),
     run:
+        p1, p2 = output.p1, output.p2,
         import numpy as np
         __script__='scripts/plot_treemix_lib.R',
         pop_display=_POP_DISPLAY_,
@@ -116,8 +121,9 @@ rule plot_treemix_best:
             plot_tree("{max_llik[0]}")
             dev.off()
             """
-        shell("echo '%s' > tmp.R" %s)
-        shell("Rscript tmp.R")
+        shell("echo '%s' > {p1}" %s)
+        shell("R CMD BATCH {p1}")
+        #shell("Rscript tmp.R")
 
         s = """
             source("{__script__}")
@@ -132,6 +138,7 @@ rule plot_treemix_best:
             plot_resid("{max_llik[0]}", "{output.tmp}")
             dev.off()
         """
-        shell("echo '%s' > tmp.R" %s)
-        shell("Rscript tmp.R")
+        shell("echo '%s' > {p2}" %s)
+        shell("R CMD BATCH {p2}")
+        #shell("Rscript tmp.R")
 

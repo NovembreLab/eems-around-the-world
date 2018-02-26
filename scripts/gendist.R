@@ -27,7 +27,7 @@ q <- melt(dmat)
 names(q) <- c('sampleId.x', 'sampleId.y', 'gendist')
 q$sampleId.x <- as.character(q$sampleId.x)
 q$sampleId.y <- as.character(q$sampleId.y)
-q <- q %>% filter(sampleId.x < sampleId.y)
+q <- q %>% filter(as.character(sampleId.x) < as.character(sampleId.y))
 write.csv(q, outname2, row.names=F)
 
 
@@ -49,7 +49,7 @@ rownames(res) <- unique_pops
 colnames(res) <- unique_pops   
 v <- melt(res)
 names(v) <- c('popId.x', 'popId.y', 'gendist')
-v <- v %>% filter(popId.x < popId.y)
+v <- v %>% filter(as.character(popId.x) < as.character(popId.y))
 write.csv(v, outname, row.names=F)
 
 

@@ -12,6 +12,7 @@ rule bed2diffs:
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
     output:
+        tmpbim=temp('eems/{name}_tmpbim.bim'),
         diffs='eems/{name}.diffs',
         order='eems/{name}.order',
     benchmark:
@@ -21,6 +22,7 @@ rule bed2diffs:
         from subsetter.eems import create_diffs_file, create_ini_file
         infile=base(input.bed)
         outfile=base(output.diffs)
+        tmpfile=base(output.tmpbim)
 
         print(config['eems']['__default__'])
         try:
@@ -29,7 +31,7 @@ rule bed2diffs:
             bed2diffs = config['eems']['__default__']['bed2diffs']
         create_diffs_file(bedfile=infile,
                           bed2diffs=config['EXE'][bed2diffs],
-                          outname=outfile)
+                          outname=outfile, tmpbim=tmpfile)
         
 
 rule make_coord:
@@ -427,7 +429,7 @@ rule plot_eems:
         mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
     run:
         grid = config['eems'][wildcards.name]['grid'] 
-        s =  "%s scripts/eems_plot/make_plots.r" % config['EXE']['R']
+        s =  "%s scripts/eems_plot/make_plots.r" % "Rscript" #config['EXE']['R']
         s +=   " {wildcards.nruns} {wildcards.name} {grid}"
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
         shell(s)
@@ -524,22 +526,6 @@ rule ggeems_scatter_hlex:
 
         shell(s)
 
-rule panel_figs:
-    input:
-        "eemsout_gg/{name}_nruns4-mrates01.png",
-        "eemsout_gg/{name}_nruns4-mrates02.png",
-        "eemsout_gg/{name}_nruns4-mrates03.png",
-        "eemsout_gg/{name}_nruns4-error-grid01.png",
-        "eemsout/{name}_nruns4-mrates01.png",
-        "figures/pca/2d/{name}_pc1.png",
-        "figures/pca/pve/{name}.png",
-        "figures/pca/loadings_{name}_pc20.png",
-        "subset/{name}_sample_map.png",
-        "figures/dists/{name}.png",
-    output:
-        "{name}.figs"
-    shell:
-        "touch {output}"
 
 rule all_paper_stuff:
     version: 1

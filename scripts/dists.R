@@ -21,6 +21,7 @@ breaks_factory <- function(n_ticks, min_lower=NULL, max_upper=NULL){
 
 
 C <- get_config(snakemake, plotname='scatter')
+save.image("debug.rds")
 
 dists <- load_dists(snakemake@input$dists,
                     snakemake@input$pop_display)
@@ -60,6 +61,7 @@ outlier_cutoff <- d2 %>% group_by(variable) %>%
     summarize(Q = quantile(residual, 1-C$outlier_pct))
 #outlier_cutoff <- d2 %>% group_by(variable) %>% 
 #    summarize(Q = 0.05)
+
 
 outliers <- d2 %>% left_join(outlier_cutoff) %>% 
     filter(residual>Q) %>% select(-Q) 

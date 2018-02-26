@@ -13,7 +13,6 @@ dev.off()
 }
 
 
+do_plot(snakemake@wildcards$name)
 
-if(length(commandArgs) >=1)
-	do_plot(commandArgs(T)[1])
 

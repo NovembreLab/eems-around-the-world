@@ -59,6 +59,7 @@ plot_object <- function(opt, pop_meta, ...){
         pop_geo = args[2]
         pop_display = args[3]
         opt = args[4]
+    }
 
 
 
@@ -81,6 +82,3 @@ plot_object <- function(opt, pop_meta, ...){
 
         map(add=T)
         dev.off()
-    }
-    if(exists('spm_out')){
-    }

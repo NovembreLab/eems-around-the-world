@@ -12,7 +12,7 @@ rule to_tess:
         inname = base(input.bed)
         outname = base(output.traw)
         s = [config['EXE']['plink'], '--bfile', inname,
-            '--recode A-transpose --out', outname]
+            '--allow-extra-chr', '--recode A-transpose --out', outname]
         shell(" ".join(s))
         shell("cut -f7- {output.traw} | tail -n+2 | " +
             "sed 's/NA/9/g; s/\t//g'  > {output.tess}")
@@ -22,14 +22,15 @@ rule to_tess_coords:
         fam="{name}.fam",
         indiv_meta="{name}.indiv_meta",
         pop_geo="{name}.pop_geo",
-        __script__="scripts/make_tess_input.sh",
+        __script__="scripts/make_tess_input.R",
     output:
         tess='{name}.tess_coords'
-    run:
-        l = [config['EXE']['R'], input.__script__, input.fam,
-            input.indiv_meta, input.pop_geo,
-            output.tess]
-        shell(" ".join(l))
+    script : "../scripts/make_tess_input.R"
+#    run:
+#        l = [config['EXE']['R'], input.__script__, input.fam,
+#            input.indiv_meta, input.pop_geo,
+#            output.tess]
+#        shell(" ".join(l))
         
 
 rule run_tess_single:

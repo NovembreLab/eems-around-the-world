@@ -1,3 +1,4 @@
+N_PC = config["NPC"]
 
 def run_pca(input, output, params, wildcards, config):
         infile = base(input.bed)
@@ -41,7 +42,7 @@ rule get_pca_outliers:
         bimfile='subset_nopca/{name}.bim',
         __script__='scripts/get_pca_outliers.R'
     params: 
-        abs_cutoff=5,
+        abs_cutoff=50000000000000,
         region_bp=100000
     output:
         outliers="subset/{name}_dim{ndims}.outlier_snp"
@@ -99,13 +100,13 @@ rule make_pc_plots:
 
 rule make_2d_pc_plots:
     input:
-        pc='pca/flash_{name}_dim100.pc',
-        median='pca/median_{name}_dim100.pc',
+        pc='pca/flash_{name}_dim' + N_PC + '.pc',
+        median='pca/median_{name}_dim' + N_PC + '.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
         pop_order="subset/{name}.pop_order",
-        pve="pca/flash_{name}_dim100.pve",
+        pve="pca/flash_{name}_dim" + N_PC + '.pve',
         pop_geo=_POP_GEO_,
         __script__='scripts/pca/run_2d.R',
         _libscript='scripts/ggpca2d.R',
@@ -127,15 +128,15 @@ rule make_2d_pc_plots_supersetcolor:
         figure, i.e. I want the colors in Europe to be the subset in the above
     """
     input:
-        pc='pca/flash_{name}_dim100.pc',
-        pve="pca/flash_{name}_dim100.pve",
-        median='pca/median_{name}_dim100.pc',
+        pc='pca/flash_{name}_dim' + N_PC + '.pc',
+        pve="pca/flash_{name}_dim" + N_PC + ".pve",
+        median='pca/median_{name}_dim' + N_PC + '.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
 
-        super_pc="pca/flash_{super}_dim100.pc",
-        super_pve="pca/flash_{super}_dim100.pve",
-        super_median='pca/median_{super}_dim100.pc',
+        super_pc="pca/flash_{super}_dim" + N_PC + '.pc',
+        super_pve="pca/flash_{super}_dim" + N_PC + ".pve",
+        super_median='pca/median_{super}_dim' + N_PC + '.pc',
         super_fam='subset/{super}.fam',
         super_indiv_meta='subset/{super}.indiv_meta',
 
@@ -164,7 +165,7 @@ rule make_2d_pc_plots_supersetcolor:
     script: "../" +"scripts/pca/run_2d.R"
 rule make_pve_plot:
     input:
-        pve_file="pca/flash_{name}_dim100.pve",
+        pve_file="pca/flash_{name}_dim" + N_PC + ".pve",
         script="scripts/pca/pve.R"
     output:
         png="figures/pca/pve/{name}.png",
@@ -206,12 +207,12 @@ rule make_pc_plots_highlight_excluded:
 __script__7='scripts/pcaloadings.R'
 rule make_loadings_plots:
     input:
-        load='pca/flash_{name}_dim100.load',
+        load='pca/flash_{name}_dim' + N_PC + '.load',
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
         fig=expand('figures/pca/loadings_{name}_pc{PC}.png', 
-            PC=range(1,21), name=['{name}']),
+            PC=range(1,11), name=['{name}']),
     script: '../' + __script__7
     #shell:
     #    config['EXE']['R'] + " {input.__script__} {input.load} "

@@ -215,7 +215,7 @@ submit()
 
 
 
-def create_diffs_file(bedfile, bed2diffs, outname, nthreads=4):
+def create_diffs_file(bedfile, bed2diffs, outname, nthreads=4, tmpbim=None):
     """create a file with pairwise differences using the bed2diffs executable
         
     Parameters
@@ -226,13 +226,30 @@ def create_diffs_file(bedfile, bed2diffs, outname, nthreads=4):
         path to the bed2diffs executable
     outname : str
         output file name
+    tmpbim : str
+        file path  of bim file to handle weird chr
     
     """
-    tpl = bed2diffs, nthreads, bedfile
-    s = "%s --nthreads %d --bfile %s" % (tpl)
-    s += " && mv %s.order %s.order " % (bedfile, outname)
-    s += " && mv %s.diffs %s.diffs " % (bedfile, outname)
-    os.system(s)
+    if tmpbim is not None:
+        s = "awk '{print 1,$2,$3,$4,$5,$6}' %s.bim > %s.bim" % (bedfile, tmpbim)
+        os.system(s)
+        s = "ln -sfr %s.fam  %s.fam" % (bedfile, tmpbim)
+        os.system(s)
+        s = "ln -sfr %s.bed  %s.bed" % (bedfile, tmpbim)
+        os.system(s)
+        tpl = bed2diffs, nthreads, tmpbim
+        s = "%s --nthreads %d --bfile %s " % (tpl)
+        s += " && mv %s.order %s.order " % (tmpbim, outname)
+        s += " && mv %s.diffs %s.diffs " % (tmpbim, outname)
+        print(s)
+        os.system(s)
+    else :
+        tpl = bed2diffs, nthreads, bedfile
+        s = "%s --nthreads %d --bfile %s  " % (tpl)
+        s += " && mv %s.order %s.order " % (bedfile, outname)
+        s += " && mv %s.diffs %s.diffs " % (bedfile, outname)
+        print(s)
+        os.system(s)
 
 
 def create_ini_file(ini_name, mcmcpath, datapath, meta_data,

@@ -1,8 +1,13 @@
-args <- commandArgs(T)
-input_fam <- args[1]
-input_indiv_meta <- args[2]
-input_pop_geo <- args[3]
-output_tess <- args[4]
+#args <- commandArgs(T)
+#input_fam <- args[1]
+#input_indiv_meta <- args[2]
+#input_pop_geo <- args[3]
+#output_tess <- args[4]
+
+input_fam <- snakemake@input$fam
+input_indiv_meta <- snakemake@input$indiv_meta
+input_pop_geo <- snakemake@input$pop_geo
+output_tess <- snakemake@output$tess
 
 fam <- read.table(input_fam)                                                       
 fam <- data.frame(sampleId=fam[,1], n=1:nrow(fam))                                     

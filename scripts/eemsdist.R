@@ -54,10 +54,10 @@ colnames(res) <- unique_pops
 v <- melt(res)
 names(v) <- c('popId.x', 'popId.y', statname)
 
-v2 <- v %>% filter(popId.x <= popId.y)
+v2 <- v %>% filter(as.character(popId.x) <= as.character(popId.y))
 write.csv(v2, outname3, row.names=F)
 
-v <- v %>% filter(popId.x < popId.y)
+v <- v %>% filter(as.character(popId.x) < as.character(popId.y))
 write.csv(v, outname, row.names=F)
 
 

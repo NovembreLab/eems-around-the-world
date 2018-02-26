@@ -15,7 +15,8 @@ plot.pc.loadings <- function(i, pcs, bim, cutoff=0.9){
     q1 <- quantile(data[,pc], cutoff)
     d <- data[data[pc] > q1,]
     d$chrpos <- 1:nrow(d)
-    if(length(unique(d$chr))<23) {
+    #if(length(unique(d$chr))<23) {
+    if(T) {
     d$normpos <- 1:nrow(d)
     g <-  ggplot(d, aes_string(x='pos', y=pc,
                                colour='as.factor(chr)')) + 
@@ -45,7 +46,7 @@ plot.pc.loadings <- function(i, pcs, bim, cutoff=0.9){
 
 make.plots <- function(pcs, bim, output){
     print(dim(pcs))
-    l <- lapply(1:20, plot.pc.loadings, pcs, bim)
+    l <- lapply(1:10, plot.pc.loadings, pcs, bim)
     for(i in 1:length(l)){
 	ggsave(output[i], l[[i]], width=7, height=4)
     }

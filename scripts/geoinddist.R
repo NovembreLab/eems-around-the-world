@@ -1,7 +1,9 @@
+suppressPackageStartupMessages({
 library(dplyr)
 library(reshape2)
 require(fields)
 source("scripts/load_pop_meta.R")
+})
 
 geo_file <- snakemake@input$geodist
 im_file <- snakemake@input$indiv_meta
@@ -13,6 +15,7 @@ im <- read.csv(im_file)
 
 im.x <- im %>% select(popId.x=popId, sampleId.x=sampleId)
 im.y <- im %>% select(popId.y=popId, sampleId.y=sampleId)
+save.image("QQ")
 
 geo2 <- geo %>% left_join(im.x)  %>%
     left_join(im.y) #
@@ -30,5 +33,4 @@ geo3 <- bind_rows(
 
 
 write.csv(geo3, outname, row.names=F)
-save.image("QQ")
 

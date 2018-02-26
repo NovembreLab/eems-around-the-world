@@ -16,8 +16,8 @@ rownames(dmat) <- geo$popId
 colnames(dmat) <- geo$popId
 v <- melt(dmat)
 names(v) <- c('popId.x', 'popId.y', 'geoDist')
-v2 <- v %>% filter(popId.x <= popId.y)
+v2 <- v %>% filter(as.character(popId.x) <= as.character(popId.y))
 write.csv(v2, outname0, row.names=F)
 
-v <- v %>% filter(popId.x < popId.y)
+v <- v %>% filter(as.character(popId.x) < as.character(popId.y))
 write.csv(v, outname, row.names=F)

@@ -1,0 +1,31 @@
+rule construct_mat:
+    input:
+        traw="subset/{name}.traw",
+        fam="subset/{name}.fam",
+        script="scripts/construct/make_mat.R",
+    params : max_snp = 100000
+    output:
+        rds="construct/{name}.mat.rds",
+    script: 
+        "../" + "scripts/construct/make_mat.R"
+
+rule construct_coords:
+    input:
+        indiv_full="subset/{name}.indiv_full",
+        fam="subset/{name}.fam",
+        script="scripts/construct/make_coords.R",
+    output:
+        coord_rds="construct/{name}.coords.rds",
+        dist_rds="construct/{name}.dists.rds",
+    script: "../" + "scripts/construct/make_coords.R"
+
+rule run_construct:
+    input:
+        mat_rds="construct/{name}.mat.rds",
+        coord_rds="construct/{name}.coords.rds",
+        dist_rds="construct/{name}.dists.rds",
+    output: "construct/{name}/K{K}.rds"
+    threads : 4
+    benchmark : "construct/{name}/K{K}.json"
+    script: "../" + "scripts/construct/run.R"
+    

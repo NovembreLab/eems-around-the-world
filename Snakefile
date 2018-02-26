@@ -1,6 +1,6 @@
-configfile: "config/config.json"
-configfile: "config/subset.json"
-configfile: "config/eems.json"
+configfile: "config/config.yaml"
+configfile: "config/subset.yaml"
+configfile: "config/eems.yaml"
 configfile: "config/data.yaml"
 configfile: "config/plots.yaml"
 configfile: "config/paper.yaml"
@@ -85,6 +85,7 @@ include: 'sfiles/paintings.snake'
 include: 'sfiles/tess.snake'
 include: 'sfiles/fst.snake'
 include: 'sfiles/distances.snake'
+include: 'sfiles/construct.snake'
 
 base = lambda x: os.path.splitext(x)[0]
 
@@ -434,7 +435,7 @@ rule subset_pca:
         bim='subset/{name}.bim',
         fam='subset/{name}.fam',
     run:
-        s = '{PLINK_EXE} --bfile subset_nopca/{wildcards.name} '
+        s = '{PLINK_EXE} --allow-extra-chr --bfile subset_nopca/{wildcards.name} '
         s += ' --out subset/{wildcards.name} --make-bed'
         if 'no_pca' in config['subset'][wildcards.name]:
             if config['subset'][wildcards.name]['no_pca']:
@@ -482,3 +483,47 @@ rule all:
         'paper/table_sources.csv',
         "paper/table_panel.csv",
         'paper/table_loc.csv',
+
+rule panel_figs:
+    input:
+        "eemsout_gg/{name}_nruns4-mrates01.png",
+        "eemsout_gg/{name}_nruns4-mrates02.png",
+        "eemsout_gg/{name}_nruns4-mrates03.png",
+        "eemsout_gg/{name}_nruns4-error-grid01.png",
+        "eemsout/{name}_nruns4-mrates01.png",
+        "figures/pca/2d/{name}_pc1.png",
+        "figures/pca/pve/{name}.png",
+        "figures/pca/loadings_{name}_pc10.png",
+        "subset/{name}_sample_map.png",
+        "figures/dists/{name}.png",
+        expand("construct/{name}/K{K}.rds", K=[2,3,4,5,6], name=["{name}"]),
+        "pong/run_pong_{name}-K2-6-nruns3.sh",
+        expand("treemix/subset/run0_m0-{i}_runs3.tree.png", i=range(6)),
+        "tess/subset/{name}_K2-6_nruns3.controller",
+    output:
+        "{name}.figs"
+    shell:
+        "touch {output}"
+
+rule spacemix_all:
+    input:
+        "spacemix/subset/{name}/source_and_target_geospace.png",
+        "spacemix/subset/{name}/source_geospace.png",
+        "spacemix/subset/{name}/target_geospace.png",
+        "spacemix/subset/{name}/no_movement_geospace.png",
+    output:
+        "{name}.spacefigs"
+    shell:
+        "touch {output}"
+
+rule eems_only_figs:
+    input:
+        "eemsout_gg/{name}_nruns4-mrates01.png",
+        "eemsout_gg/{name}_nruns4-mrates02.png",
+        "eemsout_gg/{name}_nruns4-mrates03.png",
+        "eemsout_gg/{name}_nruns4-error-grid01.png",
+        "eemsout/{name}_nruns4-mrates01.png",
+    output:
+        "{name}.efigs"
+    shell:
+        "touch {output}"

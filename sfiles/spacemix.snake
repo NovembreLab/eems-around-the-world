@@ -15,7 +15,7 @@ rule make_spacemix_counts:
         """
         #R(s)
         s = s.replace("\n", " ")
-        shell("""%s -e "%s" """ % (config['EXE']['R'], s))
+        shell("""R -e "%s" """ % s)
         
         
 rule make_spacemix_sample_size:
@@ -32,7 +32,7 @@ rule make_spacemix_sample_size:
         """
         #R(s)
         s = s.replace("\n", " ")
-        shell("""%s -e "%s" """ % (config['EXE']['R'], s))
+        shell("""R -e "%s" """ % s)
 
 rule run_spacemix:
     input:
@@ -44,10 +44,10 @@ rule run_spacemix:
         "spacemix/{name}/mcmc/{model}/__LongRun/benchmark.BM"
     output:
         "spacemix/{name}/mcmc/{model}/__LongRun/__space_MCMC_output1.Robj"
-    run:
-        l = [config['EXE']['R'], input.__script__, input.ss, input.cts,
-                input.pop_geo, wildcards.model, output[0]]
-        shell(" ".join(l))
+    script : "../scripts/run_spacemix.R"
+        #l = ["RScript ", input.__script__, input.ss, input.cts,
+        #        input.pop_geo, wildcards.model, output[0]]
+        #shell(" ".join(l))
         
 
 
@@ -69,10 +69,12 @@ rule plot_spacemix_geospace:
         __script__='scripts/plot_spacemix.R'
     output:
         'spacemix/{name}/{model}_geospace.png'
-    run:
-        l = [config['EXE']['R'], input.__script__, input.spacemix_output, 
-                input.pop_geo, input.pop_display,  output[0]]
-        shell(" ".join(l))
+    script:
+        "../scripts/plot_spacemix.R"
+#    run:
+#        l = ["R -e ", input.__script__, input.spacemix_output, 
+#                input.pop_geo, input.pop_display,  output[0]]
+#        shell(" ".join(l))
 
 
         

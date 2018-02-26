@@ -18,6 +18,6 @@ pc_medians %>% select(-popId) -> pc_medians
 dmat <- as.matrix(dist(pc_medians[,1:n_pcs]))
 v <- melt(dmat)
 names(v) <- c('popId.x', 'popId.y', pc_name)
-v <- v %>% filter(popId.x < popId.y)
+v <- v %>% filter(as.character(popId.x) < as.character(popId.y))
 write.csv(v, outname, row.names=F)
 

@@ -17,9 +17,9 @@ run.spacemix.analysis(
 
 			###production option set
                         ngen = 5e6,
-                        samplefreq = 1e4,
+                        samplefreq = 5e4,
                         fast.MCMC.ngen = 5e5,
-                        savefreq = 1e6,
+                        savefreq = 1e5,
 			n.fast.reps = 5,
 
 			###debug option set
@@ -30,7 +30,7 @@ run.spacemix.analysis(
 			#n.fast.reps = 3,
 
                         mixing.diagn.freq = 50,
-                        printfreq = 1e7,
+                        printfreq = 1e6,
                         directory=output_name,
                         prefix = "_")
 }

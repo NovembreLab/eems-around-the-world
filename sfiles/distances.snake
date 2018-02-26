@@ -1,4 +1,5 @@
 
+N_PC = config["NPC"]
 N_EEMS_RUNS=4
 
 gidscript="scripts/geoinddist.R"
@@ -22,7 +23,7 @@ rule eems_ind_dist:
 pcindscript="scripts/pcinddist.R"
 rule pc_ind_dist:
     input:
-        pc='pca/flash_{name}_dim100.pc',
+        pc='pca/flash_{name}_dim' + N_PC + '.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -34,7 +35,7 @@ rule pc_ind_dist:
 pcpopscript="scripts/pcdist.R"
 rule pc_pop_dist:
     input:
-        "pca/median_{name}_dim100.pc",
+        "pca/median_{name}_dim" + N_PC + '.pc',
         script = pcpopscript
     output:
         "dists/{name}_dim{npc, \d+}.pcdist"
@@ -43,7 +44,7 @@ rule pc_pop_dist:
 pcgridscript="scripts/pcdistgrid.R"
 rule pc_grid_dist:
     input:
-        pcs="pca/median_{name}_dim100.pc",
+        pcs="pca/median_{name}_dim" + N_PC + '.pc',
         popgrid="dists/{name}.popgrid",
         script = pcgridscript
     output:
@@ -158,7 +159,6 @@ rule dist_all:
         "dists/{name}.gendist",
         "dists/{name}.eemsdist",
 #        "dists/{name}.eems0dist",
-        "dists/{name}_dim100.pcdist",
         "dists/{name}_dim10.pcdist",
         "dists/{name}_dim2.pcdist",
         "dists/{name}.geodist",
@@ -171,7 +171,6 @@ rule dist_ind_all:
         "dists/{name}.geninddist",
         "dists/{name}.eemsinddist",
 #        "dists/{name}.eems0dist",
-        "dists/{name}_dim100.pcinddist",
         "dists/{name}_dim10.pcinddist",
         "dists/{name}_dim2.pcinddist",
         "dists/{name}.geoinddist",

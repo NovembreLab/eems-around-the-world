@@ -21,6 +21,8 @@ def run_plink(plink, flags):
     for item in flags.items():
         s += "--%s %s " % item
 
+    s += " --allow-extra-chr "
+
     # s += " >>plink.log"
 
     print(s)

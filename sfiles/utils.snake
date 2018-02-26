@@ -23,7 +23,8 @@ rule get_pop_frq:
         inname = base(input.bed)
         outname = base(base(output.frq))
         s = [PLINK_EXE, '--bfile', inname, '--freq',
-            '--within', output.pops, '--out', outname]
+            '--within', output.pops, '--out', outname, 
+            '--allow-extra-chr']
         shell(" ".join(s))
 
 
@@ -69,8 +70,7 @@ rule sample_plot:
         pop_geo="subset/{name}.pop_geo"
     output:
         plot="subset/{name}_sample_map.png"
-    shell:
-        "Rscript scripts/sample_plot.R {wildcards.name}"
+    script: "../scripts/sample_plot.R"
 
 rule hwe_plot:
     input:
@@ -104,3 +104,16 @@ rule hwe_min:
         R(s)
 
     
+rule indiv_full:
+    input:
+        indiv_meta="subset/{name}.indiv_meta",
+        pop_geo="subset/{name}.pop_geo",
+        pop_display=_POP_DISPLAY_
+    output:
+        indiv_full="subset/{name}.indiv_full",
+    run:
+        R("""require(tidyverse);
+            read.csv("{input.indiv_meta}") %>% 
+                left_join(read.csv("{input.pop_geo}")) %>%
+                left_join(read.csv("{input.pop_display}")) %>%
+            write.csv("{output.indiv_full}", row.names=F) """)
