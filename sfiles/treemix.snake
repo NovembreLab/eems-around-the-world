@@ -122,7 +122,7 @@ rule plot_treemix_best:
             dev.off()
             """
         shell("echo '%s' > {p1}" %s)
-        shell("R CMD BATCH {p1}")
+        shell("Rscript {p1}")
         #shell("Rscript tmp.R")
 
         s = """
@@ -139,6 +139,6 @@ rule plot_treemix_best:
             dev.off()
         """
         shell("echo '%s' > {p2}" %s)
-        shell("R CMD BATCH {p2}")
+        shell("Rscript {p2}")
         #shell("Rscript tmp.R")
 

@@ -5,68 +5,20 @@ configfile: "config/data.yaml"
 configfile: "config/plots.yaml"
 configfile: "config/paper.yaml"
 
-
-subsets_paper = [
-    "global2s", #reruning global0b
-    "eumedi0sb", #running eumedi4, eumedi2
-    "easia1s", #waiting for easiacer20b
-
-    "africa1s", #waiting for 0b/0c
-    "seasia3s", #waiting for seasia0c
-
-    "casia0sd", #completely done
-    "southafrica1s" #completely done
-]
-subsets0 = ['africa0', 
-    'medi0',
-    'europe0', 
-    'centralasia0',
-    'eastasia0',
-    'seasia0',
-    'southafrica2',
-    'india0'
-#    'southafrica0'
-#    "ncasia0",
-#    "northasia0",
-#    "ncasia0",
-]
-
 subsets = config['paper']
 subsets_names = [k for k,v in subsets.items()]
 subsets_abbrev = [v['abbrev'] for k,v in subsets.items()]
 subsets_paper = [v['main'] for k,v in subsets.items()]
 subsets0 = [v['full'] if v['full'] else v['main'] for k,v in subsets.items()]
 
-excluded_sets = [
-'centralasia3pccer11',
-'centralasia5pccer11',
-"easia1",
-"easiacer11",
-"seasia4c",
-"africa5pc1",
-"africa5pc2",
-"eumedi0",
+excluded_sets = []
 
-#currently running
-"global3",
-"eumedi3",
-"northafrica0b",
-"northafrica0c",
-"eumedi2",
-"seasia0c"
-]
-
-#subsets_paper.extend(subsets0)
-#with open("ss_paper.txt", 'w') as f:
-#    for s in subsets_paper:
-#        f.write("%s\n" % s)
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
 INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
     'originalId', 'permissions', 'popId']
 POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy'] 
-
 
 PLINK_EXE = config['EXE']['plink']
 PLINK_SRC = config['DATA']['genotypes']
@@ -496,9 +448,9 @@ rule panel_figs:
         "figures/pca/loadings_{name}_pc10.png",
         "subset/{name}_sample_map.png",
         "figures/dists/{name}.png",
-        expand("construct/{name}/K{K}.rds", K=[2,3,4,5,6], name=["{name}"]),
-        "pong/run_pong_{name}-K2-6-nruns3.sh",
-        expand("treemix/subset/run0_m0-{i}_runs3.tree.png", i=range(6)),
+        expand("construct/{name}/K{K}.rds", K=[2,3,4,5,6,7,8], name=["{name}"]),
+        "pong/run_pong_{name}-K2-8-nruns6.sh",
+        expand("treemix/subset/{name}_m0-{i}_runs6.tree.png",name=["{name}"], i=range(6)),
         "tess/subset/{name}_K2-6_nruns3.controller",
     output:
         "{name}.figs"

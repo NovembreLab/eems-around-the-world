@@ -67,11 +67,11 @@ plot_object <- function(opt, pop_meta, ...){
         pop_d <- read.csv(pop_display, strings=F)
         pop_meta <- pop_g %>% left_join(pop_d) %>% arrange(popId)
         #save.image('qqqtmpx')
-        print("SDFAS")
+
         q <- SpaceMix::load_MCMC_output(spm_out)
-        saveRDS(q, 'temp_q.rds')
+        #saveRDS(q, 'temp_q.rds')
         pobj <- plot_object(spm_out, pop_meta)
-        saveRDS(pobj, 'temp.rds')
+        #saveRDS(pobj, 'temp.rds')
         png(opt, width=1600/2, height=600)
         make.spacemix.map(pobj, text=T, source.option=T,
             xlim=range(pop_g$longitude),
