@@ -25,7 +25,7 @@ rule run_construct:
         coord_rds="construct/{name}.coords.rds",
         dist_rds="construct/{name}.dists.rds",
     output: "construct/{name}/K{K}.rds"
-    threads : 4
+    threads : 8
     benchmark : "construct/{name}/K{K}.json"
     script: "../" + "scripts/construct/run.R"
     

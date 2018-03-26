@@ -13,8 +13,8 @@ x <- conStruct(spatial=True,
 	  coords = readRDS(snakemake@input$coord_rds),
 	  geoDist = readRDS(snakemake@input$dist_rds),
 	  prefix=outname,
-	  n.chains=2,
-	  n.iter = K* 2000,
+	  n.chains=4,
+	  n.iter = K* 10000,
 	  make.figs = TRUE,
 	  save.files = TRUE)
 saveRDS(x, paste0(outname, ".rds"))
