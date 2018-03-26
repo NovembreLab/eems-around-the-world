@@ -1,0 +1,49 @@
+__default__ :
+    time : 2:00:00
+    mem : 2G
+    cpus-per-task : 1
+    output : "autosnake/{{rule}}-\\$JOB_ID.out"
+    err : "autosnake/{{rule}}-\\$JOB_ID.err"
+    name : "{rule}"
+run_flashpca :
+    time : "2:20:00"
+    mem : "12G"
+    cpus-per-task" : 4
+run_flashpca_outliers :
+    time : "2:20:00"
+    mem : "12G"
+    cpus-per-task : 4
+run_eems_single_run :
+    time : "85:59:00"
+run_eems0_single_run :
+    time : "5:59:00"
+run_eems0_single_pilot_run :
+    time : "5:59:00"
+run_eems_single_pilot_run :
+    time : "85:59:00"
+bed2diffs :
+    mem : "8G"
+subset_pca :
+    mem : "8G"
+subset_nopca :
+    mem : "8G"
+to_tess :
+    mem : "6G"
+run_tess_single" : 
+    time : "35:59:00"
+    mem : "20G"
+run_treemix_single" : 
+    mem : "8G"
+    time : "24:00:00"
+run_spacemix : 
+    mem : "6G"
+plot_eems :
+    mem : "6G"
+ggeems_errors :
+    mem : "4G"
+treemix_input" :
+    mem : "16G"
+dist_ind :
+    mem : "4G"
+dist_ind_all" :
+    mem : "4G"

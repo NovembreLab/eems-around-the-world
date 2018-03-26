@@ -1,0 +1,18 @@
+    NPC : "10"
+    EXE : 
+        plink : "plink"
+        admixture : "admixture"
+        flashpca : "/home/benjamin_peter/programs/flashpca/flashpca"
+        eems : "/home/benjamin_peter/myeems/eems/runeems_snps/src/runeems_snps"
+        eems0 : "/home/bpeter/programs/eems0"
+        bed2diffs1 : "/home/benjamin_peter/programs/eems/bed2diffs/src/bed2diffs_v1"
+        bed2diffs2 : "/home/benjamin_peter/programs/eems/bed2diffs/src/bed2diffs_v2"
+        treemix : "treemix"
+        tess : "/r1/people/benjamin_peter/programs/TESS3/build/TESS3"
+    DATA : 
+        genotypes : [
+            "/r1/people/benjamin_peter/projects/macaque/data/macaque/prune"
+        ]
+        meta : "/r1/people/benjamin_peter/projects/macaque/meta/macaque1"
+        map : "/home/benjamin_peter/programs/eems_stuff/maps/ne_50m_admin_0_map_subunits.shp"
+    sdfactor : 0.0000001

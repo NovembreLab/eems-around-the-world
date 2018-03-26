@@ -1,0 +1,34 @@
+subset:
+    __default__:
+        add_pop: []
+        exclude_source: []
+        extrema: false
+        filter: []
+        hull: true
+        max_missing: 0.01
+        max_missing_ind: 1.0
+        max_per_pop: 5000
+        min_area: 0.3
+        min_sample_size: 1
+        region_buffer: 3.0
+        sample_buffer: 3.0
+        source_file: 0
+    run0:                          
+        region : Asia
+        region_buffer: 1.0
+        sample_buffer: 1.0
+        hull : true
+    run1:                          
+        region : Asia
+        region_buffer: 1.0
+        sample_buffer: 1.0
+        hull : true
+        extrema : [110, 130, -10, 10]
+    run2:                          
+        region : Asia
+        region_buffer: 0.3
+        sample_buffer: 1.0
+        hull : true
+        extrema : [118, 130, -10, 2.5]
+    run2b:                          
+        subsets : run2

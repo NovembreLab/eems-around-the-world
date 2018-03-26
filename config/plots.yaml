@@ -1,0 +1,144 @@
+plot:
+    annotations:
+        __default__:
+            type: "label_repel"
+    __copy_from__:
+        seasia3fcP : seasia2fcP
+    __default__:
+        theme_size : 8
+    eems:
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : true  
+            sign_add_pts_color : false
+            sign_add_label : true
+            fancy : 1
+            zoom : 4
+            RES : 400
+            interior : false
+            min_alpha : 0.2
+            max_alpha : .7
+            add_graph : false
+            add_label : false
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 6
+            height : 6
+            add_pts : false
+            add_pts_color : true
+            #annotations : ['hg', 'admixed']
+            annotations : []
+    eemssig :
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : false
+            sign_add_pts_color : false
+            sign_add_label : true
+            fancy : 1
+            zoom : 4
+            RES : 400
+            textsize : 1.8
+            interior : true
+            min_alpha : 0.2
+            max_alpha : .7
+            add_graph : false
+            add_label : false
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 6
+            height : 6
+            add_pts : false
+            add_pts_color : true
+            #annotations : ['hg', 'admixed']
+    eemsvar :
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : false
+            sign_add_pts_color : true
+            sign_add_label : true
+            add_graph : true
+            add_pts : false
+            add_pts_color : true
+            add_label : false
+            fancy : 1
+            zoom : 4
+            RES : 400
+            interior : false
+            min_alpha : 0.9
+            max_alpha : 1.0
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 7
+            height : 7
+            #annotations : ['hg', 'admixed']
+            annotations : []
+    synthmap:
+        __default__ :
+            RES : 400
+            fancy_proj_pars : [90, 10, 40]
+            width: 4
+            height : 4
+            idp : 2.5
+            pcs: ["PC1", "PC2", "PC3", "PC4"]
+    scatter:
+        __default__ :
+            rsq_size : 2.5
+            #xvars : ["geoDist", "eems0dist", "eemsdist", "pcDist10"]
+            #xnames : ["geog.", "resistance", "EEMS-fitted", "PCA-fitted"]
+            #xvars : ["geoDist", "eemsdist", "pcDist10"]
+            #xnames : ["geog.",  "EEMS-fitted", "PCA-fitted"]
+            xvars : ["geoDist", "eemsdist", "pcDist2", "pcDist10"]
+            xnames : ["geog.",  "EEMS-fitted", "PCA-2", "PCA-10"]
+            yvar : ["gendist"]
+            point_type : "hex"
+            outlier_type : "text"
+            outlier_pct : 0.00
+            outlier_size : 1.3
+            outlier_alpha : .6
+            color : "lightgray"
+            alpha : .8
+            tall : true #whether format should be by row or by col, 
+            width : 1
+            height : 3
+            size : .1
+            no_panel : false
+    pve:
+        __default__ :
+            nmax : 10
+            width : 3
+            height : 2
+    pca2d:
+        __default__:
+            text_field : "name"
+            max_n_pc : 4
+            point_type : "text" #points|text|none
+            text_size : 1
+            point_alpha : 1
+            point_grey : true
+            median : true
+            median_alpha : 1.0
+            median_label_grey : false
+            median_repel : false
+            median_label : true
+            median_label_alpha : .8
+            median_size : 0.5
+            median_label_size : 1.4
+            color : "exclusion"
+            width : 4
+            height : 4
+            rotate : false
+            flip : []
+    error:
+        __default__ :
+            label : "abbrev"
+            nmax : 100
+            grid_label : "first"
+            width : 6.2
+            height : 1.2
+            annotations : []
+    map :
+        __default__ :
+            width : 12
+            height : 12
+            fancy : true
+            interior : true
