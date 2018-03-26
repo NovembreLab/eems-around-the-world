@@ -14,7 +14,8 @@ was to compare EEMS with other methods.
 - [TESS3](https://github.com/cayek/TESS3/)
 - [treemix](https://bitbucket.org/nygcresearch/treemix/wiki/Home)
 - [Spacemix](https://github.com/gbradburd/SpaceMix)
-- FST
+- [conStruct](https://github.com/gbradburd/conStruct)
+- FST (using plink)
 
 
 ## Implementation
