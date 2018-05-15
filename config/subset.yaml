@@ -32,3 +32,5 @@ subset:
         extrema : [118, 130, -10, 2.5]
     run2b:                          
         subsets : run2
+    cookie :
+        subsets : run2
