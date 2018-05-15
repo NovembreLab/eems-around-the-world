@@ -53,7 +53,7 @@ rule get_pca_outliers:
 __script__6='scripts/ggpca.R'
 rule make_pc_plots_wdf:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -77,7 +77,7 @@ rule make_pc_plots_wdf:
 
 rule make_pc_plots:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -176,18 +176,18 @@ rule make_pve_plot:
 script_median='scripts/get_pc_median.R'
 rule pca_median:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
         __script__=script_median
     output:
-        pc='pca/median_{name}_dim{NPC, \d+}.pc'
+        pc='pca/median_{name}_dim{NPC}.pc'
     script: "../" + script_median
 
 rule make_pc_plots_highlight_excluded:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         fam='subset/{name}.fam',
         exfam='subset/{exname}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -235,7 +235,7 @@ rule get_pca_derived_order:
 __script__9='scripts/pca_vs_geo.R'
 rule pca_vs_gen:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         ipmap='eemsout/0/{name}/ipmap.txt',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -257,7 +257,7 @@ rule pca_vs_gen:
 
 rule synthmap:
     input:
-        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
+        pc='pca/flash_{name}_dim{NPC}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
