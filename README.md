@@ -3,8 +3,8 @@
 
 
 ## Overview
-1. [Goal](#Goal)
-2. [What does my input data have to look like?](#What-does-my-input-data-have-to-look-like?)
+1. [Goal](#goal)
+2. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like?)
 3. [Getting started: Configuring the workflow to fit your data](config/README.md)
 
 
@@ -59,4 +59,4 @@ The meta data - holding information on individuals and populations in your sampl
 
 This pipeline uses maps from [Natural Earth](http://www.naturalearthdata.com/) to allow you to subset data sets into regional subsets by using words like 'Asia' or 'India'. This implementation is configured to these maps specifically, which is why they are included as files in this package. You can find them under `subsetter/maps`.
 
-It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
+It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be provided in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
