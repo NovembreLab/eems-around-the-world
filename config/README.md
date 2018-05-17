@@ -3,14 +3,14 @@
 The folder **config** contains all config files that allow for analysis-specific adjustments, such as defining input-data or which subsets of the data you wish to analyze.
 
  - [*config.yaml*](#configyaml)
- - [*subset.yaml*](#subset-yaml)
- - [*eems.yaml*](#eems.yaml)
- - [*output.yaml*](#output.yaml)
- - [*plots.yaml*](#plots.yaml)
- - [*cluster.yaml*](#cluster.yaml)
+ - [*subset.yaml*](#subsetyaml)
+ - [*eems.yaml*](#eemsyaml)
+ - [*output.yaml*](#outputyaml)
+ - [*plots.yaml*](#plotsyaml)
+ - [*cluster.yaml*](#clusteryaml)
 
-----
-#### config.yaml
+
+#### *config.yaml*
 
 This is the main config file that expects the path to all required executables, input data, and how many principle components you want to include.
 
@@ -42,7 +42,7 @@ This is the main config file that expects the path to all required executables, 
 
 ----
 
-#### subset.yaml
+#### *subset.yaml*
 Here you define the different subsets of your data you wish to analyze.
 
 If you wish to run an analysis on the full dataset, you must define a subset 'all'.
@@ -50,7 +50,7 @@ If you wish to run an analysis on the full dataset, you must define a subset 'al
 
 <font color="red">How does it work exactly? There are default settings for all runs, then I specifty run names. Are these names freely definable by user? Is the general idea here that I have one dataset and then I run the analysis on different subsets of the data? How would the subset 'all' look like?</font>
 
-
+```
    **__default__**:
     - add_pop: [] : manually add sample
     - exclude_source: [] : manually exclude source for subset
@@ -79,12 +79,11 @@ If you wish to run an analysis on the full dataset, you must define a subset 'al
     - extrema : [110, 130, -10, 10]
   **run2b**:                          
     - subsets : run2
-
-
+```
 
 ----
 
-#### eems.yaml
+#### *eems.yaml*
 Here you set **eems** parameters for the subsets defined in *subset.yaml*. Again, you can set default settings for all subsets and aditionally specify settings for individual subsets. The parameters include eems parameters from the original publication (see [EEMS](http://github.com/dipetkov/eems) for more information):
 
     - nDemes = 200 : density of the population grid
@@ -104,18 +103,9 @@ and the follwing additional parameters:
 
 <font color="red">Parameters from eems should be included here. What is density of population grid. Where do I find this? Are there good default values we could set here?</font>
 
-----
-
-#### cluster.yaml
-
-Defines resources for running on a cluster environment (tested using slurm and
-SGE), currently supports time, memory, and number of cpus.
-
-<font color="red">Are these fixed? How do you know how much resources you need to reserve on the cluster?</font>
-
 
 ----
-#### output.yaml
+#### *output.yaml*
 create tables with all pops and where they are used. Format specific to
 Peter, Petkova & Novembre (2018) paper
 
@@ -131,7 +121,16 @@ paper:
 <font color="red">This needs more explanation</font>
 
 ----
-#### plot.yaml
+#### *plot.yaml*
 various options for plots.
 
 need clean-up and are mainly undocumented. In general, not sure if this is the best way to do things. <font color="red">Can we go through these together?</font>  
+
+----
+
+#### *cluster.yaml*
+
+Defines resources for running on a cluster environment (tested using slurm and
+SGE), currently supports time, memory, and number of cpus.
+
+<font color="red">Are these fixed? How do you know how much resources you need to reserve on the cluster?</font>
