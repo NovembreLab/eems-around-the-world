@@ -1,26 +1,23 @@
 # EEMS-AROUND-THE-WORLD
-# vAPE
-**Visualizing population structures using Admixture, PCA, and EEMS**
+**Visualizing population structures using Admixture, PCA, and EEMS (vAPE)**
 
 
 ## Overview
 1. [Goal](#Goal)
-2. [What does my input data have to look like?](#What does my input data have to look like?)
-3. [Getting started: Configuring the workflow to fit your data](#Getting-started:-Configuring-the-workflow-to-fit-your-data)
-4. 
+2. [What does my input data have to look like?](#What-does-my-input-data-have-to-look-like?)
+3. [Getting started: Configuring the workflow to fit your data](config/README.md)
 
-----
 
 ## Goal
 
-The vAPE workflow brings together a number visualization tools commonly used in population structure analyses. The goal is to allow for a easy and reliable generation of a number of different plots and graphs from one input dataset, giving you a general overview over your data set.
+The workflow brings together a number visualization tools commonly used in population structure analyses. The goal is to allow for a easy and reliable generation of a number of different plots and graphs from one input dataset, giving you a general overview over your data set.
 
 The main focus lies on the following methods:
 - [EEMS](http://github.com/dipetkov/eems)
 - [flashpca](https://github.com/gabraham/flashpca)
 - [admixture](https://www.genetics.ucla.edu/software/admixture/)
 
-Others include (?):
+Others include:
 - [pong](https://pypi.python.org/pypi/pong) visualization of admixture
 - [TESS3](https://github.com/cayek/TESS3/)
 - [treemix](https://bitbucket.org/nygcresearch/treemix/wiki/Home)
@@ -28,14 +25,10 @@ Others include (?):
 - [conStruct](https://github.com/gbradburd/conStruct)
 - FST using [plink](https://www.cog-genomics.org/plink/1.9/)
 
-----
 
-## Implementation
-
-The vAPE pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
+The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
 using `python` for most data wrangling and `R` for most plotting.
 
-----
 
 ## What does my input data have to look like?
 
@@ -61,26 +54,9 @@ The meta data - holding information on individuals and populations in your sampl
 > `"popId","name","abbrev","color","colorAlt","order","latitude","longitude","accuracy"`
 
 
-TODO: delete the following and replace with either .indiv_meta or .pop_meta:
-- *filename.pop_display*
-> `"popId","name","abbrev","color","colorAlt","order"`
-- *filename.pop_geo*
-> `"popId","latitude","longitude","accuracy"`
--  *filename.indiv_label*:
->`"sampleId","popId"`
-- *filename.indiv_prov*
-> `"sampleId","wasDerivedFrom","used","originalId","permissions"`
-
-
-
-<font color="red">What is used, originalId, permissions, colorAlt, order? How is accuracy defined? </font>
-
 
 ### Maps
 
-This workflow uses maps from .. to subset data using words like 'Asia' or 'India'. This implementation is dendent on maps in GIS format, so it is, in theory possible to use a different map. However, this will require quite a bit of hacking.
+This pipeline uses maps from [Natural Earth](http://www.naturalearthdata.com/) to allow you to subset data sets into regional subsets by using words like 'Asia' or 'India'. This implementation is configured to these maps specifically, which is why they are included as files in this package. You can find them under `subsetter/maps`.
 
-The maps from NaturalEarth are included in this workflow directory under 'subet/maps'
-
-
-<font color="red">Default settings are included in package, but what format are they in?</font>
+It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
