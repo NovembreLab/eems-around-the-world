@@ -1,5 +1,5 @@
 a <- read.csv("pgs/gvar3.indiv_meta")
-pub_abbrev <- names(table(a$wasDerivedFrom)) 
+pub_abbrev <- names(table(a$source)) 
 
 pub_abbrev <- data.frame(a=pub_abbrev)
 x <- 
@@ -13,6 +13,6 @@ x <-
 
 pub_abbrev$abbrev <- x
 
-names(pub_abbrev) <- c("wasDerivedFrom","pub")
+names(pub_abbrev) <- c("source","pub")
 
 write.csv(pub_abbrev, "pgs/gvar3.pub") 

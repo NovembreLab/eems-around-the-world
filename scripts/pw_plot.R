@@ -16,8 +16,8 @@ plot_pw <- function(x, y, indiv_meta, pop_display, order, pdfname){
     pdf(pdfname, width=11,height=11)
     plot(x, y, col=NULL)                                                      
     text(x, y, label=rso$name,
-         col=as.numeric(rso$wasDerivedFrom)) 
-    legend('topleft', legend=levels(r$wasDerivedFrom), col=1:100, lty=1)     
+         col=as.numeric(rso$source)) 
+    legend('topleft', legend=levels(r$source), col=1:100, lty=1)     
 
     dev.off()
 }

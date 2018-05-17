@@ -1,6 +1,0 @@
-filter :
-    clean : []
-annotation:
-    hg:
-        from_filter : hg
-

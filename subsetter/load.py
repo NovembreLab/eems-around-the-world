@@ -17,7 +17,7 @@ allowed_lat_names = ['LAT', 'LATITUDE', 'Y', 'LAT-ITUDE']
 allowed_long_names = ['LONG', 'LONGITUDE', 'X', 'LON-GI-TUDE']
 allowed_sd_names = ['SD', 'ACCURACY']
 
-allowed_dataset_names = ['DATASET', 'SOURCE', 'WASDERIVEDFROM']
+allowed_dataset_names = ['DATASET', 'SOURCE', 'source']
 
 CSV_FORMATS = ["csv", "pop_geo", "indiv_label", "indiv_meta"]
 

@@ -1,4 +1,4 @@
-plot:
+ plot:
     annotations:
         __default__:
             type: "label_repel"
@@ -9,7 +9,7 @@ plot:
     eems:
         __default__ :
             sign_add_graph : true
-            sign_add_pts : true  
+            sign_add_pts : true
             sign_add_pts_color : false
             sign_add_label : true
             fancy : 1
@@ -97,7 +97,7 @@ plot:
             outlier_alpha : .6
             color : "lightgray"
             alpha : .8
-            tall : true #whether format should be by row or by col, 
+            tall : true #whether format should be by row or by col,
             width : 1
             height : 3
             size : .1

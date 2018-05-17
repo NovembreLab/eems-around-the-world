@@ -16,7 +16,7 @@ excluded_sets = []
 
 PLINK_EXT = ['bed', 'bim', 'fam']
 META_EXT = ['pop_geo', 'indiv_meta']
-INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
+INDIV_META_COLS = ['sampleId', 'source', 'used', 
     'originalId', 'permissions', 'popId']
 POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy'] 
 

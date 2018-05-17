@@ -30,7 +30,7 @@ make2PC <- function(data, i, j, col, wdf=F, small=F, for_paper=F, maptoken=NULL,
     data2 <- data[sample.int(nrow(data), nrow(data)),]
 
     if(wdf){
-        g <- ggplot(data2,aes_string(id1, id2, color='wasDerivedFrom', label='abbrev'))+
+        g <- ggplot(data2,aes_string(id1, id2, color='source', label='abbrev'))+
             theme_classic() + 
             viridis::scale_color_viridis(discrete=T) + 
             geom_text(size=1.5) + 

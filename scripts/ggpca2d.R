@@ -34,7 +34,7 @@ make2PC <- function(data, medians=NULL, i=1, j=2, C=list(), pve_data=NULL){
     if(!"shape" %in% names(medians)) medians$shape <- "a"
 
     if(C$color == 'wdf'){
-        g <- ggplot(data2,aes_string(id1, id2, color='wasDerivedFrom', label='abbrev'))+
+        g <- ggplot(data2,aes_string(id1, id2, color='source', label='abbrev'))+
             theme_classic() + 
             viridis::scale_color_viridis(discrete=T) + 
             theme(legend.position="bottom",
