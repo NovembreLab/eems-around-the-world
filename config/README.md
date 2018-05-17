@@ -2,8 +2,8 @@
 
 The folder **config** contains all config files that allow for analysis-specific adjustments, such as defining input-data or which subsets of the data you wish to analyze.
 
- - [*config.yaml*](#config.yaml)
- - [*subset.yaml*](#subset.yaml)
+ - [*config.yaml*](#configyaml)
+ - [*subset.yaml*](#subset-yaml)
  - [*eems.yaml*](#eems.yaml)
  - [*output.yaml*](#output.yaml)
  - [*plots.yaml*](#plots.yaml)

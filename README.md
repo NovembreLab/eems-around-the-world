@@ -4,7 +4,7 @@
 
 ## Overview
 1. [Goal](#goal)
-2. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like?)
+2. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
 3. [Getting started: Configuring the workflow to fit your data](config/README.md)
 
 
