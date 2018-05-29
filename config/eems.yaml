@@ -1,3 +1,9 @@
+pca:
+    __default__:
+        NPC : "10"
+
+admixture:
+
 eems:
     __default__:
         bed2diffs: bed2diffs1

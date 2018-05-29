@@ -19,7 +19,7 @@ allowed_sd_names = ['SD', 'ACCURACY']
 
 allowed_dataset_names = ['DATASET', 'SOURCE', 'source']
 
-CSV_FORMATS = ["csv", "pop_geo", "indiv_label", "indiv_meta"]
+CSV_FORMATS = ["csv", "pop_meta", "indiv_label", "indiv_meta"]
 
 def load_combined_file(combined_file, combined_has_header=True, format=None,
                        column_names=None, wrap=True, 
@@ -291,8 +291,8 @@ def load_sd_file(sd_file, sd_has_header=True, format=None, **kwargs):
     return sd_data
 
 
-def load_pop_geo(pop_geo, wrap=True):
-    f = pd.read_csv(pop_geo)
+def load_pop_meta(pop_meta, wrap=True):
+    f = pd.read_csv(pop_meta)
     if wrap:
         f.longitude = wrap_america(f.longitude)
     return f

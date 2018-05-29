@@ -12,7 +12,7 @@ ggadd_annotation <- function(map, label="hg"){
 
     popgeo <- "pgs/gvar3.pop_geo"
     popdisplay <- "pgs/gvar3.pop_display"
-    y <- yaml.load_file("config/data.yaml")
+    y <- yaml.load_file("config/output.yaml")
     filters <- y$filter
     anno <- y$anno
     pm <- load_pop_meta(popgeo, popdisplay)
@@ -40,5 +40,3 @@ ggadd_annotation <- function(map, label="hg"){
     C$map <- map
     do.call(.gg_add_samples_true, C)
 }
-
-

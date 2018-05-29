@@ -1,16 +1,20 @@
-# EEMS-AROUND-THE-WORLD
-**Visualizing population structures using Admixture, PCA, and EEMS (vAPE)**
+# VAPE
+**Visualizing population structures and substructures using Admixture, PCA, and EEMS (VAPE)**
 
 
 ## Overview
 1. [Goal](#goal)
+2. [Installing VAPE](#installing-vape)
 2. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
 3. [Getting started: Configuring the workflow to fit your data](config)
+4. [What output options do I have?]
+5. [Executing workflow]
+5. []
 
 
 ## Goal
 
-The workflow brings together a number visualization tools commonly used in population structure analyses. The goal is to allow for a easy and reliable generation of a number of different plots and graphs from one input dataset, giving you a general overview over your data set.
+The VAPE workflow brings together a number visualization tools commonly used in population structure analyses. Not only does it allow you to easily and reliably generate of a number of different plots and graphs for a sample population, but enables you to subdivide geo-referenced data into subsets linked to geography. This way you can visualize and compare substructures in your sample using different methods side by side.
 
 The main focus lies on the following methods:
 - [EEMS](http://github.com/dipetkov/eems)
@@ -29,8 +33,28 @@ Others include:
 The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
 using `python` for most data wrangling and `R` for most plotting.
 
+## Installing VAPE
+
+### Clone workflow into working directory
+
+```
+git clone https://bitbucket.org/NovembreLab/eems-around-the-world path/to/workdir
+cd path/to/workdir
+```
+### edit config and workflow as needed
+See: [Getting started: Configuring the workflow to fit your data](config)
+
+### execute workflow, deploy software dependencies via conda (not implemented yet)
+snakemake -n --use-conda
+
+
 
 ## What does my input data have to look like?
+
+For your input you need three types of data:
+1. [Genotypes](#genotypes)
+2. [Meta data for individuals and populations in your sample](#meta-data)
+3. [Maps (optional)](#maps)
 
 ### Genotypes
 
@@ -51,12 +75,11 @@ The meta data - holding information on individuals and populations in your sampl
 > `sampleId,source,used,originalId,permissions,popId`
 
 2. *filename.pop_meta*
-> `"popId","name","abbrev","color","colorAlt","order","latitude","longitude","accuracy"`
+> `popId,name,abbrev,color,colorAlt,order,latitude,longitude,accuracy`
 
 
 
 ### Maps
-
-This pipeline uses maps from [Natural Earth](http://www.naturalearthdata.com/) to allow you to subset data sets into regional subsets by using words like 'Asia' or 'India'. This implementation is configured to these maps specifically, which is why they are included as files in this package. You can find them under `subsetter/maps`.
+As a default, the VAPE workflow uses maps from [Natural Earth](http://www.naturalearthdata.com/) to allow you to subset data sets into regional subsets by using words like 'Asia' or 'India'. This implementation is configured to these maps specifically, which is why they are included as files in this package. You can find them under `subsetter/maps`.
 
 It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be provided in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
