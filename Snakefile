@@ -14,8 +14,8 @@ excluded_sets = []
 
 
 PLINK_EXT = ['bed', 'bim', 'fam']
-META_EXT = ['pop_geo', 'indiv_meta']
-INDIV_META_COLS = ['sampleId', 'source', 'used',
+META_EXT = ['pop_meta', 'indiv_meta']
+INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used',
     'originalId', 'permissions', 'popId']
 POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy']
 
@@ -91,7 +91,7 @@ def snakemake_subsetter(input, output, name):
     outname = base(output.bed)
 
     params = load_subset_config(config['subset'], name)
-    location_data = load_pop_geo(input.pop_geo, wrap=False)
+    location_data = load_pop_geo(input.pop_meta, wrap=False)
     sample_data = load_indiv_meta(input.indiv_meta)
     meta_data = sample_data.merge(location_data)
 
