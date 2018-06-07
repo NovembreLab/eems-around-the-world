@@ -33,6 +33,10 @@ Others include:
 The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
 using `python` for most data wrangling and `R` for most plotting.
 
+Examples of possible outputs are the following. For a complete list of options, please refer to [output options](output-options).
+
+![Two dimentsional PCA plot for individuals](example_images/pca2d_indiv.png)
+
 ## Installing VAPE
 
 ### Clone workflow into working directory
