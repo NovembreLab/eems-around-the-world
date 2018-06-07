@@ -1,10 +1,12 @@
 # VAPE
+
 **Visualizing population structures and substructures using Admixture, PCA, and EEMS (VAPE)**
+
 ----
 
 ## Overview
 1. [Introduction](#introduction)
-2. [Getting started: Installing VAPE](#getting-started-installing-vape)
+2. [Getting started: Installing VAPE](#getting-started-installing-and-configuring-vape)
 3. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
 4. [Configuring the workflow to fit your data](config)
 5. [What output options do I have?](#output-options)
