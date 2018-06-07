@@ -35,8 +35,9 @@ using `python` for most data wrangling and `R` for most plotting.
 
 Examples of possible outputs are the following. For a complete list of options, please refer to [output options](output-options).
 
-<img src="example_images/pca2d_indiv.png" width="48">
-![Two dimentsional PCA plot for individuals](example_images/pca2d_indiv.png)
+### Two dimentsional PCA plot with names of individuals
+<img src="example_images/pca2d_indiv.png" height="230">
+
 
 ## Installing VAPE
 
