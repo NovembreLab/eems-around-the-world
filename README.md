@@ -1,18 +1,18 @@
 # VAPE
 **Visualizing population structures and substructures using Admixture, PCA, and EEMS (VAPE)**
-
+----
 
 ## Overview
-1. [Goal](#goal)
-2. [Installing VAPE](#installing-vape)
-2. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
-3. [Getting started: Configuring the workflow to fit your data](config)
-4. [What output options do I have?]
-5. [Executing workflow]
-5. []
+1. [Introduction](#introduction)
+2. [Getting started: Installing VAPE](#getting-started-installing-vape)
+3. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
+4. [Configuring the workflow to fit your data](config)
+5. [What output options do I have?](#output-options)
+6. [Executing VAPE workflow](#execute-vape)
 
+----
 
-## Goal
+## Introduction
 
 The VAPE workflow brings together a number visualization tools commonly used in population structure analyses. Not only does it allow you to easily and reliably generate of a number of different plots and graphs for a sample population, but enables you to subdivide geo-referenced data into subsets linked to geography. This way you can visualize and compare substructures in your sample using different methods side by side.
 
@@ -33,27 +33,60 @@ Others include:
 The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
 using `python` for most data wrangling and `R` for most plotting.
 
+
 Examples of possible outputs are the following. For a complete list of options, please refer to [output options](output-options).
 
-### Two dimentsional PCA plot with names of individuals
-<img src="example_images/pca2d_indiv.png" height="230">
+#### Two dimentsional PCA plot with names of individuals
+<img src="example_images/pca2d_indiv.png" height="270">
 
+----
 
-## Installing VAPE
+## Getting started: Installing and configuring VAPE
 
-### Clone workflow into working directory
+1. Requirements
+
+In order to use VAPE, you need the following software installed:
+
+- [anacoda/miniconda] https://conda.io/docs/user-guide/install/index.html
+- [plink](https://www.cog-genomics.org/plink2) (version 1.90)
+- [flashpca](https://github.com/gabraham/flashpca)
+
+2. Clone VAPE into working directory
+
+Create a working directory you would like to run VAPE in and clone VAPE form the github repository.
 
 ```
-git clone https://bitbucket.org/NovembreLab/eems-around-the-world path/to/workdir
+git clone https://github.com/NovembreLab/eems-around-the-world.git path/to/workdir
 cd path/to/workdir
 ```
-### edit config and workflow as needed
-See: [Getting started: Configuring the workflow to fit your data](config)
 
-### execute workflow, deploy software dependencies via conda (not implemented yet)
-snakemake -n --use-conda
+3. Create a conda environment
 
+The file `vape_environment.yaml` in  is used by conda to create an isolated environment with all the
+dependencies you will need to run VAPE. This might take a few minutes. Note: the environment name is arbitrary.
 
+```
+conda env create --name vape --file vape_environment.yaml
+```
+
+To activate this new VAPE environment:
+
+```
+source activate vape
+```
+
+To deactivate the VAPE environment later on:
+```
+source deactivate
+```
+
+4. Edit config files
+See: [Configuring the workflow to fit your data](config)
+
+5. Execute VAPE
+See: [Execute VAPE workflow](#execute-vape)
+
+----
 
 ## What does my input data have to look like?
 
@@ -89,3 +122,12 @@ The meta data - holding information on individuals and populations in your sampl
 As a default, the VAPE workflow uses maps from [Natural Earth](http://www.naturalearthdata.com/) to allow you to subset data sets into regional subsets by using words like 'Asia' or 'India'. This implementation is configured to these maps specifically, which is why they are included as files in this package. You can find them under `subsetter/maps`.
 
 It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be provided in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
+
+
+## Execute VAPE
+
+coming soon ...
+
+## Output options
+
+coming soon ...
