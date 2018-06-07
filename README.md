@@ -67,7 +67,7 @@ The file `vape_environment.yaml` in  is used by conda to create an isolated envi
 dependencies you will need to run VAPE. This might take a few minutes. Note: the environment name is arbitrary.
 
 ```
-conda env create --name vape --file install/vape_environment.yaml
+conda env create --name vape --file vape_environment.yaml
 ```
 
 To activate this new VAPE environment:
