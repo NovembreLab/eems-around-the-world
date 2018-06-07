@@ -44,7 +44,7 @@ Examples of possible outputs are the following. For a complete list of options, 
 ## Getting started: Installing and configuring VAPE
 
 
-#### Requirements
+### Requirements
 
 In order to use VAPE, you need the following software installed:
 
@@ -52,7 +52,7 @@ In order to use VAPE, you need the following software installed:
 - [plink](https://www.cog-genomics.org/plink2) (version 1.90)
 - [flashpca](https://github.com/gabraham/flashpca)
 
-#### Clone VAPE into working directory
+### Clone VAPE into working directory
 
 Create a working directory you would like to run VAPE in and clone VAPE form the github repository.
 
@@ -61,7 +61,7 @@ git clone https://github.com/NovembreLab/eems-around-the-world.git path/to/workd
 cd path/to/workdir
 ```
 
-#### Create a conda environment
+### Create a conda environment
 
 The file `vape_environment.yaml` in  is used by conda to create an isolated environment with all the
 dependencies you will need to run VAPE. This might take a few minutes. Note: the environment name is arbitrary.
@@ -81,10 +81,10 @@ To deactivate the VAPE environment later on:
 source deactivate
 ```
 
-#### Edit config files
+### Edit config files
 See: [Configuring the workflow to fit your data](config)
 
-#### Execute VAPE
+### Execute VAPE
 See: [Execute VAPE workflow](#execute-vape)
 
 ----
