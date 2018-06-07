@@ -1,7 +1,7 @@
     EXE :
         plink : "plink"
         #admixture : "admixture"
-        #flashpca : "/home/benjamin_peter/programs/flashpca/flashpca"
+        flashpca : "/home/benjamin_peter/programs/flashpca/flashpca"
         #eems : "/home/benjamin_peter/myeems/eems/runeems_snps/src/runeems_snps"
         #eems0 : "/home/bpeter/programs/eems0"
         #bed2diffs1 : "/home/benjamin_peter/programs/eems/bed2diffs/src/bed2diffs_v1"
