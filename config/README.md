@@ -13,7 +13,7 @@ The folder **config** contains all config files that allow for analysis-specific
 
 #### *config.yaml* (required)
 
-This is the main config file that expects the path to all [required executables](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#requirements) and [input data](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#what-does-my-input-data-have-to-look-like)).
+This is the main config file that expects the path to all [required executables](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#requirements) and [input data](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#what-does-my-input-data-have-to-look-like).
 
 ```
 EXE : paths to all executables

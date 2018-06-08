@@ -115,10 +115,14 @@ Genotypes must be provided in binary [plink](https://www.cog-genomics.org/plink2
 The meta data - holding information on individuals and populations in your sample - must be provided in an adaption of the  [PopGenStructures](https://docs.google.com/document/d/1wPlI1hLr19JIdM2EzYKlPnzzbR6L2ZOgOGkC6kbhHE4/edit) format as follows:
 
 1. *filename.indiv_meta*:
-> `sampleId,source,used,originalId,permissions,popId`
+```
+sampleId,source,used,originalId,permissions,popId
+```
 
 2. *filename.pop_meta*
-> `popId,name,abbrev,color,colorAlt,order,latitude,longitude,accuracy`
+```
+popId,name,abbrev,color,colorAlt,order,latitude,longitude,accuracy
+```
 
 
 
