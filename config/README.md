@@ -13,7 +13,7 @@ The folder **config** contains all config files that allow for analysis-specific
 
 #### *config.yaml* (required)
 
-This is the main config file that expects the path to all [required executables](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#requirements and [input data](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#what-does-my-input-data-have-to-look-like)).
+This is the main config file that expects the path to all [required executables](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#requirements) and [input data](https://github.com/NovembreLab/eems-around-the-world/blob/master/README.md#what-does-my-input-data-have-to-look-like)).
 
 ```
 EXE : paths to all executables
@@ -64,21 +64,21 @@ If you wish to run an analysis on the full dataset, you must define a subset 'al
 Here you set **eems** parameters for the subsets defined in *subset.yaml*. Again, you can set default settings for all subsets and additionally specify settings for individual subsets. The parameters include EEMS parameters from the original publication (see [EEMS](http://github.com/dipetkov/eems) for more information):
 
 ```
-    nDemes = 200 : density of the population grid
-    numMCMCIter = 2000000 : number of MCMC iterations
-    numBurnIter = 1000000 : number of burn-in iterations
-    numThinIter = 9999 : thinning interval
+  nDemes = 200 : density of the population grid
+  numMCMCIter = 2000000 : number of MCMC iterations
+  numBurnIter = 1000000 : number of burn-in iterations
+  numThinIter = 9999 : thinning interval
 ```
 
 and the following additional parameters:
 
 ```
-    bed2diffs1 or bed2diffs2 (how missing data is handled in dist matrix)
-    grid : resolution of world-based grid
-    n_runs : number of runs
-    n_pilots : number of pilot runs
-    pilot : separate eems options for pilot run
-    continues : continue previous run
+  bed2diffs1 or bed2diffs2 (how missing data is handled in dist matrix)
+  grid : resolution of world-based grid
+  n_runs : number of runs
+  n_pilots : number of pilot runs
+  pilot : separate eems options for pilot run
+  continues : continue previous run
 ```
 
 ----

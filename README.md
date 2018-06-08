@@ -51,7 +51,7 @@ For a complete list of options, please refer to [output options](output-options)
 
 In order to use VAPE, you need the following software installed:
 
-- [anacoda/miniconda](https://conda.io/docs/user-guide/install/index.html)
+- [anacoda or miniconda](https://conda.io/docs/user-guide/install/index.html)
 - [plink](https://www.cog-genomics.org/plink2) (version 1.90)
 - [flashpca](https://github.com/gabraham/flashpca)
 
