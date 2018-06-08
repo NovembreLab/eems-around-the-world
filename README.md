@@ -8,7 +8,7 @@
 1. [Introduction](#introduction)
 2. [Getting started: Installing VAPE](#getting-started-installing-and-configuring-vape)
 3. [What does my input data have to look like?](#what-does-my-input-data-have-to-look-like)
-4. [Configuring the workflow to fit your data](config)
+4. [Configuring VAPE to fit your data](config)
 5. [What output options do I have?](#output-options)
 6. [Executing VAPE workflow](#execute-vape)
 
@@ -33,10 +33,11 @@ Others include:
 
 
 The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
-using `python` for most data wrangling and `R` for most plotting.
+using `python` for most data wrangling and `R` for most plotting. You can use VAPE without prior knowledge of Snakemake by following this README step by step.
 
 
-Examples of possible outputs are the following. For a complete list of options, please refer to [output options](output-options).
+### Examples of possible outputs
+For a complete list of options, please refer to [output options](output-options).
 
 #### Two dimentsional PCA plot with names of individuals
 <img src="example_images/pca2d_indiv.png" height="270">
@@ -50,7 +51,7 @@ Examples of possible outputs are the following. For a complete list of options, 
 
 In order to use VAPE, you need the following software installed:
 
-- [anacoda/miniconda] https://conda.io/docs/user-guide/install/index.html
+- [anacoda/miniconda](https://conda.io/docs/user-guide/install/index.html)
 - [plink](https://www.cog-genomics.org/plink2) (version 1.90)
 - [flashpca](https://github.com/gabraham/flashpca)
 
@@ -66,7 +67,7 @@ cd path/to/workdir
 ### Create a conda environment
 
 The file `vape_environment.yaml` in  is used by conda to create an isolated environment with all the
-dependencies you will need to run VAPE. This might take a few minutes. Note: the environment name is arbitrary.
+dependencies you will need to run VAPE. This might take some minutes (environment size is about 1.3GB in size). Note: the environment name is arbitrary.
 
 ```
 conda env create --name vape --file vape_environment.yaml
@@ -126,11 +127,10 @@ As a default, the VAPE workflow uses maps from [Natural Earth](http://www.natura
 
 It is, however, possible to load your own maps into the workflow, if you require a more detailed resolution. Maps must then be provided in the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format.
 
-
-## Execute VAPE
+## Output options
 
 coming soon ...
 
-## Output options
+## Execute VAPE
 
 coming soon ...

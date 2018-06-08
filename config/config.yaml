@@ -9,8 +9,6 @@
         #treemix : "treemix"
         #tess : "/r1/people/benjamin_peter/programs/TESS3/build/TESS3"
     DATA :
-        genotypes : [
-            "/r1/people/benjamin_peter/projects/macaque/data/macaque/prune"
-        ]
+        genotypes : "/r1/people/benjamin_peter/projects/macaque/data/macaque/prune"
         meta : "/r1/people/sophie_wolf/WORK/eems-around-the-world/macaque1"
         map : "subsetter/maps/ne_50m_admin_0_map_subunits.shp"
