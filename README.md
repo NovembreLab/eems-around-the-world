@@ -66,8 +66,7 @@ cd path/to/workdir
 
 ### Create a conda environment
 
-The file `vape_environment.yaml` in  is used by conda to create an isolated environment with all the
-dependencies you will need to run VAPE. This might take some minutes (environment size is about 1.3GB in size). Note: the environment name is arbitrary.
+The file `vape_environment.yaml` now located in your new working directory is used by conda to create an isolated environment with all the dependencies you will need to run VAPE. This might take some minutes (environment size is about 1.3GB in size). Note: the environment name is arbitrary.
 
 ```
 conda env create --name vape --file vape_environment.yaml
@@ -119,7 +118,7 @@ The meta data - holding information on individuals and populations in your sampl
 sampleId,source,used,originalId,permissions,popId
 ```
 
-2. *filename.pop_meta*
+2. *filename.pop_itemeta*
 ```
 popId,name,abbrev,color,colorAlt,order,latitude,longitude,accuracy
 ```
