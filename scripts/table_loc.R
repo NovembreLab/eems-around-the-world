@@ -4,10 +4,10 @@ suppressPackageStartupMessages({
 })
 
 save.image(".debug")
-filter <- yaml::yaml.load_file("config/output.yaml")$filter
+filter <- yaml::yaml.load_file("config/data.yaml")$filter
 print(snakemake@input$indiv_meta0)
 indiv_meta0 <- read.csv(snakemake@input$indiv_meta0)
-languages <- read.csv(snakemake@input$languages) %>% select(-abbrev)
+languages <- read.csv(snakemake@input$languages) %>% select(-abbrev)  
 
 hg <- indiv_meta0 %>% filter(popId %in% filter$hg)
 hg$panel <- "HG"
@@ -33,21 +33,23 @@ indiv_all$panel <- snakemake@params$abbrev[as.numeric(indiv_all$panel)]
 indiv_all <- bind_rows(list(indiv_all))
 
 
-indiv_all %>% left_join(pub) %>%
+indiv_all %>% left_join(pub) %>%  
         left_join(inner_join(pop_geo, pop_display))  %>%
 		group_by(popId) %>%
-		summarize(abbrev=as.character(first(abbrev)), name=first(name),
+		summarize(abbrev=as.character(first(abbrev)), name=first(name), 
               src=paste(sort(unique(pub)), collapse="|"),
 			  longitude=first(longitude), latitude=first(latitude),
 			  sample_size = n_distinct(sampleId),
 			  panel=paste(unique(panel), collapse="|")
-			  ) %>%
+			  ) %>% 
 		ungroup()%>% left_join(languages)  %>% select(-popId) %>%
 		arrange(abbrev) -> x
-        x <- x %>% left_join(read.csv(snakemake@input$loc_src))
+        x <- x %>% left_join(read.csv(snakemake@input$loc_src)) 
 		write.csv(x, outname, row.names=F, quote=T, na="")
 
 
 #load_snakemake()
 #plot_polys()
 #save.image("test")
+
+

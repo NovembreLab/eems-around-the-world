@@ -1,10 +1,11 @@
 configfile: "config/config.yaml"
 configfile: "config/subset.yaml"
 configfile: "config/eems.yaml"
+configfile: "config/data.yaml"
 configfile: "config/plots.yaml"
-configfile: "config/output.yaml"
+configfile: "config/paper.yaml"
 
-subsets = config['output']
+subsets = config['paper']
 subsets_names = [k for k,v in subsets.items()]
 subsets_abbrev = [v['abbrev'] for k,v in subsets.items()]
 subsets_paper = [v['main'] for k,v in subsets.items()]
@@ -14,16 +15,16 @@ excluded_sets = []
 
 
 PLINK_EXT = ['bed', 'bim', 'fam']
-META_EXT = ['pop_meta', 'indiv_meta']
-INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used',
+META_EXT = ['pop_geo', 'indiv_meta']
+INDIV_META_COLS = ['sampleId', 'wasDerivedFrom', 'used', 
     'originalId', 'permissions', 'popId']
-POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy']
+POP_GEO_COLS = ['popId', 'latitude', 'longitude', 'accuracy'] 
 
 PLINK_EXE = config['EXE']['plink']
 PLINK_SRC = config['DATA']['genotypes']
 _META_ = config['DATA']['meta']
-_POP_DISPLAY_ = _META_ + ".pop_meta"
-_POP_GEO_ = _META_ + ".pop_meta"
+_POP_DISPLAY_ = _META_ + ".pop_display"
+_POP_GEO_ = _META_ + ".pop_geo"
 _INDIV_META_ = _META_ + ".indiv_meta"
 
 
@@ -57,12 +58,12 @@ def load_subset_config(config, name, verbose=False):
         for k, v in config[name]['modify_parent'].items():
             if k in params:
                 params[k] = params[k] + v
-            else:
+            else: 
                 params[k] = v
             if verbose:
                 print("modifying key %s to value %s" % (k, v))
 
-
+        
     return params
 
 
@@ -91,7 +92,7 @@ def snakemake_subsetter(input, output, name):
     outname = base(output.bed)
 
     params = load_subset_config(config['subset'], name)
-    location_data = load_pop_geo(input.pop_meta, wrap=False)
+    location_data = load_pop_geo(input.pop_geo, wrap=False)
     sample_data = load_indiv_meta(input.indiv_meta)
     meta_data = sample_data.merge(location_data)
 
@@ -149,13 +150,13 @@ def snakemake_subsetter(input, output, name):
     bed = os.path.splitext(input.bed)[0]
     meta_data = filter_data(meta_data=meta_data,
                             bedfile=bed,
-                            missing=float(params['max_missing']),
+                            missing=float(params['max_missing']), 
                             per_ind_missing=float(params['max_missing_ind']),
                             plink=PLINK_EXE,
                             exclude_loci=exclude_loci,
                             max_per_pop=int(params['max_per_pop']),
                             outfile=outname)
-
+    
     meta_data[POP_GEO_COLS].drop_duplicates().to_csv(output.pop_geo, index=False)
     meta_data[INDIV_META_COLS].to_csv(output.indiv_meta, index=False)
     create_polygon_file(polygon, output.polygon, add_outer=False)
@@ -165,11 +166,11 @@ def subset_paper_fun(ext, prefix='', subset0=False):
         #print('subset_all_fun called')
         subsets = subsets_paper
         if subset0: subsets=subsets0
-        infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets
+        infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not s == '__default__']
         return infiles
     return ss
-
+    
 include: 'sfiles/eems.snake'
 include: 'sfiles/eems0.snake'
 
@@ -183,26 +184,26 @@ def subset_all_fun(ext, prefix='', force=False):
         for s in subsets:
             if s in local_excluded:
                 print("excluded " + s)
-        infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets
+        infiles = ['%s%s%s' %(prefix, s, ext) for s in subsets 
             if not (s == '__default__' or s in local_excluded)]
         return infiles
     return ss
-
+    
 
 def subset_all_fun_reps(ext, prefix='', nreps=10):
     def ss(wildcards):
         subsets = config['subset'].keys()
-        infiles = expand(["".join([prefix, s, ext])  for s in subsets
+        infiles = expand(["".join([prefix, s, ext])  for s in subsets 
             if not s == '__default__'], i=range(nreps))
         return infiles
     return ss
-
+    
 
 include: 'sfiles/paper_figures.snake'
 
 
 
-
+       
 
 # rules that do the data partitioning
 def subset_inputfn(wildcards):
@@ -212,12 +213,12 @@ def subset_inputfn(wildcards):
         #print("custom source")
         src = config['DATA']['genotypes']
         #print(src, len(src))
-
+        
         source_file = src[params['source_file']]
     else:
         print("default source")
         source_file = PLINK_SRC
-
+            
 
     for ext in PLINK_EXT:
         d[ext] = "%s.%s" % (source_file, ext)

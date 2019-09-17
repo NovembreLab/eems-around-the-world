@@ -32,7 +32,7 @@ rule bed2diffs:
         create_diffs_file(bedfile=infile,
                           bed2diffs=config['EXE'][bed2diffs],
                           outname=outfile, tmpbim=tmpfile)
-
+        
 
 rule make_coord:
     input:
@@ -54,18 +54,18 @@ rule make_coord:
 
         seed = int(wildcards.i) + sum(ord(s) for s in wildcards.name)
         np.random.seed(seed)
-        sd = meta_data['accuracy'] * 0.0000001 + EPS
+        sd = meta_data['accuracy'] * config['sdfactor'] + EPS
         long_jitter = np.random.normal(meta_data['longitude'], sd)
         lat_jitter = np.random.normal(meta_data['latitude'], sd)
         long_jitter = ["%2.2f" % i for i in long_jitter]
         lat_jitter = ["%2.2f" % i for i in lat_jitter]
         temp_data = pd.DataFrame({'longitude':long_jitter,
                                  'latitude': lat_jitter})
-
+        
         temp_data.to_csv(output.coord, sep=" ", header=False, index=False,
                          columns=('longitude', 'latitude'))
-
-
+        
+        
 rule make_outer:
     input:
         outer='subset/{name}.polygon'
@@ -74,7 +74,7 @@ rule make_outer:
     shell:
         'cp {input.outer} {output.outer}'
 
-
+        
 rule make_grid:
     input:
         outer='eems/{name}.outer',
@@ -90,7 +90,7 @@ rule make_grid:
             grid2 = GRID_PATH % config['eems'][name]['grid']
         else:
             grid2 = GRID_PATH % config['eems']['__default__']['grid']
-
+        
         out_path = base(output.edges)
         intersect(grid2, input.outer, input.coord, out_path)
 
@@ -117,7 +117,7 @@ rule make_ini_file:
         cfg = config['eems']['__default__'].copy()
         if wildcards.name in config['eems']:
             cfg.update(config['eems'][wildcards.name])
-
+        
         n_demes = cfg.pop('nDemes')
         n_sites = np.loadtxt(input.bim, str).shape[0]
         cfg['nSites'] = n_sites
@@ -131,7 +131,7 @@ rule make_ini_file:
             meta_data=meta_data,
             n_demes=n_demes, **cfg)
 """
-
+        
 
 rule run_eems_single_run:
     input:
@@ -171,7 +171,7 @@ rule run_eems_single_run:
         shell(s)
         s = 'ln -f %s %s ' % (input.diffs, new_diff)
         shell(s)
-        s = config['EXE']['eems'] + " --params " + input.inifile
+        s = config['EXE']['eems'] + " --params " + input.inifile 
         shell(s + " 2> {log}")
 
 rule induced_fst:
@@ -181,13 +181,13 @@ rule induced_fst:
         script="scripts/get_induced_fst.R"
     output: fst="eemsout/{name}.ifst"
     script: "../" + "scripts/get_induced_fst.R"
-
+    
 rule all_induced_fst:
     input:
         subset_paper_fun(prefix="eemsout/", ext=".ifst")
 
 
-eems_output_files = ['demes.txt',
+eems_output_files = ['demes.txt', 
     'edges.txt',
     'ipmap.txt',
     'outer.txt',
@@ -205,7 +205,7 @@ eems_output_files = ['demes.txt',
     'rdistJtDobsJ.txt',
     'rdistJtDhatJ.txt',
     'mcmcmwcoord.txt']
-eems_last_files = ['demes.txt',
+eems_last_files = ['demes.txt', 
     'edges.txt',
     'ipmap.txt',
     'outer.txt',
@@ -244,7 +244,7 @@ rule run_eems_single_pilot_run:
         shell(s)
         s = 'ln -f %s %s ' % (input.diffs, new_diff)
         shell(s)
-        s = config['EXE']['eems'] + " --params " + input.inifile
+        s = config['EXE']['eems'] + " --params " + input.inifile 
         shell(s + " 2> {log}")
 
 rule make_pilot_ini_file:
@@ -277,7 +277,7 @@ rule make_pilot_ini_file:
         if "pilot" in config['eems'][wildcards.name]:
             print("updating with name")
             cfg.update(config['eems'][wildcards.name]['pilot'])
-
+        
         n_demes = cfg.pop('nDemes')
         n_sites = np.loadtxt(input.bim, str).shape[0]
         cfg['nSites'] = n_sites
@@ -357,7 +357,7 @@ rule make_post_pilot_ini:
         cfg = config['eems']['__default__'].copy()
         if wildcards.name in config['eems']:
             cfg.update(config['eems'][wildcards.name])
-
+        
         n_demes = cfg.pop('nDemes')
         n_sites = np.loadtxt(input.bim, str).shape[0]
         cfg['nSites'] = n_sites
@@ -376,14 +376,14 @@ rule make_post_pilot_ini:
         create_ini_file(ini, mcmcpath, datapath,
             meta_data=meta_data,
             n_demes=n_demes, **cfg)
-
-
+            
+        
 
 def eemsinfn(wildcards):
         return expand('eemsout/{i}/{n}/mcmcmrates.txt',
             i = range(int(wildcards.nruns)),
             n=[wildcards.name])
-
+    
 rule run_eems_replicate_runs:
     input:
         eemsinfn
@@ -391,7 +391,7 @@ rule run_eems_replicate_runs:
     output:
         'eemsout/{name}_runs{nruns}.controller'
     shell: 'touch {output}'
-
+    
 
 
 __script__0='scripts/diagnostic_mds.R'
@@ -415,7 +415,7 @@ def eemsin(wildcards):
         thetas=expand('eemsout/{i}/{name}/mcmcthetas.txt',
             i=range(int(wildcards.nruns)),
             name=[wildcards.name])
-        outer=expand('eems/{name}.outer',
+        outer=expand('eems/{name}.outer', 
             name=[wildcards.name])
         return demes + thetas + outer
 rule plot_eems:
@@ -428,12 +428,12 @@ rule plot_eems:
     output:
         mplot="eemsout/{name}_nruns{nruns}-mrates01.png"
     run:
-        grid = config['eems'][wildcards.name]['grid']
+        grid = config['eems'][wildcards.name]['grid'] 
         s =  "%s scripts/eems_plot/make_plots.r" % "Rscript" #config['EXE']['R']
         s +=   " {wildcards.nruns} {wildcards.name} {grid}"
         s += " {input.pop_display} {input.pop_geo} {input.indiv_label}"
         shell(s)
-
+        
 rule ggplot_eems_var:
     input:
         eemsin,
@@ -536,7 +536,7 @@ rule all_paper_stuff:
         'paper/table_sources.csv',
         "paper/table_panel.csv",
         'paper/table_loc.csv',
-
+        
 
 rule ggeems_map:
     input:

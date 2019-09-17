@@ -1,6 +1,0 @@
-output:
-    #revision1nofilter:
-    All :
-        main : "run1"
-        full : false
-        abbrev : All

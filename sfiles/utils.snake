@@ -23,7 +23,7 @@ rule get_pop_frq:
         inname = base(input.bed)
         outname = base(base(output.frq))
         s = [PLINK_EXE, '--bfile', inname, '--freq',
-            '--within', output.pops, '--out', outname,
+            '--within', output.pops, '--out', outname, 
             '--allow-extra-chr']
         shell(" ".join(s))
 
@@ -40,7 +40,7 @@ rule to_vcf:
         s = 'plink --bfile {n} --recode vcf-iid bgz --out {n}'
         shell(s)
 
-
+        
 rule to_pbwt:
     input:
         vcf='{name}.vcf.gz'
@@ -51,6 +51,18 @@ rule to_pbwt:
             '-write', output.pbwt]
         shell(" ".join(l))
 
+rule indiv_meta:
+    input:
+        indiv_prov='{name}.indiv_prov',
+        indiv_label='{name}.indiv_label'
+    output:
+        indiv_meta='{name}.indiv_meta'
+    run:
+        import pandas as pd
+        prov = pd.read_csv(input.indiv_prov)
+        label = pd.read_csv(input.indiv_label)
+        data = pd.merge(prov, label)
+        data.to_csv(output.indiv_meta, index=False)
 
 rule sample_plot:
     input:
@@ -67,7 +79,7 @@ rule hwe_plot:
         fig="figures/hwe/{name}.png"
     script : "../scripts/hwe.R"
 
-
+    
 rule hwe_test:
     input:
         bed="subset/{name}.bed",
@@ -87,11 +99,11 @@ rule hwe_min:
 
     run:
         s = """a <- read.table("{input.hwe}", as.is=T, header=T)
-
+            
             cat(min(a[a[,7] > a[,8],9], na.rm=T), file="{output.hwe}")"""
         R(s)
 
-
+    
 rule indiv_full:
     input:
         indiv_meta="subset/{name}.indiv_meta",
@@ -101,7 +113,7 @@ rule indiv_full:
         indiv_full="subset/{name}.indiv_full",
     run:
         R("""require(tidyverse);
-            read.csv("{input.indiv_meta}") %>%
+            read.csv("{input.indiv_meta}") %>% 
                 left_join(read.csv("{input.pop_geo}")) %>%
                 left_join(read.csv("{input.pop_display}")) %>%
             write.csv("{output.indiv_full}", row.names=F) """)

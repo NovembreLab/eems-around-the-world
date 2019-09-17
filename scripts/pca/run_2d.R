@@ -21,7 +21,7 @@ pg <- read.csv(pop_geo)
 pve_data <- read.table(pve)[,1]
 
 data <- left_join(data, pg)
-if("order" %in% names(data)) data <- data %>% select(-order)
+if("order" %in% names(data)) data <- data %>% select(-order) 
 data <- data %>% left_join(read.csv(pop_order))
 
 
@@ -56,7 +56,7 @@ if(exists("super_pc")){
     super_data$color <- get_cols_wrap(super_data)
     super_medians$color <- get_cols_wrap(super_medians)
 
-    data <- data %>% select(-color) %>% left_join(super_data %>% select(popId, color) %>% unique)
+    data <- data %>% select(-color) %>% left_join(super_data %>% select(popId, color) %>% unique) 
     medians <- medians %>% select(-color) %>% left_join(super_medians %>% select(popId, color) %>% unique)
     cv <- as.character(super_data$color)
     names(cv) <- super_data$abbrev
@@ -75,8 +75,8 @@ if(exists("super_pc")){
     save.image("test")
 
 } else if (C$color == 'wdf'){
-    col_list <- data %>% group_by(wasDerivedFrom) %>%
-	summarize(color=first(color), order=mean(order)) %>%
+    col_list <- data %>% group_by(wasDerivedFrom) %>% 
+	summarize(color=first(color), order=mean(order)) %>% 
 	arrange(order)
     data$wasDerivedFrom <- factor(data$wasDerivedFrom,
 				  levels=col_list$wasDerivedFrom)
@@ -88,6 +88,17 @@ if(exists("super_pc")){
 	source("scripts/assign_color_by_coord.R")
 	data$color <- get_cols_wrap(data)
 	medians$color <- get_cols_wrap(medians)
+    }
+
+
+    if(C$color == 'exclusion'){
+	source("scripts/assign_color_by_coord.R")
+	data$color <- get_cols_wrap(data)
+	medians$color <- get_cols_wrap(medians)
+	excl <- read.csv("subset/excluded.txt") %>% 
+	    filter(full==snakemake@wildcards$name)
+	data$color[data$popId %in% excl$popId] <- 'red'
+	medians$color[medians$popId %in% excl$popId] <- 'red'
     }
 
     cv <- as.character(medians$color)
@@ -110,3 +121,4 @@ for(i in seq(1, C$max_n_pc, 2)){
     saveRDS(fig, cur_rds)
 }
 print(warnings())
+

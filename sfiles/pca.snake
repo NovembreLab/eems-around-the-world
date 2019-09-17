@@ -1,9 +1,9 @@
-N_PC = config["pca"]["__default__"]["NPC"]
+N_PC = config["NPC"]
 
 def run_pca(input, output, params, wildcards, config):
         infile = base(input.bed)
         s = '%s --bfile %s ' % (config['EXE']['flashpca'], infile)
-        s += '--ndim %s ' % wildcards.ndim
+        s += '--ndim %s ' % wildcards.ndim 
         s += '--outpc {output.pc} '
         s += '--outload {output.load} '
         s += '--outpve {output.pve} '
@@ -20,7 +20,7 @@ rule run_flashpca_outliers:
         load="subset_nopca/flash_{name}_dim{ndim, \d+}.load",
         pve="subset_nopca/flash_{name}_dim{ndim, \d+}.pve",
     params: seed=14
-    run:
+    run: 
         run_pca(input, output, params, wildcards, config)
 
 rule run_flashpca:
@@ -33,7 +33,7 @@ rule run_flashpca:
         load=protected("pca/flash_{name}_dim{ndim}.load"),
         pve=protected("pca/flash_{name}_dim{ndim}.pve")
     params: seed=12
-    run:
+    run: 
         run_pca(input, output, params, wildcards, config)
 
 rule get_pca_outliers:
@@ -41,7 +41,7 @@ rule get_pca_outliers:
         loadings='subset_nopca/flash_{name}_dim{ndims}.load',
         bimfile='subset_nopca/{name}.bim',
         __script__='scripts/get_pca_outliers.R'
-    params:
+    params: 
         abs_cutoff=50000000000000,
         region_bp=100000
     output:
@@ -53,7 +53,7 @@ rule get_pca_outliers:
 __script__6='scripts/ggpca.R'
 rule make_pc_plots_wdf:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -63,9 +63,9 @@ rule make_pc_plots_wdf:
     params:
         wdf=True
     output:
-        #pc1=expand('figures/pca/pc1d_{name}_pc{PC}_wdf.png',
+        #pc1=expand('figures/pca/pc1d_{name}_pc{PC}_wdf.png', 
         #    PC=range(1,21), name=['{name}']),
-        pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png',
+        pc2=expand('figures/pca/pc2d_{name}_pc{PC}_wdf.png', 
             PC=range(1,21,2), name=['{name}']),
         pve="figures/pca/pve_{name}_wdf.png",
         rdsname="figures/pca/pc2d_{name}_wdf.rds",
@@ -77,7 +77,7 @@ rule make_pc_plots_wdf:
 
 rule make_pc_plots:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
@@ -87,9 +87,9 @@ rule make_pc_plots:
     params:
         wdf=False
     output:
-        pc1=expand('figures/pca/pc1d_{name}_pc{PC}.png',
+        pc1=expand('figures/pca/pc1d_{name}_pc{PC}.png', 
             PC=range(1,21), name=['{name}']),
-        pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png',
+        pc2=expand('figures/pca/pc2d_{name}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}']),
         pve="figures/pca/pve_{name}.png",
         rdsname="figures/pca/pc2d_{name}.rds",
@@ -113,9 +113,9 @@ rule make_2d_pc_plots:
     params:
         wdf=False
     output:
-        pc2=expand('figures/pca/2d/{name}_pc{PC}.png',
+        pc2=expand('figures/pca/2d/{name}_pc{PC}.png', 
             PC=range(1,5,2), name=['{name}']),
-        pc2rds=expand('figures/pca/2d/{name}_pc{PC}.rds',
+        pc2rds=expand('figures/pca/2d/{name}_pc{PC}.rds', 
             PC=range(1,5,2), name=['{name}']),
         out_map_rds="figures/paper/map_{name}.rds",
         out_map_png="figures/paper/map_{name}.png",
@@ -124,7 +124,7 @@ rule make_2d_pc_plots:
 rule make_2d_pc_plots_supersetcolor:
     """
         this rule is for making a 2d plot that uses colors from a different run
-        this is e.g. needed when I use Europe and Europe+Medi runs in the same
+        this is e.g. needed when I use Europe and Europe+Medi runs in the same 
         figure, i.e. I want the colors in Europe to be the subset in the above
     """
     input:
@@ -148,14 +148,14 @@ rule make_2d_pc_plots_supersetcolor:
     params:
         wdf=False
     output:
-        pc2=expand('figures/pca/super/{super}/{name}_pc{PC}.png',
+        pc2=expand('figures/pca/super/{super}/{name}_pc{PC}.png', 
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
-        pc2rds=expand('figures/pca/super/{super}/{name}_pc{PC}.rds',
+        pc2rds=expand('figures/pca/super/{super}/{name}_pc{PC}.rds', 
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
 
-        pc2_both=expand('figures/pca/both/{super}/{name}_pc{PC}.png',
+        pc2_both=expand('figures/pca/both/{super}/{name}_pc{PC}.png', 
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
-        pc2rds_both=expand('figures/pca/both/{super}/{name}_pc{PC}.rds',
+        pc2rds_both=expand('figures/pca/both/{super}/{name}_pc{PC}.rds', 
             PC=range(1,5,2), name=['{name}'], super=['{super}']),
 
         out_map_both_rds="figures/paper/super/map_both_{super}_{name}.rds",
@@ -171,23 +171,23 @@ rule make_pve_plot:
         png="figures/pca/pve/{name}.png",
         rds="figures/pca/pve/{name}.rds",
     script: "../scripts/pca/pve.R"
-
+        
 
 script_median='scripts/get_pc_median.R'
 rule pca_median:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
         __script__=script_median
     output:
-        pc='pca/median_{name}_dim{NPC}.pc'
+        pc='pca/median_{name}_dim{NPC, \d+}.pc'
     script: "../" + script_median
 
 rule make_pc_plots_highlight_excluded:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         exfam='subset/{exname}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -198,9 +198,9 @@ rule make_pc_plots_highlight_excluded:
     params:
         wdf=False
     output:
-        pc1=expand('figures/pcaex/pc1d_{name}_ex:{exname}_pc{PC}.png',
+        pc1=expand('figures/pcaex/pc1d_{name}_ex:{exname}_pc{PC}.png', 
             PC=range(1,21), name=['{name}'], exname=['{exname}']),
-        pc2=expand('figures/pcaex/pc2d_{name}_ex:{exname}_pc{PC}.png',
+        pc2=expand('figures/pcaex/pc2d_{name}_ex:{exname}_pc{PC}.png', 
             PC=range(1,21,2), name=['{name}'], exname=['{exname}']),
     script: "../" +__script__6
 
@@ -211,7 +211,7 @@ rule make_loadings_plots:
         bim='subset/{name}.bim'  ,
         __script__='scripts/pcaloadings.R'
     output:
-        fig=expand('figures/pca/loadings_{name}_pc{PC}.png',
+        fig=expand('figures/pca/loadings_{name}_pc{PC}.png', 
             PC=range(1,11), name=['{name}']),
     script: '../' + __script__7
     #shell:
@@ -235,7 +235,7 @@ rule get_pca_derived_order:
 __script__9='scripts/pca_vs_geo.R'
 rule pca_vs_gen:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         ipmap='eemsout/0/{name}/ipmap.txt',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
@@ -257,7 +257,7 @@ rule pca_vs_gen:
 
 rule synthmap:
     input:
-        pc='pca/flash_{name}_dim{NPC}.pc',
+        pc='pca/flash_{name}_dim{NPC, \d+}.pc',
         fam='subset/{name}.fam',
         indiv_meta='subset/{name}.indiv_meta',
         pop_display=_POP_DISPLAY_,
