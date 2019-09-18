@@ -1,0 +1,100 @@
+paper:
+    #revision1nofilter:
+    Afro-Eurasia :
+        main : "c1global1nfd"
+        full : false
+        abbrev : AEA
+    #no filter
+    "Western Eurasia" :
+        main : "c1eumedi1nf"
+        full : false
+        abbrev : WEA
+    "Central/Eastern Eurasia" :
+        main : "r1xasia1nf"
+        full : false
+        abbrev : CEA
+    "South-East Asia" :
+        main : "r1seasia1nf"
+        #main : "seasia0fc"
+        full : false
+        abbrev : SEA
+    "Africa" :
+        main : "r1africa1nfb"
+        full : false
+        abbrev : AFR
+    "Southern Africa KhoeSan" :
+        main : "r1sa1hg"
+        full : false
+        abbrev : SAKS
+    "Southern Africa Bantu" :
+        main : "r1sabantu0"
+        full : false
+        abbrev : SAB
+    "Southern Africa" :
+        main : "r1sa0"
+        full : false
+        abbrev : SA
+revision1:
+    Afro-Eurasia :
+        main : "r1global0"
+        full : false
+        abbrev : AEA
+    "Western Eurasia" :
+        main : "r1eumedi0"
+        full : false
+        abbrev : WEA
+    "Central/Eastern Eurasia" :
+        main : "r1xasia0"
+        full : false
+        abbrev : CEA
+    "South-East Asia" :
+        main : "r1seasia0"
+        #main : "seasia0fc"
+        full : false
+        abbrev : SEA
+    "Africa" :
+        main : "r1africa0"
+        full : false
+        abbrev : AFR
+    "Southern Africa" :
+        main : "r1sahg0"
+        full : false
+        abbrev : SAHG
+    Afro-EurasiaMG :
+        main : "r1global0mg"
+        full : false
+        abbrev : AEA2
+    Afro-Eurasia58 :
+        main : "r1global060"
+        full : false
+        abbrev : AEA60
+    "AfricaMG" :
+        main : "r1africa0mg"
+        full : false
+        abbrev : AFR2
+submission1:
+    Afro-Eurasia :
+        main : "global0fg"
+        full : false
+        abbrev : AEA
+    "Western Eurasia" :
+        main : "eumedi1f"
+        full : false
+        abbrev : WEA
+    "Central/Eastern Eurasia" :
+        main : "xasia1fP"
+        full : false
+        abbrev : CEA
+    "South-East Asia" :
+        main : "seasia3fcP"
+        #main : "seasia0fc"
+        full : false
+        abbrev : SEA
+    "Africa" :
+        main : "africa0fbP"
+        full : false
+        abbrev : AFR
+    "Southern Africa" :
+        main : "southafrica0hgP"
+        full : false
+        abbrev : SAHG

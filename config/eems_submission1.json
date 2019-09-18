@@ -1,0 +1,1389 @@
+{
+    "eems" :
+    {
+        "__default__" :{
+            "nDemes" : 350,
+            "numThinIter" : 39999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 4400000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 6000000
+            },
+            "grid" : 500,
+            "n_pilots" : 6,
+            "bed2diffs" : "bed2diffs1"
+        },
+        "easia0" :
+        {
+            "grid" : 250 
+        },
+        "easiacer10" :
+        {
+            "grid" : 250 
+        },
+        "easiacer20" :
+        {
+            "grid" : 250 
+        },
+        "nosib0" :{"grid" : 250 },
+        "easia1" :
+        {
+            "grid" : 100 
+        },
+        "easiacer11" :
+        {
+            "grid" : 100 
+        },
+        "easiacer21" :
+        {
+            "grid" : 100 
+        },
+        "easiacer20b" :
+        {
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  200000,
+            "numMCMCIter" : 1500000,
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1500000
+            }
+        },
+        "easia0s" :
+        {
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  200000,
+            "numMCMCIter" : 2000000,
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2000000
+            }
+        },
+        "easia1s" :
+        {
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 4000000,
+            "pilot" : {
+                "numThinIter" : 1999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 4000000
+            }
+        },
+        "easia1stest" :
+        {
+            "continue" : "easia0s",
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 1100000
+        },
+        "easia0f" :{
+            "continue" : "easia1stest",
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2400000,
+            "grid" : 100
+        },
+        "easia0fb" :{
+            "continue" : "easia0f",
+            "grid" : 100
+        },
+        "easia0fc" :{
+            "continue" : "easia0f",
+            "grid" : 100
+        },
+        "easia0fd" :{
+            "continue" : "easia0f",
+            "grid" : 100
+        },
+        "easia1stestb" :{
+            "continue" : "easia0s",
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  500000,
+            "numMCMCIter" : 2500000
+        },
+        "easia1f" :{
+            "continue" : "easia0f",
+            "grid" : 100
+        },
+        "easiacer21b" :
+        {
+            "grid" : 100,
+            "numThinIter" : 9999,
+            "numBurnIter" :  200000,
+            "numMCMCIter" : 1500000,
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1500000
+            }
+        },
+        "easia5pccer22" :
+        {
+            "grid" : 100 
+        },
+        "easia3pccer22" :
+        {
+            "grid" : 100 
+        },
+        "nosib1" :{ "grid" : 100 },
+        "nosib2" :{ "grid" : 100 },
+        "centralasia0" : {
+            "grid" : 250
+        },
+        "centralasia5pccer11" : {
+            "grid" : 250
+        },
+        "centralasia3pccer11" : {
+            "grid" : 250
+        },
+        "centralasiacer20" : { "grid" : 100 },
+        "centralasiacer21" : { "grid" : 100 },
+        "centralasiacer22" : { "grid" : 100 },
+        "casia0s" : { "grid" : 100 },
+        "casia0sb" : { "grid" : 100 },
+        "casia1sb" : { 
+                "grid" : 100 ,
+                "continue" : "casia0sb"
+        },
+        "casia0f" : { 
+            "grid" : 100 ,
+            "continue" : "casia0sd"
+        },
+        "casia0fb" : { 
+            "grid" : 100 ,
+            "continue" : "casia0d"
+        },
+        "casia2sb" : { 
+                "grid" : 100 ,
+                "continue" : "casia1sb"
+        },
+        "casia0sc" : { "grid" : 100 },
+        "casia0sd" : { "grid" : 100 },
+        "casia1sd" : { 
+                "grid" : 100 ,
+                "continue" : "casia0sd"
+        },
+        "india0" :
+        {
+            "grid" :100 
+        },
+        "india1" : {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50
+        },
+        "india2" :
+        {
+            "grid" :100 
+        },
+        "india3pc3" :
+        {
+        "numThinIter" : 29999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 7500000,
+            "grid" : 100
+        },
+        "india4noonge" :
+        {
+        "numThinIter" : 29999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 7500000,
+            "grid" : 100
+        },
+        "india5noonge" :
+        {
+            "grid" : 50,
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            }
+        },
+        "india6" :
+        {
+            "grid" : 50,
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            }
+        },
+        "india7" :
+        {
+            "grid" : 50,
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            }
+        },
+        "india8" :
+        {
+            "grid" : 50,
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            }
+        },
+        "centralasiacer10" : {
+            "grid" : 250
+        },
+        "centralasiacer11" : {
+            "grid" :100 
+        },
+        "nepal0" : {
+                "grid" : 50
+        },
+        "nepal1" : {
+                "grid" : 50
+        },
+        "medi0" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50 
+        },
+        "medi1" :{
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50 
+        },
+        "eumedi0" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 500000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 500000
+            },
+            "grid" : 50 
+        },
+        "eumedi2" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 750000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 750000
+            },
+            "grid" : 50 
+        },
+        "eumedi1" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 1500000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1500000
+            },
+            "grid" : 50 
+        },
+        "eumedi3" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 1000000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2000000
+            },
+            "grid" : 50 
+        },
+        "eumedi4" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 1500000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1500000
+            },
+            "grid" : 50 
+        },
+        "eumedi0sb" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 500000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 500000
+            },
+            "grid" : 50 
+        },
+        "eumedi0f" :{
+            "continue" : "eumedi1sb",
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 1000000,
+            "grid" : 50 
+        },
+        "eumedi1f" :{
+            "continue" : "eumedi0f",
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3000000,
+            "grid" : 50 
+        },
+        "eumedi1fP" :{
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" :  300000,
+                "numMCMCIter" : 2500000
+            },
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3000000,
+            "grid" : 50 
+        },
+        "eumedi1sb" :{
+            "continue" : "eumedi0sb",
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 1000000,
+            "grid" : 50 
+        },
+        "eumedi2sb" :{
+            "continue" : "eumedi1sb",
+            "numThinIter" : 24999,
+            "numBurnIter" :  0,
+            "numMCMCIter" : 2500000,
+            "grid" : 50 
+        },
+        "eumedi3sb" :{
+            "continue" : "eumedi1sb",
+            "numThinIter" : 24999,
+            "numBurnIter" :  0,
+            "numMCMCIter" : 2500000,
+            "grid" : 50 
+        },
+        "eumedi0sc" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 1500000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1500000
+            },
+            "grid" : 50 
+        },
+        "xasia0f" :{
+            "numThinIter" : 9999,
+            "numBurnIter" :  100000,
+            "numMCMCIter" : 1000000,
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 1000000
+            },
+            "grid" : 100 
+        },
+        "dasia0" :{
+            "grid" : 50
+        },
+        "dindia0" :{
+            "grid" : 50
+        },
+        "dindia0b" :{
+            "grid" : 50
+        },
+        "dindia0c" :{
+            "grid" : 100
+        },
+        "dindia0d" :{
+            "grid" : 100
+        },
+        "xasia1f" :{
+            "continue" : "xasia0f",
+            "numThinIter" : 29999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3300000,
+            "grid" : 100 
+        },
+        "xasia2f" :{
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 3000000
+            },
+            "numThinIter" : 29999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3300000,
+            "grid" : 100 
+        },
+        "xasia1fP" :{
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 4000000
+            },
+            "numThinIter" : 29999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 4400000,
+            "grid" : 100 
+        },
+        "xasia1frP" :{
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 4000000
+            },
+            "numThinIter" : 29999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 4400000,
+            "grid" : 100 
+        },
+        "fasia0f" :{
+            "pilot" : {
+                "numThinIter" : 9999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 3000000
+            },
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3300000,
+            "grid" : 100 
+        },
+        "africa0" :
+        {
+            "grid" : 250 
+        },
+        "test0" : {
+            "grid" : 500
+        },
+        "africa5pc1" :{ "grid" : 250 },
+        "africa5pc2" :{ "grid" : 250 },
+        "africa3" :{ "grid" : 250 },
+        "africa4" :{ "grid" : 250 },
+        "africa5" :{ 
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2000000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2000000
+            },
+            "grid" : 100
+               },
+        "africa0b" :{ 
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2000000,
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2000000
+            },
+            "grid" : 100
+               },
+        "africa0c" :{ 
+            "numThinIter" : 9999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2000000,
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2000000
+            },
+            "grid" : 100
+               },
+        "africa3pc1" :
+        {
+            "grid" : 250 
+        },
+        "europe0" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50
+        },
+        "europe1" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50
+        },
+        "europe2" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 100
+        },
+        "europe3" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 50
+        },
+        "seasia0" :
+        {
+            "numThinIter" : 19999,
+            "numBurnIter" :  400000,
+            "numMCMCIter" : 2500000,
+            "pilot" : {
+                "numThinIter" : 39999,
+                "numBurnIter" : 0,
+                "numMCMCIter" : 2500000
+            },
+            "grid" : 100,
+            "bed2diffs" : "bed2diffs2"
+        },
+    "seasia3pc1" :{"grid" : 100},
+    "seasia5pc1" :{"grid" : 100,
+         "bed2diffs" : "bed2diffs2"},
+    "seasia2" :{"grid" : 100,
+         "bed2diffs" : "bed2diffs2"},
+    "seasia2b" :{"grid" : 100,
+         "bed2diffs" : "bed2diffs2"},
+    "seasia2c" :{"grid" : 100},
+    "seasia3c" :{"grid" : 100},
+    "seasia0c" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        }
+    },
+    "seasia0e" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        }
+    },
+    "seasia0f" :{
+        "continue" : "seasia0e",
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    },
+    "seasia0g" :{
+        "continue" : "seasia0e",
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    },
+    "seasia0hnohugo" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    },
+    "seasia1s" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "seasia0ss" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "seasia0ry" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "seasia1ry" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "continue" : "seasia0ry"
+    },
+    "seasia0ff" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "continue" : "seasia0ry"
+    },
+    "seasia0fb" :{
+        "continue" : "seasia0ff",
+        "grid" : 100
+    },
+    "seasia0fc" :{
+        "numThinIter" : 9999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 500000,
+        "pilot" : {
+            "numThinIter" : 9999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 500000
+        },
+        "grid" : 50 
+    },
+    "seasia0fcP" :{
+        "numThinIter" : 14999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 2200000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2200000
+        },
+        "grid" : 50 
+    },
+    "seasia1fcP" :{
+        "numThinIter" : 14999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 2200000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2200000
+        },
+        "grid" : 50 
+    },
+    "seasia2fcP" :{
+        "numThinIter" : 14999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 2200000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2200000
+        },
+        "grid" : 50 
+    },
+    "seasia3fcP" :{
+        "numThinIter" : 14999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 2200000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2200000
+        },
+        "grid" : 50 
+    },
+    "seasia1fc" :{
+        "continue" : "seasia0fc",
+        "numThinIter" : 19999,
+        "numBurnIter" :  300000,
+        "numMCMCIter" : 3000000,
+        "grid" : 50 
+    },
+    "seasia2s" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "seasia3s" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 8000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "seasia4s" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 8000000,
+        "continue" : "seasia3s"
+    },
+    "seasia1c" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        }
+    },
+    "seasia2x" :{
+        "numThinIter" : 19999,
+        "grid" : 100,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4000000
+        }
+    },
+    "global0" :{"grid" : 500},
+    "global1" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 1500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 1500000
+        }
+    },
+    "global0b" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 1500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 1500000
+        }
+    },
+    "global0s" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 1500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 1500000
+        }
+    },
+    "global1s" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 1500000,
+        "continue" : "global0s"
+    },
+    "global2s" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 1500000,
+        "continue" : "global1s"
+    },
+    "global3s" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2000000,
+        "continue" : "global2s"
+    },
+    "global0sf" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  0,
+        "numMCMCIter" : 500000,
+        "pilot" : {
+            "numThinIter" : 9999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 500000
+        }
+    },
+    "global0f" :{
+        "continue" : "global3s",
+        "grid" : 250,
+        "numThinIter" : 29999,
+        "numBurnIter" :  500000,
+        "numMCMCIter" : 1500000,
+        "pilot" : {
+            "numThinIter" : 9999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 1500000
+        }
+    },
+    "global0fb" :{
+        "continue" : "global0f",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fc" :{
+        "continue" : "global0f",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fd" :{
+        "continue" : "global0f",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fe" :{
+        "continue" : "global0f",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0ff" :{
+        "continue" : "global0fe",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fg" :{
+        "continue" : "global0fe",
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fh" :{
+        "grid" : 250,
+        "numThinIter" : 19999
+    },
+    "global0fgP" :{
+        "grid" : 250,
+        "numThinIter" : 39999,
+        "numBurnIter" :  800000,
+        "numMCMCIter" : 8800000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 12000000
+        }
+    },
+    "global0q" :{
+        "grid" : 250
+    },
+    "global1f" :{
+        "continue" : "global0f",
+        "grid" : 250,
+        "numThinIter" : 19999,
+        "numBurnIter" :  500000,
+        "numMCMCIter" : 2000000,
+        "pilot" : {
+            "numThinIter" : 9999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 1500000
+        }
+    },
+    "global1sf" :{
+        "continue" : "global0sf",
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  500000,
+        "numMCMCIter" : 1500000
+    },
+    "global2sf" :{
+        "continue" : "global1sf",
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  500000,
+        "numMCMCIter" : 2000000
+    },
+    "global3sf" :{
+        "continue" : "global2sf",
+        "grid" : 250,
+        "numThinIter" : 49999,
+        "numBurnIter" :  1500000,
+        "numMCMCIter" : 5000000
+    },
+    "global0sm" :{
+        "grid" : 500,
+        "numThinIter" : 9999,
+        "numBurnIter" :  0,
+        "numMCMCIter" : 5000000,
+        "pilot" : {
+            "numThinIter" : 9999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 5000000
+        }
+    },
+    "global2" :{
+        "grid" : 250,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2000000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2000000
+        }
+    },
+    "global3" :{
+        "grid" : 100,
+        "numThinIter" : 9999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 500000
+        }
+    },
+    "seasia4c" :{
+        "grid" : 50,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        }
+    },
+    "seasia2d" :{"grid" : 100},
+    "southafrica0" : { "grid" : 50},
+    "southafrica1" : { "grid" : 50},
+    "northafrica0" : { "grid" : 250},
+    "northafrica3" : { "grid" : 100},
+    "northafrica4" : { "grid" : 100},
+    "northafrica3pc1" : { "grid" : 250},
+    "northafrica3pc2" : { "grid" : 100},
+    "northafrica0b" : { "grid" : 100},
+    "northafrica0c" : { "grid" : 100},
+    "northafrica0s" : { 
+        "grid" : 100,
+        "numThinIter" : 49999,
+        "numBurnIter" :  2000000,
+        "numMCMCIter" : 8000000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        }
+    },
+    "northafrica1s" : { 
+        "grid" : 100,
+        "numThinIter" : 19999,
+        "numBurnIter" :  2000000,
+        "numMCMCIter" : 4000000,
+        "continue" : "northafrica0s"
+    },
+    "northafrica1sb" : { 
+        "grid" : 100,
+        "numThinIter" : 19999,
+        "numBurnIter" :  2000000,
+        "numMCMCIter" : 4000000,
+        "continue" : "northafrica0s"
+    },
+    "northafrica1sc" : { 
+        "grid" : 100,
+        "numThinIter" : 9999,
+        "numBurnIter" :  100000,
+        "numMCMCIter" : 1000000,
+        "continue" : "northafrica0s"
+    },
+    "southafrica0s" : { "grid" : 50},
+    "southafrica1s" : { "grid" : 50},
+    "southafrica0f" : { 
+        "grid" : 50,
+        "continue" : "southafrica1s"
+    },
+    "southafrica0hg" : { 
+        "grid" : 50,
+        "continue" : "southafrica1s"
+    },
+    "southafrica0hgP" : { 
+        "numThinIter" : 19999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 11000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 10000000
+        },
+        "grid" : 50
+    },
+    "southafrica0fhg" : { 
+        "grid" : 50
+    },
+    "africa0s" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        },
+        "n_pilots " : 4,
+        "grid" : 100
+    },
+    "africa0f" :{ 
+        "continue" : "africa0s",
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        },
+        "n_pilots " : 4,
+        "grid" : 100
+    },
+    "africa0fb" :{ 
+        "continue" : "africa0f",
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        },
+        "n_pilots " : 4,
+        "grid" : 100
+    },
+    "africaplus0f" :{ 
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" :  300000,
+                "numMCMCIter" : 2500000
+            },
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3000000,
+        "grid" : 100
+    },
+    "africaplus0q" :{ 
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" :  300000,
+                "numMCMCIter" : 2500000
+            },
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3000000,
+        "grid" : 100
+    },
+    "africaplus0fb" :{ 
+            "pilot" : {
+                "numThinIter" : 19999,
+                "numBurnIter" :  300000,
+                "numMCMCIter" : 2500000
+            },
+            "numThinIter" : 19999,
+            "numBurnIter" :  300000,
+            "numMCMCIter" : 3000000,
+        "grid" : 100
+    },
+    "africa0fbP" :{ 
+        "pilot" : {
+        },
+        "grid" : 100
+    },
+    "africa2f" :{ 
+        "grid" : 100
+    },
+    "africa3f" :{ 
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2000000
+        },
+        "grid" : 100
+    },
+    "africa0fc" :{ 
+        "continue" : "africa0f",
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        },
+        "n_pilots " : 4,
+        "grid" : 100
+    },
+    "africa1f" :{ 
+        "continue" : "africa0f",
+        "numThinIter" : 19999,
+        "pilot" : {
+            "numThinIter" : 19999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2500000
+        },
+        "grid" : 100
+    },
+    "africa1fb" :{ 
+        "continue" : "africa0f",
+        "grid" : 100
+    },
+    "africa1s" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "n_pilots " : 4,
+        "continue" : "africa0s",
+        "grid" : 100
+    },
+    "ssahara0s" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "n_pilots " : 4,
+        "continue" : "africa0s",
+        "grid" : 100
+    },
+    "africa2s" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "continue" : "africa0s",
+        "grid" : 100
+    },
+    "africa1sb" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  200000,
+        "numMCMCIter" : 2500000,
+        "continue" : "africa1s",
+        "grid" : 100
+    },
+    "africa2sb" :{ 
+        "numThinIter" : 19999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 3000000,
+        "continue" : "africa1sb",
+        "grid" : 100
+    },
+    "medi0s" :
+    {
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 3000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 3000000
+        },
+        "grid" : 50 
+    },
+    "europe0s" :
+    {
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 3000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 3000000
+        },
+        "grid" : 50 
+    },
+    "europe0f" :
+    {
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 3000000,
+        "continue" : "europe0s",
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 3000000
+        },
+        "grid" : 50 
+    },
+    "india0s" :
+    {
+        "grid" : 50,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    },
+    "india0sf" :
+    {
+        "continue" : "india0s",
+        "grid" : 50,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000
+    },
+    "india0f" :
+    {
+        "continue" : "india0s",
+        "grid" : 50,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000
+    },
+    "india1f" :
+    {
+        "continue" : "india0f",
+        "grid" : 50
+    },
+    "india1fP" : {
+        "numThinIter" : 19999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 11000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 10000000
+        },
+        "grid" : 50
+    },
+    "india2f" : {
+        "numThinIter" : 19999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 4000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 6000000
+        },
+        "grid" : 50
+    },
+    "india3f" : {
+        "numThinIter" : 19999,
+        "numBurnIter" :  500000,
+        "numMCMCIter" : 2000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 2000000
+        },
+        "grid" : 50
+    },
+    "india0fP" :
+    {
+        "numThinIter" : 19999,
+        "numBurnIter" :  1000000,
+        "numMCMCIter" : 11000000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 10000000
+        },
+        "grid" : 50
+    },
+    "russia0s" :
+    {
+        "grid" : 50,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    },
+    "asia0s" :
+    {
+        "grid" : 100,
+        "numThinIter" : 19999,
+        "numBurnIter" :  400000,
+        "numMCMCIter" : 4500000,
+        "pilot" : {
+            "numThinIter" : 39999,
+            "numBurnIter" : 0,
+            "numMCMCIter" : 4500000
+        }
+    }
+}}

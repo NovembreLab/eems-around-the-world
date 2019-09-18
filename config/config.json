@@ -1,0 +1,23 @@
+{
+    "sdfactor" : 0.0000001,
+    "EXE" : {
+        "plink" : "/home/bpeter/programs/plink",
+        "admixture" : "/home/bpeter/programs/admixture",
+        "flashpca" : "/home/bpeter/programs/flashpca",
+        "eems" : "/home/bpeter/programs/eems",
+        "eems0" : "/home/bpeter/programs/eems0",
+        "bed2diffs1" : "/home/bpeter/programs/bed2diffs_v1",
+        "bed2diffs2" : "/home/bpeter/programs/bed2diffs_v2",
+        "treemix" : "/home/bpeter/programs/treemix",
+        "R" : "/home/bpeter/.conda/envs/all2/bin/Rscript",
+        "tess" : "/home/bpeter/TESS3/build/TESS3"
+    },
+    "DATA" : {
+        "genotypes" : [
+            "/home/bpeter/n/meta/merged/tib_prune0.6",
+            "/home/bpeter/n/meta/merged/tq_prune0.6"
+        ],
+        "meta" : "/home/bpeter/n/meta/meta/pgs/gvar3",
+        "map" : "/home/bpeter/n/data/maps/ne_50m_admin_0_map_subunits.shp"
+    }
+}

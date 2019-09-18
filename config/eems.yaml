@@ -1,0 +1,27 @@
+eems:
+    __default__:
+        bed2diffs: bed2diffs1
+        grid: 500
+        n_pilots: 6
+        n_runs : 4
+        numBurnIter: 400000
+        numMCMCIter: 4400000
+        numThinIter: 39999
+        pilot:
+            numBurnIter: 0
+            numMCMCIter: 6000000
+            numThinIter: 39999
+    short50:
+        grid: 50
+        numBurnIter: 100000
+        numMCMCIter: 500000
+        numThinIter: 9999
+        pilot:
+            numBurnIter: 0
+            numMCMCIter: 500000
+            numThinIter: 9999
+    long50:
+        grid: 50
+        numBurnIter: 300000
+        numMCMCIter: 3000000
+        numThinIter: 19999

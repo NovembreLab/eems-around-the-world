@@ -1,0 +1,2842 @@
+{
+    "subset" : {
+        "__default__" :{
+            "source_file" : 0,
+            "sample_buffer" : 3.0,
+            "region_buffer" : 3.0,
+            "max_missing" : 0.01,
+            "max_missing_ind" : 1.00,
+            "hull" : true,
+            "min_sample_size" : 1,
+            "max_per_pop" : 5000,
+            "extrema" : false,
+            "add_pop" : [],
+            "min_area" : 0.3,
+            "filter" : [],
+            "exclude_source" : [
+                "HUGO"
+            ]
+        },
+"global0" :{
+    "region" : [
+        "europe",
+        "asia",
+        "africa",
+        "south-eastern asia",
+        "melanesia",
+        "australia",
+        "oceania",
+        "andaman is.",
+        "china",
+        "taiwan"
+    ],
+    "max_missing" : 0.01,
+    "hull" : true,
+    "exclude_pop" :                   
+    [
+        153,156,157,158,159,161,165,166,168,180,181,182,183,200,208,
+        211,222,226,234,235,239,240,242,243,244,245,247,250,252,254,
+        255,256,257,258,259,260,262,263,264,265,764,773,778,
+        625,
+	    138, 148, 149, 600, 131,
+        163,165, 166,167, 180,181,182,183,200,
+        600, 329, 330
+    ]                                
+},
+"global0b" :{
+    "region" : [
+        "europe",
+        "asia",
+        "africa",
+        "south-eastern asia",
+        "melanesia",
+        "australia",
+        "oceania",
+        "andaman is.",
+        "china",
+        "taiwan"
+    ],
+    "max_missing" : 0.01,
+    "hull" : true,
+    "exclude_pop" :                   
+    [
+        153,156,157,158,159,161,165,166,168,180,181,182,183,200,208,
+        211,222,226,234,235,239,240,242,243,244,245,247,250,252,254,
+        255,256,257,258,259,260,262,263,264,265,764,773,778,
+        625, 600,165, 166,167,
+        329, 330
+    ]                                
+},
+"global0s" :{
+    "region" : [
+        "europe",
+        "asia",
+        "africa",
+        "south-eastern asia",
+        "melanesia",
+        "australia",
+        "oceania",
+        "andaman is.",
+        "china",
+        "taiwan"
+    ],
+    "max_missing" : 0.01,
+    "hull" : true,
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.05,
+    "exclude_pop" :                   
+    [
+        153,156,157,158,159,161,165,166,168,180,181,182,183,200,208,
+        211,222,226,234,235,239,240,242,243,244,245,247,250,252,254,
+        255,256,257,258,259,260,262,263,264,265,764,773,778,
+        625, 600,165, 166,167,
+        329, 330
+    ]                                
+},
+"global1s" : {
+    "subsets" : "global0s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            505, 767, 130,
+            352,323,320,322,324,315,316,318,416
+        ]
+    }
+},
+"global2s" : {
+    "subsets" : "global0s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            505, 767, 130,
+            352,323,320,322,324,315,316,318,416,
+            314,355,325,351,319
+        ]
+    }
+},
+"global3s" : {
+    "subsets" : "global2s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            326, 349, 359, 356, 357
+        ]
+    }
+},
+"global0sf" :{
+    "region" : [
+        "europe",
+        "asia",
+        "africa",
+        "south-eastern asia",
+        "melanesia",
+        "australia",
+        "oceania",
+        "andaman is.",
+        "china",
+        "taiwan"
+    ],
+    "max_missing" : 0.01,
+    "hull" : true,
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.05,
+    "sample_buffer" : 3.1,
+    "region_buffer" : 2.9,
+    "exclude_pop" :                   
+    [
+        625, 600,
+        505, 767
+    ]                                
+},
+"global1sf" : {
+    "subsets" : "global0sf",
+    "modify_parent" : {
+        "exclude_pop" : [
+            352, 323, 320, 322, 315, 324, 316, 416, 355, 318, 314, 263, 329
+        ]
+    }
+},
+"global2sf" : {
+    "subsets" : "global1sf",
+    "modify_parent" : {
+        "exclude_pop" : [
+            325, 330
+        ]
+    }
+},
+"global3sf" : {
+    "subsets" : "global2sf"
+},
+"global0sm" :{
+    "region" : [
+        "europe",
+        "asia",
+        "africa",
+        "south-eastern asia",
+        "melanesia",
+        "australia",
+        "oceania",
+        "andaman is.",
+        "china",
+        "taiwan"
+    ],
+    "max_missing" : 0.01,
+    "hull" : true,
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.05,
+    "sample_buffer" : 3.1,
+    "region_buffer" : 0.5,
+    "add_pop" : [463],
+    "exclude_pop" :                   
+    [
+        625, 600,
+        767
+    ]                                
+},
+"global1" : {
+    "subsets" : "global0"
+},
+"global2" : {
+    "subsets" : "global1",
+    "modify_parent" : {
+        "exclude_pop" : [
+            767,
+            352,
+            323,
+            320,
+            322,
+            324,
+            315,
+            316,
+            416,
+            318,
+            351,
+            314,
+            355,
+            325,
+            359,
+            251,
+            272
+        ]
+    }
+},
+"global3" : {
+    "subsets" : "global2",
+    "region_buffer" : 1.0,
+    "sample_buffer" : 1.0,
+    "modify_parent" : {
+        "exclude_pop" : [
+        ]
+    }
+},
+"easia0" : {                       
+    "region" : [                      
+        "eastern asia",               
+        "russia",
+        "asia"
+    ],                                
+    "max_missing" : 0.01,             
+    "extrema" :[                      
+        71,                           
+        180,                          
+        20,                           
+        70                            
+    ],                                
+    "hull" : true,                    
+    "exclude_pop" :                   
+    []                                
+},
+"easiacer10" : {                       
+    "region" : [                      
+        "eastern asia",               
+        "asia"
+    ],                                
+    "max_missing" : 0.01,             
+    "extrema" :[                      
+        71,                           
+        180,                          
+        20,                           
+        70                            
+    ],                                
+    "hull" : true,                    
+    "exclude_pop" :                   
+    [
+153,156,157,158,159,161,165,166,168,180,181,182,183,200,208,211,220,222,224,226,230,234,235,236,237,239,240,241,242,243,244,245,247,250,251,252,254,255,256,257,258,259,260,262,263,264,265,283,764,773,778
+    ]                                
+},
+"easiacer20" : {                       
+    "region" : [                      
+        "eastern asia",               
+        "russia",
+        "asia"
+    ],                                
+    "extrema" :[                      
+        71,                           
+        180,                          
+        20,                           
+        70                            
+    ],                                
+    "max_missing" : 0.01,             
+    "hull" : true,                    
+    "exclude_pop" :                   
+    [
+153,156,157,158,159,161,165,166,168,180,181,182,183,
+200,208,211,222,226,234,235,239,240,242,243,244,245,
+247,250,252,254,255,256,257,258,259,260,262,263,264,265,764,773,778
+    ]                                
+},
+
+"nosib0" : {                       
+    "region" : [                      
+        "eastern asia",               
+        "russia",
+        "asia"
+    ],                                
+    "max_missing" : 0.01,             
+    "extrema" :[                      
+        71,                           
+        150,                          
+        20,                           
+        55                            
+    ],                                
+    "hull" : true,                    
+    "exclude_pop" :                   
+    []                                
+        },
+"easia1" : {                       
+    "subsets" : "easia0"
+},
+"easiacer11" : {                       
+    "subsets" : "easiacer10"
+},
+"easiacer20b" : {                       
+    "subsets" : "easiacer20",
+    "modify_parent" : {
+        "exclude_pop" : [
+            625
+        ]
+    }
+},
+"easia0s" : {                       
+    "subsets" : "easiacer20",
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.05,
+    "modify_parent" : {
+        "exclude_pop" : [
+            625
+        ]
+    }
+},
+"easia1s" : {                       
+    "subsets" : "easia0s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            148, 149
+        ]
+    }
+},
+"easia1stest" : {                       
+    "subsets" : "easia0s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            148, 149
+        ]
+    }
+},
+"easia1stestb" : {                       
+    "subsets" : "easia0s",
+    "modify_parent" : {
+        "exclude_pop" : [
+            148, 149
+        ]
+    }
+},
+"easiacer21b" : {                       
+    "subsets" : "easiacer20b",
+    "modify_parent" : {
+        "exclude_pop" : [
+            148, 149
+        ]
+    }
+},
+"easiacer21" : {                       
+    "subsets" : "easiacer20",
+    "modify_parent" : {
+        "exclude_pop" : [
+            625, 
+	    138, 148, 149, 600, 131,
+        163,165, 166,167, 180,181,182,183,200
+        ]
+    }
+},
+"easia5pccer22" :{
+    "subsets" : "easiacer21",
+    "modify_parent" : {
+        "exclude_pop" : [
+	    471
+    ]}
+},
+"easia3pccer22" :{
+    "subsets" : "easiacer21",
+    "modify_parent" : {
+        "exclude_pop" : [
+	    471,139,137,136, 271,474, 464,443,469,461 
+    ]}
+},
+"nosib1" : {                       
+    "subsets" : "nosib0",
+    "exclude_pop" :                   
+    [
+153,156,157,158,159,161,165,166,168,180,181,182,183,200,208,211,222,226,234,235,239,240,242,243,244,245,247,250,252,254,255,256,257,258,259,260,262,263,264,265,764,773,778
+    ]                                
+},
+"nosib2" :{
+    "subsets" : "nosib1",
+    "modify_parent" :{
+        "exclude_pop" :                   
+        [
+            136,137,138,139, 148, 149, 471
+    ]}
+},
+"centralasia0" :
+{
+    "region" : [
+        "europe & central asia",
+        "india",
+    "iran",
+    "pakistan",
+    "china",
+    "nepal"
+    ],
+    "exclude_pop" : [
+        625,
+        1,2,61,64,67,71,78,81,82,83,84,85,87,88,89,90,92,93,95,100,143,156,157,158,159,161,165,166,167,168,180,181,182,183,185,188,191,200,208,211,212,215,216,222,226,227,234,235,239,240,242,244,245,247,250,252,254,255,256,257,258,259,260,262,263,264,265,286,292,293,294,295,301,302,308,309,758,764,766,773,778,780,781
+    ],
+    "extrema" : [
+        16,
+        95,
+        10,
+        50
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"centralasiacer10" :
+{
+    "region" : [
+        "europe & central asia",
+        "india",
+    "iran",
+    "pakistan",
+    "china",
+    "nepal"
+    ],
+    "exclude_pop" : [
+        625,
+	    138, 148, 149, 600, 131,
+        163,165, 166,167, 180,181,182,183,200
+    ],
+    "extrema" : [
+        16,
+        95,
+        10,
+        50
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"centralasia5pccer11" :{
+    "subsets" : "centralasiacer10",
+    "modify_parent" : {"exclude_pops":[
+    1002, 1007, 1005, 1006, 1003, 1001, 1008, 443
+    ]}
+},
+"centralasia3pccer11" :{
+    "subsets" : "centralasiacer10",
+    "modify_parent" : {"exclude_pops":[
+		443, 1002, 1003, 1005, 1007,
+	       	1008, 1006, 1001, 208, 211,
+	       	213, 130, 133
+    ]}
+},
+"centralasiacer20" :{
+    "subsets" : "centralasiacer10"
+},
+"centralasiacer21" : {
+    "subsets" : "centralasiacer20",
+    "modify_parent" : {
+    "exclude_pop" :[
+		211, 1002, 1003, 1005, 1007,
+	       	1008, 1006, 1001
+    ]}
+},
+"centralasiacer22" : {
+    "subsets" : "centralasiacer21",
+    "modify_parent" : {
+    "exclude_pop" :[
+        443, 213, 208
+    ]}
+},
+"casia0s" :
+{
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0,
+    "max_missing_ind" : 0.050,
+    "region" : [
+        "europe & central asia",
+        "india",
+    "iran",
+    "pakistan",
+    "china",
+    "nepal"
+    ],
+    "exclude_pop" : [
+        625, 600
+    ],
+    "extrema" : [
+        16,
+        95,
+        10,
+        50
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"casia0sb" :
+{
+    "region_buffer" : 1.0,
+    "sample_buffer" : 1.0,
+    "max_missing_ind" : 0.050,
+    "region" : [
+        "europe & central asia",
+        "india",
+        "iraq",
+        "iran",
+        "pakistan",
+        "nepal"
+    ],
+    "exclude_pop" : [
+        625, 600,
+        146, 152, 154, 443
+    ],
+    "extrema" : [
+        16,
+        90,
+        10,
+        50
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"casia1sb" : {
+    "subsets" : "casia0sb",
+    "modify_parent" : {
+        "exclude_pop" : [ 
+            130,443, 1007, 1008, 130
+        ]
+    }
+},
+"casia0sc" :
+{
+    "region_buffer" : 4.0,
+    "sample_buffer" : 4.0,
+    "max_missing_ind" : 0.050,
+    "region" : [
+        "middle east & north africa",
+        "europe & central asia",
+        "india",
+        "iraq",
+        "sudan",
+        "ethiopia",
+        "somalia",
+        "iran",
+        "pakistan",
+        "nepal"
+    ],
+    "exclude_pop" : [
+        625, 600,
+        146, 152, 154, 443
+    ],
+    "extrema" : [
+        16,
+        90,
+        5,
+        50
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"casia0sd" : {
+    "region_buffer" : 2.0,
+    "sample_buffer" : 2.0,
+    "max_missing_ind" : 0.050,
+    "region" : [
+        "middle east & north africa",
+        "europe & central asia",
+        "india",
+        "iraq",
+        "iran",
+        "pakistan",
+        "nepal"
+    ],
+    "extrema" : [
+        16,
+        90,
+        10,
+        50
+    ],
+    "exclude_pop" : [
+        625, 600,
+        146, 152, 154, 443
+    ],
+    "hull" : true,
+    "max_missing" : 0.01
+},
+"casia1sd" : {
+    "subsets" : "casia0sd",
+    "modify_parent" :{
+        "exclude_pop" : [ 
+            130, 443, 1007, 1008
+        ]
+    }
+},
+"india0" : {
+    "region" : ["india",
+        "pakistan",
+        "nepal"
+    ],
+    "exclude_pop" :[],
+    "max_missing" : 0.01
+},
+"india7" : {
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0,
+    "region" : ["india",
+        "pakistan",
+        "nepal",
+        "china"
+    ],
+    "exclude_pop" :[
+        625,
+        163,165, 166,167, 180,181,182,183,200,
+        463
+    ],
+    "extrema" : [
+        60,
+        95,
+        0,
+        38 
+    ],
+    "max_missing" : 0.01
+},
+"india8" : {
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0,
+    "region" : ["india",
+        "pakistan",
+        "nepal",
+        "china"
+    ],
+    "exclude_pop" :[
+        625, 180,
+        463
+    ],
+    "extrema" : [
+        60,
+        95,
+        0,
+        38 
+    ],
+    "max_missing" : 0.01
+},
+"india1" : {                       
+    "subsets" : "india0",
+    "exclude_pop" : [ 
+        625,
+        163,165, 166,167, 180,181,182,183,200
+    ]
+},
+"india2" : {
+    "subsets" : "india0",
+    "exclude_pop" : [ 
+        625,
+        163,165, 166,167, 180,181,182,183,200
+    ]
+},
+"india3pc3" : {
+    "subsets" : "india0",
+    "exclude_pop" : [ 
+        625,
+        163,165, 166,167, 180,181,182,183,200,
+	148, 149
+    ]
+},
+"india4noonge" : {
+    "subsets" : "india2",
+    "modify_parent" :{
+    "exclude_pop" : [ 
+        463
+    ]}
+},
+"india5noonge" :{
+    "subsets" : "india4noonge"
+},
+"india6" :{
+    "subsets" : "india5noonge",
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0
+},
+"india0s" : {
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0,
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.01,
+    "region" : ["india",
+        "pakistan",
+        "nepal",
+        "china"
+    ],
+    "exclude_pop" :[
+        625,
+        163,165, 166,167, 180,181,182,183,200,
+        463
+    ],
+    "extrema" : [
+        60,
+        95,
+        0,
+        38 
+    ],
+    "max_missing" : 0.01
+},
+"india0sf" : {
+    "region_buffer" : 0.3,
+    "sample_buffer" : 1.0,
+    "max_per_pop" : 50,
+    "max_missing_ind" : 0.01,
+    "region" : ["india",
+        "pakistan",
+        "nepal",
+        "china"
+    ],
+    "exclude_pop" :[
+        625, 463
+    ],
+    "extrema" : [
+        60,
+        95,
+        0,
+        38 
+    ],
+    "max_missing" : 0.01
+},
+"nepal0" :{
+    "region" : ["nepal"],
+    "exclude_pop" :[625],
+    "max_missing" : 0.01
+},
+"nepal1" :{
+    "region" : ["nepal"],
+    "exclude_pop" :[625, 213, 165],
+    "max_missing" : 0.01
+},
+        "medi0" :
+        {
+            "region" : [
+                "southern europe",
+                "western asia",
+                "middle east & north africa",
+                "ukraine",
+                "moldova"
+            ],
+            "extrema" : [
+                -20,
+                65,
+                30,
+               48 
+            ],
+            "exclude_pop" : [
+            ],
+            "hull" : true,
+            "max_missing" : 0.01
+        },
+    "eumedi1" : {
+        "subsets" : "eumedi2",
+	    "modify_parent" :{
+		"exclude_pop" : [505,
+            100,
+            493]
+	    }
+    },
+    "eumedi3" : {
+        "subsets" : "eumedi0",
+	    "modify_parent" :{
+		"exclude_pop" : [505]
+	    }
+    },
+    "eumedi4" : {
+        "subsets" : "eumedi0",
+        "region_buffer" : 1.0,
+        "sample_buffer" : 1.0,
+	    "modify_parent" :{
+            "exclude_pop" : [505, 98]
+	    }
+    },
+    "eumedi0" : {
+        "region" : [
+            "Europe",
+            "southern europe",
+            "western asia",
+            "middle east & north africa",
+            "ukraine",
+            "moldova"
+        ],
+        "region_buffer" : 1.3,
+        "extrema" : [
+            -40,
+            65,
+            30,
+               90 
+        ],
+        "exclude_pop" : [
+            600,
+            791,
+            93,
+            107,
+            109,
+            115,
+            130,
+            100,
+            493,
+            472,
+            95,
+            102,
+            103,
+            113,
+            108,
+            106,
+            114
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "eumedi2" : {
+        "region" : [
+            "Europe",
+            "southern europe",
+            "western asia",
+            "middle east & north africa",
+            "ukraine",
+            "moldova"
+        ],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 1.0,
+        "extrema" : [
+            -40,
+            75,
+            30,
+               90 
+        ],
+        "exclude_pop" : [
+            600,
+            791,
+            107,
+            109,
+            115,
+            130,
+            472,
+            95,
+            102,
+            103,
+            113,
+            108,
+            106,
+            114
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "eumedi0sb" : {
+        "region" : [
+            "Europe",
+            "southern europe",
+            "israel",
+            "western asia",
+            "middle east & north africa",
+            "ukraine",
+            "moldova"
+        ],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 2.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "extrema" : [
+            -40,
+            75,
+            30,
+               90 
+        ],
+        "exclude_pop" : [
+            600,
+            791,
+            107,
+            109,
+            115,
+            130,
+            472,
+            95,
+            102,
+            103,
+            113,
+            108,
+            106,
+            114, 93
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "eumedi1sb" : {
+        "subsets" : "eumedi0sb"
+    },
+    "eumedi2sb" : {
+        "subsets" : "eumedi1sb"
+    },
+    "eumedi3sb" : {
+        "subsets" : "eumedi1sb"
+    },
+    "eumedi0sc" : {
+        "subsets" : "eumedi0sb",
+	    "modify_parent" :{
+            "exclude_pop" : [505, 98, 93, 100, 493]
+	    }
+    },
+	"medi1" :{
+        "subsets" : "medi0",
+	    "modify_parent" :{
+		"exclude_pop" : [791]
+	    }
+	},
+        "test0" :
+        {
+            "source_file" : 1,
+            "filter": ["clean"],
+            "region" : [
+            "africa"
+            ],
+            "region_buffer" : 0.5,
+            "sample_buffer" : 0.5,
+            "max_per_pop" : 50,
+            "max_missing_ind" : 0.01,
+            "max_missing" : 0.01,
+            "hull" : false
+        },
+        "africa0" :
+        {
+            "region" : [
+                "Africa",
+        "Madagascar",
+                "Israel"
+            ],
+            "exclude_pop" : [
+                329, 330, 539, 8
+            ],
+            "hull" : false
+        },
+        "europe0" : {
+            "region" : [
+                "Europe"
+            ],
+            "region_buffer" : 1.3,
+            "extrema" : [
+                -40,
+                30,
+                20,
+               90 
+            ],
+            "exclude_pop" : [
+                93,
+                107,
+                109,
+                115,
+                130,
+                100,
+                493
+            ],
+            "hull" : true,
+            "max_missing" : 0.01
+        },
+	"europe1" :{
+        "subsets" : "europe0",
+	    "modify_parent" :{
+		"exclude_pop" : [600]
+	    }
+	},
+        "europe2" : {
+            "region" : [
+                "Europe"
+            ],
+            "region_buffer" : 1.3,
+            "extrema" : [
+                -40,
+                30,
+                20,
+               90 
+            ],
+            "exclude_pop" : [
+                93,
+                107,
+                109,
+                115,
+                130,
+                600
+            ],
+            "hull" : true,
+            "max_missing" : 0.01
+        },
+        "europe3" :{
+            "subsets" : "europe2"
+        },
+        "seasia0" : {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "australia",
+                "oceania",
+                "andaman is.",
+                "china",
+                "taiwan"
+            ],
+            "hull" : true,
+            "max_missing" : 0.15,
+            "exclude_pop" : [767],
+            "extrema" :[
+                90,
+                180,
+                -20,
+                24
+            ],
+            "add_pop" : [],
+            "exclude_source" : []
+        },
+        "seasia0c" : {
+            "subsets" : "seasia0",
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "max_missing" : 0.03,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    216, 215, 
+                    429,451, 450,  435, 430, 452, 453,
+                    771, 449, 769, 762
+                ]
+            }
+        },
+        "seasia0e" : {
+            "subsets" : "seasia0",
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[]
+            }
+        },
+        "seasia0f" : {
+            "subsets" : "seasia0",
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[647]
+            }
+        },
+        "seasia0g" : {
+            "subsets" : "seasia0e",
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[647]
+            }
+        },
+        "seasia0hnohugo" : {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "australia",
+                "oceania",
+                "andaman is.",
+                "china",
+                "taiwan"
+            ],
+            "hull" : true,
+            "max_missing" : 0.15,
+            "exclude_pop" : [767, 647],
+            "extrema" :[
+                90,
+                180,
+                -20,
+                24
+            ],
+            "add_pop" : []
+        },
+        "seasia1s" : {
+            "subsets" : "seasia0e",
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    307, 308, 309, 668
+                ]
+            }
+        },
+        "seasia0ss" : {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "oceania",
+                "china",
+                "taiwan"
+            ],
+            "hull" : true,
+            "exclude_pop" : [767, 708],
+            "extrema" :[
+                90,
+                180,
+                -12,
+                24
+            ],
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "add_pop" : [],
+            "exclude_source" : [],
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50
+        },
+        "seasia0ry" : {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "oceania",
+                "china",
+                "japan",
+                "taiwan"
+            ],
+            "hull" : true,
+            "exclude_pop" : [767, 708],
+            "extrema" :[
+                95,
+                180,
+                -12,
+                27
+            ],
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "add_pop" : [],
+            "exclude_source" : [],
+            "min_area" : 0.01,
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50
+        },
+        "seasia1ry" : {
+            "region" : [
+                "south-eastern asia",
+                "melanesia",
+                "oceania",
+                "china",
+                "japan",
+                "taiwan"
+            ],
+            "hull" : true,
+            "exclude_pop" : [767, 708,
+            308,307,309,668],
+            "extrema" :[
+                95,
+                180,
+                -12,
+                27
+            ],
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "add_pop" : [],
+            "exclude_source" : [],
+            "min_area" : 0.01,
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.05,
+            "max_per_pop" : 50
+        },
+        "seasia2s" : {
+            "subsets" : "seasia1s",
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.1,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    708
+                ]
+            }
+        },
+        "seasia3s" : {
+            "subsets" : "seasia2s",
+            "max_missing" : 0.1,
+            "max_missing_ind" : 0.1,
+            "max_per_pop" : 50,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    647
+                ]
+            }
+        },
+        "seasiatest" : {
+            "subsets" : "seasia0e"
+        },
+        "seasia4s" : {
+            "subsets" : "seasia3s",
+            "max_missing" : 0.05,
+            "max_missing_ind" : 0.2,
+            "max_per_pop" : 50,
+            "add_pop" :[
+                463
+            ],
+            "modify_parent" : {
+            }
+        },
+        "seasia1c" : {
+            "subsets" : "seasia0c",
+            "region_buffer" : 1.3,
+            "sample_buffer" : 1.3,
+            "max_missing" : 0.03,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    216, 215, 
+                    429,451, 450,  435, 430, 452, 453,
+                    771, 449, 769, 762,
+                    308, 309, 668, 307, 647, 676, 301
+                ]
+            }
+        },
+        "seasia2x" : {
+            "subsets" : "seasia1c",
+            "max_missing" : 0.03,
+            "modify_parent" : {
+                "exclude_pop" :[
+                    292
+                ]
+            }
+        },
+	"seasia5pc1" : {
+         "subsets" : "seasia0",
+	    "modify_parent" : {
+		"exclude_pop" :[
+		    453,
+		    309,
+		    698,
+		    307,
+		    308,
+		    676,
+		    780,
+		    769,
+		    449,
+		    702,
+		    693,
+		    686,
+		    647,
+		    694,
+		    668,
+		    452,
+		    451,
+		    768,
+		    435,
+		    463,
+		    292,
+		    688
+		]
+	    }
+        },
+    "seasia2" :{
+         "subsets" : "seasia5pc1",
+	    "modify_parent" : {
+		"exclude_pop" :[
+            450,
+            301,
+            429,
+            430,
+            215,
+            294,
+            295,
+            766,
+            781,
+            687,
+            708
+        ]}
+    },
+    "seasia2b" :{
+        "max_missing" : 0.10,
+        "subsets" : "seasia2"
+    },
+    "seasia2c" :{
+        "max_missing" : 0.05,
+        "subsets" : "seasia2"
+    },
+    "seasia3c" :{
+        "max_missing" : 0.05,
+        "subsets" : "seasia2c",
+	    "modify_parent" : {
+		"exclude_pop" :[
+            663
+        ]}
+    },
+    "seasia4c" :{
+        "subsets" : "seasia3c"
+    },
+    "seasia2d" :{
+        "max_missing" : 0.01,
+        "subsets" : "seasia2"
+    },
+	"seasia3pc1" : {
+         "subsets" : "seasia0",
+	    "modify_parent" : {
+		"exclude_pop" :[
+		    453,
+		    309,
+		    698,
+		    307,
+		    308,
+		    676,
+		    780,
+		    769,
+		    449,
+		    702,
+		    693,
+		    686,
+		    647,
+		    694,
+		    668,
+		    452,
+		    451,
+		    768,
+		    435,
+		    463,
+		    292,
+		    688,
+		    663,
+		    762,
+		    771,
+		    679,
+		    430,
+		    301,
+		    703,
+		    689,
+		    766,
+		    708,
+		    683,
+		    215,
+		    302,
+		    687,
+		    216,
+		    429,
+		    753,
+		    761
+		]
+	    }
+        },
+ "southafrica0" : {              
+     "region" : [                
+         "southern africa"       
+     ],                          
+     "exclude_pop" : [           
+     ],                          
+         "max_missing" : 0.01    
+ },                              
+"southafrica1" :{
+        "subsets" : "southafrica0",
+    "modify_parent" :{
+	"exclude_pop" : [
+	    327, 352
+	]
+    }
+},
+ "africa5pc1" : {
+     "subsets" : "africa0",
+     "modify_parent" : {
+     "exclude_pop" : [           
+         11, 57,
+         16,17, 51, 798, 15
+     ]}
+ },
+ "africa5pc2" : {
+     "subsets" : "africa5pc1",
+     "modify_parent" : {
+     "exclude_pop" : [           
+         538, 511,
+         352, 323, 320, 315, 370
+     ]}
+ },
+ "africa3" :{
+     "subsets" : "africa5pc2",
+     "modify_parent" : {
+     "exclude_pop" : [           
+         372
+     ]}
+ },
+ "africa4" :{
+     "subsets" : "africa3",
+     "modify_parent" : {
+     "exclude_pop" : [           
+         367
+     ]}
+ },
+ "africa5" :{
+     "subsets" : "africa4",
+     "modify_parent" : {
+     "exclude_pop" : [           
+     ]}
+ },
+"africa0b" :
+{
+    "region" : [
+        "Africa",
+        "Madagascar",
+        "Israel"
+    ],
+    "exclude_pop" : [
+        329, 330, 539, 8
+    ],
+    "region_buffer" : 0.5,
+    "sample_buffer" : 0.5,
+    "hull" : false
+},
+"africa0c" :
+{
+    "region" : [
+        "Africa",
+        "Madagascar",
+        "Israel"
+    ],
+    "exclude_pop" : [
+        329, 330, 539, 8,
+        217, 218, 219
+    ],
+    "region_buffer" : 0.5,
+    "sample_buffer" : 0.5,
+    "min_area" : 0.3,
+    "hull" : true
+},
+ "africa3pc1" : {
+     "subsets" : "africa0",
+     "modify_parent" : {
+     "exclude_pop" : [           
+         11, 57,
+         16,17, 51, 798, 15,
+         791,
+         328,
+         324,323,
+         327,
+         322,
+         318,
+         320,
+         331
+     ]}
+    },
+    "northafrica0" :{
+            "region" : [
+                "Africa",
+        "Madagascar",
+                "Israel"
+            ],
+            "exclude_pop" : [
+                329, 330, 539, 8,
+		57
+            ],
+            "hull" : true,
+	    "extrema" :[                      
+		-20, 60,
+		-15,40
+	    ]                                
+    },
+    "northafrica0b" :{
+	    "region_buffer" : 1.0,
+	    "sample_buffer" : 1.0,
+            "region" : [
+                "Africa",
+        "Madagascar",
+                "Israel"
+            ],
+            "exclude_pop" : [
+                329, 330, 539, 8,
+		57
+            ],
+            "hull" : true,
+	    "extrema" :[                      
+		-20, 60,
+		-15,40
+	    ]                                
+    },
+    "northafrica0c" :{
+            "region" : [
+                "Africa",
+        "Madagascar",
+                "Israel"
+            ],
+            "exclude_pop" : [
+                539, 8,
+		57
+            ],
+            "hull" : true,
+	    "region_buffer" : 1.0,
+	    "sample_buffer" : 1.0,
+	    "extrema" :[                      
+		-20, 60,
+		-15,40
+	    ]                                
+    },
+    "northafrica3" :{
+        "subsets" : "northafrica0"
+    },
+    "northafrica4" :{
+        "subsets" : "northafrica3",
+        "modify_parent" : {
+            "exclude_pop" : [
+		    11
+            ]}
+    },
+    "northafrica3pc1" :{
+        "subsets" : "northafrica0",
+        "modify_parent" : {
+            "exclude_pop" : [
+                791, 367
+            ]}
+    },
+    "northafrica3pc2" :{
+        "subsets" : "northafrica3pc1"
+    },
+    "northafrica0s" :{
+            "region" : [
+                "Africa",
+        "Madagascar",
+                "Israel"
+            ],
+            "exclude_pop" : [
+                539, 8, 57
+            ],
+            "hull" : true,
+	    "region_buffer" : 1.0,
+	    "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.02,
+	    "extrema" :[                      
+		-20, 60,
+		-15,40
+	    ]                                
+    },
+    "northafrica1s" :{
+        "subsets" : "northafrica0s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                791
+            ]}
+    },
+    "northafrica1sb" :{
+        "subsets" : "northafrica0s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                791, 790, 372
+            ]}
+    },
+    "northafrica1sc" :{
+        "subsets" : "northafrica0s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                1,2,335
+            ]}
+    },
+    "southafrica0s" : {              
+        "region" : [                
+            "southern africa"       
+        ],                          
+        "exclude_pop" : [           
+        ],                          
+            "region_buffer" : 1.0,
+            "sample_buffer" : 1.0,
+            "max_per_pop" : 50,
+            "hull" : false,
+            "max_missing_ind" : 0.02,
+            "max_missing" : 0.01    
+    },
+    "southafrica1s" :{
+            "subsets" : "southafrica0s",
+        "modify_parent" :{
+        "exclude_pop" : [
+            327, 352
+        ]
+        }
+    },
+    "africa0s" :
+    {
+        "region" : [
+            "Africa",
+        "Madagascar",
+            "Israel"
+        ],
+        "exclude_pop" : [
+            539, 8
+        ],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africa1s" :{
+        "subsets" : "africa0s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                791,
+                798, 323, 511, 320, 352, 215, 324
+            ]}
+    },
+    "africa2s" :{
+        "subsets" : "africa1s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                791,
+                798, 323, 511, 320, 352, 215, 324,
+                1, 2, 335
+            ]}
+    },
+    "africa1sb" :{
+        "subsets" : "africa0s",
+        "modify_parent" : {
+            "exclude_pop" : [
+                798, 323, 511, 320, 352, 215, 324
+            ]}
+    },
+    "africa2sb" :{
+        "subsets" : "africa1sb",
+        "modify_parent" : {
+            "exclude_pop" : [
+                15, 315, 316
+            ]}
+    },
+    "africa3sb" :{
+        "region" : ["Africa",
+        "Madagascar"],
+        "subsets" : "africa2sb",
+        "modify_parent" : {
+            "exclude_pop" : [
+            ]}
+    },
+    "europe0s" : {
+        "region" : [
+            "Europe"
+        ],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.02,
+        "extrema" : [
+            -40,
+            30,
+            20,
+           90 
+        ],
+        "exclude_pop" : [
+            93,
+            107,
+            109,
+            115,
+            130,
+            600
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "europe0sb" : {
+        "region" : [
+            "Europe"
+        ],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.02,
+        "extrema" : [
+            -40,
+            30,
+            20,
+           90 
+        ],
+        "exclude_pop" : [
+            93,
+            100,
+            493,
+            107,
+            109,
+            115,
+            130,
+            600
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "medi0s" :
+    {
+        "region" : [
+            "southern europe",
+            "western asia",
+            "middle east & north africa",
+            "ukraine",
+            "moldova"
+        ],
+        "extrema" : [
+            -20,
+            65,
+            30,
+           48 
+        ],
+        "exclude_pop" : [
+            600
+        ],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.02,
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "russia0s" : {
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "region" : ["russia"
+        ],
+        "exclude_pop" :[
+            625, 600
+        ]
+    },
+    "asia0s" : {
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "region" : [
+            "asia",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "exclude_pop" :[
+            625, 600
+        ]
+    },
+    "ssahara0s" :
+    {
+        "region" : [
+            "Africa",
+        "Madagascar",
+            "Israel"
+        ],
+        "exclude_pop" : [
+            539, 8
+        ],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "extrema" :[                      
+            -20, 55,
+            -35, 20
+        ],                                
+        "hull" : false
+    },
+    "africa0f" : {
+        "source_file" : 1,
+        "region" : [
+            "Africa",
+        "Madagascar",
+            "Israel"
+        ],
+        "filter" : ["clean"],
+        "exclude_pop" : [
+            8
+        ],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africa0fb" : {
+        "source_file" : 1,
+        "region" : [
+            "Africa"
+        ],
+        "filter" : ["clean"],
+        "exclude_pop" : [217, 218, 219],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africaplus0f" : {
+        "source_file" : 1,
+	    "extrema" :[                      
+		-40,                           
+		55,                          
+		-50,                           
+		48                            
+	    ],                                
+        "region" : [
+            "Africa",
+            "Asia",
+            "Europe"
+        ],
+        "filter" : ["clean"],
+        "exclude_pop" : [217, 218, 219],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : true
+    },
+    "africaplus0fb" : {
+        "subsets" : "africaplus0f",
+        "exclude_samples" :[
+            "EstoniansmoroccoA121",
+            "EstoniansmoroccoC61",
+            "PASCHOU833",
+            "PASCHOU894",
+            "PASCHOU896",
+            "PASCHOU898",
+            "PASCHOU899",
+            "PASCHOU901",
+            "PASCHOU904",
+            "PASCHOU908",
+            "PASCHOU924"
+        ]
+    },
+    "africaplus0q" : {
+        "source_file" : 1,
+	    "extrema" :[                      
+		-40,                           
+		55,                          
+		-50,                           
+		48                            
+	    ],                                
+        "region" : [
+            "Africa",
+            "Asia",
+            "Europe"
+        ],
+        "filter" : ["bad_loc"],
+        "exclude_pop" : [217, 218, 219],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : true
+    },
+    "africa2f" : {
+        "source_file" : 1,
+        "region" : [
+            "Africa"
+        ],
+        "exclude_samples" :[
+            "EstoniansmoroccoA121",
+            "EstoniansmoroccoC61",
+            "PASCHOU833",
+            "PASCHOU894",
+            "PASCHOU896",
+            "PASCHOU898",
+            "PASCHOU899",
+            "PASCHOU901",
+            "PASCHOU904",
+            "PASCHOU908",
+            "PASCHOU924"
+        ],
+        "filter" : ["clean"],
+        "exclude_pop" : [217, 218, 219],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africa3f" : {
+        "source_file" : 1,
+        "region" : [
+            "Africa"
+        ],
+        "exclude_samples" :[
+            "EstoniansmoroccoA121",
+            "EstoniansmoroccoC61",
+            "PASCHOU833",
+            "PASCHOU894",
+            "PASCHOU896",
+            "PASCHOU898",
+            "PASCHOU899",
+            "PASCHOU901",
+            "PASCHOU904",
+            "PASCHOU908",
+            "PASCHOU924"
+        ],
+        "filter" : ["clean_fulani"],
+        "exclude_pop" : [217, 218, 219],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africa0fbP" : {"subsets" : "africa0fb"},
+    "africa0fc" : {
+        "source_file" : 1,
+        "region" : [
+            "Africa",
+            "Madagascar"
+        ],
+        "filter" : ["clean"],
+        "exclude_pop" : [],
+        "region_buffer" : 0.5,
+        "sample_buffer" : 0.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "max_missing" : 0.01,
+        "hull" : false
+    },
+    "africa1f" : {
+        "subsets" : "africa0f",
+        "source_file" : 1,
+        "region" : [
+            "Africa",
+        "Madagascar"
+        ],
+        "filter" : ["clean"],
+        "modify_parent" : {
+            "exclude_pop" : [
+                798, 511, 15
+            ]
+        }
+    },
+    "africa1fb" : {
+        "subsets" : "africa0f",
+        "source_file" : 1,
+        "region" : [
+            "Africa",
+        "Madagascar"
+        ],
+        "filter" : ["clean"],
+        "modify_parent" : {
+            "exclude_pop" : [
+                798, 511, 15, 791
+            ]
+        }
+    },
+    "global0f" :{
+        "source_file" : 1,
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "filter" : ["clean"],
+        "max_missing" : 0.01,
+        "hull" : true,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "sample_buffer" : 3.1,
+        "region_buffer" : 2.9,
+        "exclude_pop" :                   
+        [
+            505
+        ]                                
+    },
+    "global0fh" :{
+        "source_file" : 1,
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "filter" : ["clean"],
+        "max_missing" : 0.01,
+        "hull" : true,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "sample_buffer" : 3.1,
+        "region_buffer" : 2.9,
+        "extrema" :[                      
+            -40,                           
+            180,                          
+            -40,
+            85
+        ],
+        "exclude_pop" :                   
+        [
+            505,
+            217, 218, 219, 308, 309
+        ]                                
+    },
+    "global0fb" :{
+        "subsets" : "global0f"
+    },
+    "global0fc" :{
+        "subsets" : "global0f",
+        "exclude_pop" :[505, 217, 218, 219],
+        "filter" : ["clean"]
+    },
+    "global0fd" :{
+        "subsets" : "global0f",
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "madagascar",
+            "taiwan"
+        ],
+        "exclude_pop" :[505],
+        "filter" : ["clean"]
+    },
+    "global0fe" :{
+        "subsets" : "global0f",
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+        225,227,416, 505,
+        217, 218, 219
+        ],
+        "filter" : ["clean"]
+    },
+    "global0ff" :{
+        "subsets" : "global0fe",
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+        225,227,416, 505,
+        217, 218, 219, 308, 309
+        ],
+        "extrema" :[                      
+            -40,                           
+            180,                          
+            -40,
+            90                            
+        ],                                
+        "filter" : ["clean"]
+    },
+    "global0fg" :{
+        "subsets" : "global0fe",
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+        225,227,416, 505,
+        217, 218, 219, 308, 309
+        ],
+        "extrema" :[                      
+            -40,                           
+            180,                          
+            -40,
+            63                            
+        ],                                
+        "filter" : ["clean"]
+    },
+    "global0q" :{
+        "source_file" : 1,
+        "region" : [
+            "europe",
+            "asia",
+            "africa",
+            "south-eastern asia",
+            "melanesia",
+            "australia",
+            "oceania",
+            "andaman is.",
+            "china",
+            "taiwan"
+        ],
+        "filter" : ["bad_loc"],
+        "max_missing" : 0.01,
+        "hull" : true,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "sample_buffer" : 3.1,
+        "region_buffer" : 2.9,
+        "exclude_pop" :                   
+        [
+            505
+        ]                                
+    },
+    "global0fgP" : {"subsets" : "global0fg"},
+    "global1f" : {                       
+        "subsets" : "global0f",
+        "modify_parent" : {
+            "exclude_pop" : [
+                263,416,318,326,1019,356,361,1014,362,354
+            ]
+        }
+    },
+    "eumedi0f" : {
+        "source_file" : 1,
+        "region" : [
+            "Europe",
+            "southern europe",
+            "israel",
+            "western asia",
+            "middle east & north africa",
+            "ukraine",
+            "moldova"
+        ],
+        "filter" : ["clean"],
+        "region_buffer" : 1.0,
+        "sample_buffer" : 2.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "extrema" : [
+            -40,
+            75,
+            30,
+               90 
+        ],
+        "exclude_pop" : [
+            600,
+            791,
+            107,
+            109,
+            115,
+            130,
+            472,
+            95,
+            102,
+            103,
+            113,
+            108,
+            106,
+            114, 93
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "eumedi1f" :{"subsets" : "eumedi0f"},
+    "eumedi1fP" : {"subsets" : "eumedi1f"},
+    "casia0f" : {
+        "source_file" : 1,
+        "region_buffer" : 2.0,
+        "sample_buffer" : 2.0,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "region" : [
+            "middle east & north africa",
+            "europe & central asia",
+            "india",
+            "iraq",
+            "iran",
+            "pakistan",
+            "nepal"
+        ],
+        "extrema" : [
+            16,
+            90,
+            10,
+            50
+        ],
+        "filter" : ["clean"],
+        "hull" : true
+    },
+    "casia0fb" : {
+        "source_file" : 1,
+        "filter" : ["clean"],
+        "region_buffer" : 2.0,
+        "sample_buffer" : 2.0,
+        "max_missing_ind" : 0.050,
+        "region" : [
+            "middle east & north africa",
+            "europe & central asia",
+            "india",
+            "iraq",
+            "iran",
+            "pakistan",
+            "nepal"
+        ],
+        "extrema" : [
+            16,
+            90,
+            10,
+            50
+        ],
+        "exclude_pop" : [
+            625, 600,
+            146, 152, 154, 443
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "india0f" : {
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "region" : ["india",
+            "pakistan",
+            "nepal",
+            "china"
+        ],
+        "exclude_pop" :[
+            463
+        ],
+        "extrema" : [
+            60,
+            95,
+            0,
+            38 
+        ],
+        "max_missing" : 0.01
+    },
+    "dindia0" : {                       
+	"source_file" : 1,
+	"filter": ["clean"],
+	"region_buffer" : 3.0,
+	"sample_buffer" : 3.0,
+	"max_missing_ind" : 0.050,
+	"max_missing" : 0.01,
+	"max_per_pop" : 50,
+	"min_area" : 0.01,
+	"region" : [                      
+	    "eastern asia",               
+	    "russia",
+	    "asia",
+	    "middle east & north africa",
+	    "europe & central asia",
+	    "india",
+	    "iraq",
+	    "iran",
+	    "pakistan",
+	    "nepal"
+	],                                
+	"extrema" :[                      
+	    60, 95,                           
+	    0,48
+	],                                
+	"exclude_pop" : [],
+	"hull" : true
+    },
+    "dindia0b" : {                       
+        "subsets" : "dindia0",
+        "exclude_pop" : [463]
+    },
+    "dindia0c" : {                       
+        "subsets" : "dindia0",
+        "exclude_pop" : [463]
+    },
+    "dindia0d" : {                       
+        "subsets" : "dindia0",
+        "exclude_pop" : []
+    },
+    "india0fP" : {"subsets" : "india0f"},
+    "india1fP" : {"subsets" : "india1f"},
+    "india1f" : {
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "region" : ["india",
+            "pakistan"
+        ],
+        "max_missing" : 0.01
+    },
+    "india2f" : {
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.0,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.01,
+        "region" : ["india",
+            "pakistan",
+            "nepal",
+            "bangladesh",
+            "afghanistan",
+            "china"
+        ],
+        "exclude_pop" :[
+            463
+        ],
+        "extrema" : [
+            60,
+            95,
+            0,
+            38 
+        ],
+        "max_missing" : 0.01
+    },
+    "india3f" : {
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 0.3,
+        "sample_buffer" : 1.5,
+        "max_per_pop" : 50,
+        "max_missing_ind" : 0.05,
+        "region" : ["india",
+            "pakistan",
+            "nepal",
+            "bangladesh",
+            "afghanistan",
+            "myanmar",
+            "china"
+        ],
+        "add_pop" : [463],
+        "exclude_pop" :[
+        ],
+        "extrema" : [
+            60,
+            97,
+            0,
+            38 
+        ],
+        "hull" : true,
+        "max_missing" : 0.01
+    },
+    "easia0f" : {                       
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 2.5,
+        "sample_buffer" : 2.5,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "region" : [                      
+            "eastern asia",               
+            "russia",
+            "asia"
+        ],                                
+        "extrema" :[                      
+            71,                           
+            180,                          
+            20,                           
+            70                            
+        ],                                
+        "hull" : true
+    },
+    "easia0fb" : {                       
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 2.5,
+        "sample_buffer" : 2.5,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "region" : [                      
+            "eastern asia",               
+            "russia",
+            "asia"
+        ],                                
+        "extrema" :[                      
+            71,                           
+            180,                          
+            20,                           
+            90                            
+        ],                                
+        "hull" : true
+    },
+    "easia0fc" : {                       
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 2.5,
+        "sample_buffer" : 2.5,
+        "min_area" : 0.01,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "region" : [                      
+            "eastern asia",               
+            "russia",
+            "asia"
+        ],                                
+        "extrema" :[                      
+            71,                           
+            180,                          
+            20,                           
+            90                            
+        ],                                
+        "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+        225,227,416],
+        "hull" : true
+    },
+    "easia0fd" : {                       
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 2.5,
+        "sample_buffer" : 2.5,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "min_area" : 0.01,
+        "region" : [                      
+            "eastern asia",               
+            "russia",
+            "asia"
+        ],                                
+        "extrema" :[                      
+            71,                           
+            150,                          
+            20,                           
+            60                            
+        ],                                
+        "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+        225,227,416],
+        "hull" : true
+    },
+    "fasia0f" : {                       
+        "min_area" : 0,
+        "add_pop" : [650],
+        "source_file" : 1,
+        "filter": ["clean"],
+        "region_buffer" : 3.0,
+        "sample_buffer" : 3.0,
+        "max_missing_ind" : 0.050,
+        "max_missing" : 0.01,
+        "max_per_pop" : 50,
+        "region" : [                      
+            "eastern asia",               
+            "russia",
+            "asia",
+            "middle east & north africa",
+            "europe & central asia",
+            "india",
+            "iraq",
+            "iran",
+            "pakistan",
+            "nepal"
+        ],                                
+        "extrema" :[                      
+            16,                           
+            180,                          
+            10,                           
+            80                            
+	    ],                                
+	    "exclude_pop" : [],
+	    "hull" : true
+	},
+	"xasia0f" : {                       
+	    "source_file" : 1,
+	    "filter": ["clean"],
+	    "region_buffer" : 3.0,
+	    "sample_buffer" : 3.0,
+	    "max_missing_ind" : 0.050,
+	    "max_missing" : 0.01,
+	    "max_per_pop" : 50,
+	    "min_area" : 0.01,
+	    "region" : [                      
+		"eastern asia",               
+		"russia",
+		"asia",
+		"middle east & north africa",
+		"europe & central asia",
+		"india",
+		"iraq",
+		"iran",
+		"pakistan",
+		"nepal"
+	    ],                                
+	    "extrema" :[                      
+		16,                           
+		150,                          
+		10,                           
+		60                            
+	    ],                                
+	    "exclude_pop" : [226,229,252,254,255,256,257,258,260,262,263,264,265,
+	    225,227,416,
+	    625, 600,
+	    146, 152, 154, 443,
+	    583
+	    ],
+	    "hull" : true
+	},
+	"dasia0" : {                       
+	    "source_file" : 1,
+	    "filter": ["clean"],
+	    "region_buffer" : 3.0,
+	    "sample_buffer" : 3.0,
+	    "max_missing_ind" : 0.050,
+	    "max_missing" : 0.01,
+	    "max_per_pop" : 50,
+	    "min_area" : 0.01,
+	    "region" : [                      
+		"eastern asia",               
+		"russia",
+		"asia",
+		"middle east & north africa",
+		"europe & central asia",
+		"india",
+		"iraq",
+		"iran",
+		"pakistan",
+		"nepal"
+	    ],                                
+	    "extrema" :[                      
+		60, 77,                           
+		22,48
+	    ],                                
+	    "exclude_pop" : [],
+	    "hull" : true
+	},
+	"xasia1f" : {                       
+	    "subsets":"xasia0f",
+	    "modify_parent" : {
+		"exclude_pop" : [
+		    292, 294
+		]
+	    }
+	},
+	"xasia1fP" : {"subsets" : "xasia1f"},
+	"xasia1frP" : {
+	    "add_pop" : [650],
+        "min_area" : 0.01,
+        "subsets" : "xasia1f"
+	},
+	"xasia2f" : {
+        "subsets" : "xasia1f",
+	    "modify_parent" : {
+            "exclude_pop" : [
+                418, 268
+            ],
+            "exclude_samples" :[
+           "EstoniansH1",
+         "Estonians335e",
+         "EstoniansKHP4",
+     "EstoniansbumaBR91",
+    "XING4_0220_F066599.CEL"
+            ]
+        }
+    },
+	"easia1f" : {                       
+	    "subsets" : "easia0f",
+	    "modify_parent" : {
+		"exclude_pop" : [
+		    148, 137, 471, 139
+		]
+	    }
+	},
+	"seasia0ff" : {
+	    "filter": ["clean"],
+	    "source_file" : 1,
+	    "region" : [
+		"south-eastern asia",
+		"melanesia",
+		"oceania",
+		"china",
+		"japan",
+		"taiwan"
+	    ],
+	    "hull" : true,
+	    "exclude_pop" : [767, 708],
+	    "extrema" :[
+		95,
+		180,
+		-12,
+		27
+	    ],
+	    "region_buffer" : 1.3,
+	    "sample_buffer" : 1.3,
+	    "add_pop" : [],
+	    "exclude_source" : [],
+	    "min_area" : 0.01,
+	    "max_missing" : 0.1,
+	    "max_missing_ind" : 0.05,
+	    "max_per_pop" : 50
+	},
+	"seasia0fb" : {
+	    "region" : [
+		"south-eastern asia",
+		"melanesia",
+		"australia",
+		"oceania",
+		"andaman is.",
+		"china",
+		"taiwan"
+	    ],
+	    "hull" : true,
+	    "extrema" :[
+		90,
+		180,
+		-20,
+		24
+	    ],
+	    "add_pop" : [],
+	    "exclude_source" : [],
+	    "filter": ["clean"],
+	    "source_file" : 1,
+	    "region_buffer" : 1.3,
+	    "sample_buffer" : 1.3,
+	    "max_missing" : 0.1,
+	    "max_missing_ind" : 0.05,
+	    "max_per_pop" : 50,
+	    "exclude_pop" : [767, 708]
+	},
+	"seasia0fc" : {
+	    "region" : [
+		"south-eastern asia",
+		"melanesia",
+		"australia",
+		"oceania",
+		"andaman is.",
+		"china",
+		"taiwan"
+	    ],
+	    "hull" : true,
+	    "extrema" :[
+		90,
+		180,
+		-20,
+		24
+	    ],
+	    "add_pop" : [],
+	    "exclude_source" : [],
+	    "filter": ["clean"],
+	    "source_file" : 1,
+	    "region_buffer" : 1.3,
+	    "sample_buffer" : 1.3,
+	    "max_missing" : 0.1,
+	    "max_missing_ind" : 0.05,
+	    "max_per_pop" : 50,
+	    "exclude_pop" : [767, 708]
+	},
+	"seasia0fcP" : {"subsets" : "seasia0f"},
+	"seasia1fcP" : {"subsets" : "seasia0fc"},
+	"seasia2fcP" : {
+        "subsets" : "seasia0fc",
+        "modify_parent" : {
+            "exclude_samples" :[
+                "XING10_0226_F089339.CEL"
+            ]
+        }
+    },
+	"seasia3fcP" : {
+        "subsets" : "seasia2fcP",
+        "modify_parent" : {
+            "exclude_loci" :[
+                "2_133091031",
+                "2_228922593",
+                 "4_67610038",
+                 "4_111313570",
+                 "5_147966246",
+                  "6_51130487",
+                  "11_82008671",
+                  "14_53295706",
+                  "19_42152229"
+            ]
+        }
+    },
+	"asia0f" : {
+	    "region" : [
+		"asia",
+		"south-eastern asia",
+		"melanesia",
+		"australia",
+		"oceania",
+		"andaman is.",
+		"china",
+		"eastern asia",               
+		"russia",
+		"middle east & north africa",
+		"europe & central asia",
+		"india",
+		"iraq",
+		"iran",
+		"pakistan",
+		"nepal",
+		"taiwan"
+	    ],
+	    "hull" : true,
+	    "extrema" :[
+		16,
+		180,
+		-20,
+	       60 
+	    ],
+	    "add_pop" : [],
+	    "exclude_source" : [],
+	    "filter": ["clean"],
+	    "source_file" : 1,
+	    "region_buffer" : 1.3,
+	    "sample_buffer" : 1.3,
+	    "max_missing" : 0.1,
+	    "max_missing_ind" : 1.05,
+	    "max_per_pop" : 50,
+	    "exclude_pop" : [767, 708]
+	},
+	"seasia1fc" : {
+	    "subsets" : "seasia0fc"
+	},
+	"southafrica0f" : {              
+	    "source_file" : 1,
+	    "filter": ["clean"],
+	    "region" : [                
+		"southern africa"       
+	    ],                          
+	    "region_buffer" : 0.1,
+	    "sample_buffer" : 0.1,
+	    "max_per_pop" : 50,
+	    "hull" : false,
+	    "max_missing_ind" : 0.02,
+	    "max_missing" : 0.01    
+	},
+	"southafrica0hg" : {              
+	    "source_file" : 1,
+	    "filter": ["safrica_non_hg",
+		       "bad_loc",
+		       "recent_migrant"],
+	    "region" : [                
+		"southern africa"       
+	    ],                          
+	    "region_buffer" : 0.1,
+	    "sample_buffer" : 0.1,
+	    "max_per_pop" : 50,
+	    "hull" : false,
+	    "max_missing_ind" : 0.02,
+	    "max_missing" : 0.01    
+	},
+	"southafrica0hgP" : {"subsets" : "southafrica0hg"},
+	"southafrica0fhg" :{
+	    "source_file" : 1,
+	    "filter": [
+		       "bad_loc",
+		       "recent_migrant"],
+	    "region" : [                
+		"southern africa"       
+	    ],                          
+	    "region_buffer" : 0.1,
+	    "sample_buffer" : 0.1,
+	    "max_per_pop" : 50,
+	    "hull" : false,
+	    "max_missing_ind" : 0.02,
+	    "max_missing" : 0.01    
+	},
+	"africa0fbhg" : {
+	    "source_file" : 1,
+	    "region" : [
+		"Africa"
+	    ],
+	    "filter" : ["bad_loc"],
+	    "exclude_pop" : [217, 218, 219],
+	    "region_buffer" : 0.5,
+	    "sample_buffer" : 0.5,
+	    "max_per_pop" : 50,
+	    "max_missing_ind" : 0.01,
+	    "max_missing" : 0.01,
+	    "hull" : false
+	},
+	"africa0hg" : {
+	    "source_file" : 1,
+	    "region" : [
+		"Africa"
+	    ],
+	    "filter" : ["africa_non_hg",
+			"bad_loc",
+			"recent_migrant"],
+	    "exclude_pop" : [217, 218, 219],
+	    "region_buffer" : 0.5,
+	    "sample_buffer" : 0.5,
+	    "max_per_pop" : 50,
+	    "max_missing_ind" : 0.01,
+	    "max_missing" : 0.01,
+	    "hull" : false
+	},
+	"europe0f" : {
+	    "source_file" : 1,
+	    "region" : [
+		"Europe"
+	    ],
+	    "filter": ["clean"],
+	    "region_buffer" : 1.0,
+	    "sample_buffer" : 1.0,
+	    "max_per_pop" : 50,
+	    "max_missing_ind" : 0.02,
+	    "extrema" : [
+		-40,
+		30,
+		20,
+	       90 
+	    ],
+	    "exclude_pop" : [
+		93,
+		107,
+		109,
+		115,
+		130,
+		600
+	    ],
+	    "hull" : true,
+	    "max_missing" : 0.01
+	}
+
+}}

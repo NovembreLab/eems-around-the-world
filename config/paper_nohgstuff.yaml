@@ -1,0 +1,22 @@
+paper:
+    - Global :
+        main : "global2sf"
+        full : "global0sf"
+    - Europe :
+        main : "eumedi1sb"
+        full : false
+    - "Western Asia" :
+        main : "casia0sd"
+        full : false
+    - "East Asia" :
+        main : "easia1s"
+        full : false
+    - "South-East Asia" :
+        main : "seasia3s"
+        full : seasia0e
+    - "Southern Africa" :
+        main : "southafrica1s"
+        full : "southafrica0"
+    - "Africa" :
+        main : "africa2s"
+        full : "africa0s"

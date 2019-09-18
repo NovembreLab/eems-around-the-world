@@ -1,0 +1,201 @@
+{
+    "__default__" :
+    {
+        "time" : "2:00:00",
+        "mem" : "2G",
+        "cpus-per-task" : "1",
+        "output" : "autosnake/autosnake-%j-%N.out",
+        "err" : "autosnake/autosnake-%j-%N.err"
+    },
+    "run_trace" :
+    {
+        "time" : "24:15:00",
+        "mem" : "1G",
+        "cpus-per-task" : "1",
+        "output" : "autosnake/trace-%j-%N.out",
+        "err" : "autosnake/trace-%j-%N.err"
+    },
+    "terastructure" :
+    {
+        "time" : "96:20:00",
+        "mem" : "24G",
+        "cpus-per-task" : "8",
+        "output" : "autosnaketera/terastructure-%j-%N.out",
+        "err" : "autosnaketera/terastructure-%j-%N.err"
+    },
+    "plink_panel" :
+    {
+        "time" : "3:20:00",
+        "mem" : "16G",
+        "output" : "autosnake/plink-%j-%N.out",
+        "err" : "autosnake/plink-%j-%N.err"
+    },
+    "run_flashpca" :
+    {
+        "time" : "2:20:00",
+        "mem" : "12G",
+        "output" : "autosnake/flashpca-%j-%N.out",
+        "err" : "autosnake/flashpca-%j-%N.err",
+        "cpus-per-task" : "4"
+    },
+    "run_flashpca_outliers" :
+    {
+        "time" : "2:20:00",
+        "mem" : "12G",
+        "output" : "autosnake/flashpca-out-%j-%N.out",
+        "err" : "autosnake/flashpca-out-%j-%N.err",
+        "cpus-per-task" : "4"
+    },
+    "fst":
+    {
+        "time" : "4:00:00",
+        "mem" : "32G"
+    },
+    "make_loadings_plots" :
+    {
+        "time" : "4:00:00",
+        "mem" : "16G",
+        "output" : "autosnake/loadings-%j-%N.out",
+        "err" : "autosnake/loadings-%j-%N.err"
+    },
+    "merge_plink" :
+    {
+        "time" : "48:00:00",
+        "mem" : "64G",
+        "output" : "autosnake/merge-plink-%j-%N.out",
+        "err" : "autosnake/merge-plink-%j-%N.err",
+        "cpus-per-task" : "1"
+    },
+    "thin_merged" :
+    {
+        "time" : "10:15:00",
+        "mem" : "33G",
+        "cpus-per-task" : "1",
+        "output" : "autosnake/autosnake-%j-%N.out",
+        "err" : "autosnake/autosnake-%j-%N.err"
+    },
+    "get_pop_frq" :
+    {
+        "time" : "10:15:00",
+        "mem" : "8G",
+        "cpus-per-task" : "1",
+        "output" : "autosnake/frq-%j-%N.out",
+        "err" : "autosnake/frq-%j-%N.err"
+    },
+    "paint" :
+    {
+        "time" : "96:15:00",
+        "mem" : "32G",
+        "cpus-per-task" : "1",
+        "output" : "autosnake/paint-%j-%N.out",
+        "err" : "autosnake/paint-%j-%N.err"
+    },
+    "make_coord" :
+    {
+        "mem" : "1G",
+        "time" : "00:15:00",
+        "output" : "autosnake/coord-%j-%N.out",
+        "err" : "autosnake/coord-%j-%N.err"
+    },
+    "make_ini_file" :
+    {
+        "mem" : "2G",
+        "output" : "autosnake/ini-%j-%N.out",
+        "err" : "autosnake/ini-%j-%N.err"
+    },
+    "run_eems_single_run" :
+    {
+        "mem" : "2G",
+        "time" : "85:59:00",
+        "output" : "autosnake/eems-%j-%N.out",
+        "err" : "autosnake/eems-%j-%N.err"
+    },
+    "run_eems0_single_run" :
+    {
+        "mem" : "2G",
+        "time" : "85:00:00",
+        "output" : "autosnake/eems0-%j-%N.out",
+        "err" : "autosnake/eems0-%j-%N.err"
+    },
+    "run_eems_single_pilot_run" :
+    {
+        "mem" : "2G",
+        "time" : "80:59:00",
+        "output" : "autosnake/eemspilot-%j-%N.out",
+        "err" : "autosnake/eemspilot-%j-%N.err"
+    },
+    "run_eems0_single_pilot_run" :
+    {
+        "mem" : "2G",
+        "time" : "80:00:00",
+        "output" : "autosnake/eemspilot0-%j-%N.out",
+        "err" : "autosnake/eemspilot0-%j-%N.err"
+    },
+    "get_pca_outliers" :
+    {
+        "mem" : "4G",
+        "output" : "autosnake/pcaoutliers-%j-%N.out",
+        "err" : "autosnake/pcaoutliers-%j-%N.err"
+    },
+    "bed2diffs" :
+    {
+        "mem" : "8G",
+        "output" : "autosnake/b2d-%j-%N.out",
+        "err" : "autosnake/b2d-%j-%N.err"
+    },
+    "subset_pca" :
+    {
+        "mem" : "8G",
+        "output" : "autosnake/subset-%j-%N.out",
+        "err" : "autosnake/subset-%j-%N.err"
+    },
+    "subset_nopca" :
+    {
+        "mem" : "8G",
+        "output" : "autosnake/subset-%j-%N.out",
+        "err" : "autosnake/subset-%j-%N.err"
+    },
+    "to_tess" :
+    {
+	"mem" : "6G"
+    },
+    "run_tess_single" : 
+    {
+        "time" : "35:59:00",
+        "mem" : "20G",
+        "output" : "autosnake/tess-%j-%N.out",
+        "err" : "autosnake/tess-%j-%N.err"
+    },
+    "run_treemix_single" : 
+    {
+        "mem" : "8G",
+        "time" : "24:00:00",
+        "output" : "autosnake/treemix-%j-%N.out",
+        "err" : "autosnake/treemix-%j-%N.err"
+    },
+    "run_spacemix" : 
+    {
+	"mem" : "6G",
+        "output" : "autosnake/spacemix-%j-%N.out",
+        "err" : "autosnake/spacemix-%j-%N.err"
+    },
+    "plot_eems" :{
+	"mem" : "6G"
+    },
+    "ggeems_errors" :{
+	"mem" : "4G"
+    },
+    "treemix_input" :{
+	"mem" : "16G"
+    },
+    "dist_ind" :{
+	"mem" : "4G"
+    },
+    "dist_ind_all" :{
+	"mem" : "4G"
+    },
+    "womble" :{
+	"time" : "24:00:00",
+	"mem" : "4G"
+    }
+}

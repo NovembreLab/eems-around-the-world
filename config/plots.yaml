@@ -1,0 +1,640 @@
+plot:
+    annotations:
+        __default__:
+            type: "label_repel"
+        hg:
+            color : "#ffb000"
+            size : 4
+            pch : "H"
+            type : "points"
+        bantu:
+            color : "black"
+            size : 4
+            pch : "B"
+            type : "points"
+        admixed :
+            color : "#89bff7"
+            size : 4
+            pch : "X"
+            type : "points"
+    __copy_from__:
+        seasia3fcP : seasia2fcP
+        xasia2f : xasia1f
+        xasia1frP : xasia1f
+        africa3f: africa0fb
+        africa2f: africa0fb
+        eumedi1fP : eumedi1f
+        india0fP : india0f
+        dindia0 : india0f
+        dasia0 : india0f
+        dindia0b : india0f
+        india1fP : india1f
+        fasia0f : xasia1f
+        seasia0fcP : seasia0fc
+        seasia1fcP : seasia0fc
+        global0fgP : global0fg
+        global0fh : global0fg    
+        india0f: xasia1f
+        india1f : india0f
+        southafrica0s : southafrica0hgP
+        r1africa0 : africa0fb
+        r1global0: global0fg       
+        r1global060: global0fg       
+        r1eumedi0 : eumedi1f       
+        r1xasia0 : xasia1fP        
+        r1seasia0 : seasia3fcP     
+        r1sa0 : southafrica0fhg    
+        r1sa1hg : southafrica0hgP
+        r1sahg0 : southafrica0hgP  
+        r1sabantu0 : southafrica0hgP
+        r1sa1nf : southafrica0fhg
+        r1global0mg : r1global0
+        r1global0nf: r1global0
+        r1africa0nf: r1africa0
+        r1africa0mg: r1africa0
+        r1eumedi0nf : r1eumedi0
+        r1xasia0nf : r1xasia0
+        r1seasia0nf : r1seasia0
+        r1sa0nf : r1sa0
+        r1sahg0nf : r1sahg0
+        r1sabantu0nf : r1sabantu0
+        r1europe0 : europe0f
+
+        r1global1nf: r1global0
+        r1global1nfb: r1global0
+        r1global1nfc: r1global0
+        r1global1nfd: r1global0
+        r1global1nfe: r1global0
+        c1global1nf: r1global0
+        c1global1nfb: r1global0
+        c1global1nfc: r1global0
+        c1global1nfd: r1global0
+        r1africa1nf: r1africa0
+        r1africa1nfb: r1africa0
+        c1africa1nf: r1africa0
+        c1africa2nf: r1africa0
+        r1eumedi1nf : r1eumedi0
+        c1eumedi1nf : r1eumedi0
+        r1xasia1nf : r1xasia0
+        r1xasia1nfb : r1xasia0
+        r1xasia1nfc : r1xasia0
+        c1xasia1nf : r1xasia0
+        c1xasia1nfb : r1xasia0
+        c1xasia2nfb : r1xasia0
+        c1xasia1nfc : r1xasia0
+        c1xasia2nfc : r1xasia0
+        r1seasia1nf : r1seasia0
+        c1seasia1nf : r1seasia0
+
+    __default__:
+        theme_size : 8
+    eems:
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : true  
+            sign_add_pts_color : false
+            sign_add_label : true
+            fancy : 0
+            zoom : 4
+            RES : 400
+            interior : false
+            min_alpha : 0.2
+            max_alpha : .7
+            add_graph : false
+            add_label : false
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 6
+            height : 6
+            add_pts : false
+            add_pts_color : true
+            #annotations : ['hg', 'admixed']
+            annotations : []
+        _paper :
+            fancy_proj_pars : [90, 10, 40]
+            fancy : 1
+            RES : 400
+            interior : false
+            min_alpha : 0.2
+            max_alpha : .7
+            do_q_plots : false
+            width: 6
+            height : 6
+            add_graph : false
+            add_label : false
+            add_pts : false
+            add_pts_color : true
+        #paper versions
+        eumedi1f :
+            copy : _paper
+            fancy_proj_pars : [90, 10, 10]
+            width : 5.5
+            height: 5.5
+        xasia1fP:
+            copy : _paper
+            width : 5.6
+            #fancy_proj_pars : [130, 60, 50]
+            height: 5.5
+        africa0fbP:
+            copy : _paper
+            width : 3.36
+            height: 3.36
+        southafrica0hgP :
+            copy : _paper
+            width : 1.5
+            height: 1.5
+            #annotations : ['bantu', 'admixed']
+        southafrica0fhg : #in supplement
+            copy : _paper
+            width : 2.2
+            height: 2.2
+            annotations : []
+        seasia2fcP :
+            copy : _paper
+            width : 2.6
+            height: 2.6
+        global0fg :
+            copy : _paper
+            width : 7.6
+            height : 7.6
+
+
+        eumedi0sb :
+            fancy : 1
+            fancy_proj_pars : [90, 10, 10]
+        eumedi0f :
+            sign_add_label : false
+            fancy_proj_pars : [90, 10, 10]
+            fancy : 1
+            width : 6.2
+            height: 6.2
+        easia0fd :
+            copy: xasia0f
+        xasia0f :
+            sign_add_label : false
+            fancy : 1
+            #fancy_proj_pars : [90, 10, 40]
+            width : 6.2
+            height: 6.5
+        xasia1f :
+            copy : xasia0f
+        seasia0fc:
+            copy : xasia0f
+        seasia0fb:
+            copy : seasia0fc
+        africa0f :
+            copy: xasia0f
+        africa1f :
+            copy: africa0f
+        africa0fb :
+            copy: africa0f
+            width : 4.7
+            height : 4.7
+        africa1fb :
+            copy: africa0f
+        africa0fc :
+            copy: africa0f
+        global2:
+            fancy : 1
+            zoom : 3
+        global0sm:
+            fancy : 1
+            zoom : 3
+        global1s :
+            fancy : 1
+        global2s :
+            fancy : 1
+        global0f :
+            fancy : 1
+            sign_add_label : false
+        global0fb:
+            copy : "global0f"
+        global0fc:
+            copy : "global0f"
+        global0fd:
+            copy : "global0f"
+        global0fe:
+            copy : "global0f"
+        global0ff:
+            copy : "global0f"
+        southafrica0f :
+            width : 2
+            height : 2
+            copy : global0fg
+            #annotations : ['admix', 'hg']
+        southafrica0hg :
+            copy : southafrica0f
+            #annotations : ['bantu', 'admixed']
+        southafrica0 : 
+            copy : southafrica0f
+            #annotations : ['admix']
+
+
+        global1sf :
+            fancy : 1
+            #width : 5
+            #height : 5
+        medi1 :
+            fancy : 0
+        eumedi0:
+            add_graph : false
+        southafrica1s:
+            width : 2
+            height : 2
+    eemssig :
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : false
+            sign_add_pts_color : false
+            sign_add_label : true
+            fancy : 1
+            zoom : 4
+            RES : 400
+            textsize : 1.8
+            interior : true
+            min_alpha : 0.2
+            max_alpha : .7
+            add_graph : false
+            add_label : false
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 20
+            height : 20
+            add_pts : false
+            add_pts_color : true
+            #annotations : ['hg', 'admixed']
+        eumedi1f:
+            fancy_proj_pars : [90, 10, 10]
+            width : 5.5
+            height: 5.5
+        xasia1fP:
+            #fancy_proj_pars : [130, 60, 50]
+            width : 5.6
+            height: 5.5
+        africa0fb:
+            width : 3.35
+            height: 3.35
+        southafrica0hgP :
+            width : 1.5
+            height: 1.5
+        seasia2fcP :
+            width : 2.6
+            height: 2.6
+        global0fg :
+            width : 7.6
+            height : 7.6
+    eemsvar :
+        __default__ :
+            sign_add_graph : true
+            sign_add_pts : false
+            sign_add_pts_color : true
+            sign_add_label : true
+            add_graph : true
+            add_pts : false
+            add_pts_color : true
+            add_label : false
+            fancy : 1
+            zoom : 4
+            RES : 400
+            interior : false
+            min_alpha : 0.9
+            max_alpha : 1.0
+            fancy_proj_pars : [90, 10, 40]
+            do_q_plots : false
+            width: 7
+            height : 7
+            #annotations : ['hg', 'admixed']
+            annotations : []
+        eumedi1f:
+            fancy_proj_pars : [90, 10, 10]
+            width : 5.5
+            height: 5.5
+        xasia1fP:
+            #fancy_proj_pars : [130, 60, 50]
+            width : 5.6
+            height: 5.5
+        africa0fb:
+            width : 3.36
+            height: 3.36
+        southafrica0hgP :
+            width : 1.5
+            height: 1.5
+        southafrica0hg :
+            width : 1.5
+            height: 1.5
+        seasia2fcP :
+            width : 2.6
+            height: 2.6
+        global0fg :
+            width : 7.6
+            height : 7.6
+    synthmap:
+        __default__ :
+            RES : 400
+            fancy_proj_pars : [90, 10, 40]
+            width: 4
+            height : 4
+            idp : 2.5
+            pcs: ["PC1", "PC2", "PC3", "PC4"]
+    scatter:
+        __default__ :
+            rsq_size : 2.5
+            #xvars : ["geoDist", "eems0dist", "eemsdist", "pcDist10"]
+            #xnames : ["geog.", "resistance", "EEMS-fitted", "PCA-fitted"]
+            #xvars : ["geoDist", "eemsdist", "pcDist10"]
+            #xnames : ["geog.",  "EEMS-fitted", "PCA-fitted"]
+            xvars : ["geoDist", "eemsdist", "pcDist2", "pcDist10", "pcDist100"]
+            xnames : ["geog.",  "EEMS-fitted", "PCA-2", "PCA-10", "PCA-100"]
+            yvar : ["gendist"]
+            point_type : "hex"
+            outlier_type : "text"
+            outlier_pct : 0.00
+            outlier_size : 1.3
+            outlier_alpha : .6
+            color : "lightgray"
+            alpha : .8
+            tall : true #whether format should be by row or by col, 
+            width : 1
+            height : 3
+            size : .1
+            no_panel : false
+
+        # paper guys, now wide
+        africa0fb:
+            theme_size : 9
+            no_panel : true
+            rsq_size : 2.4
+            tall : false
+            width : 3.8
+            height : 0.8
+            #xvars : ["geoDist", "eemsdist", "pcDist10"]
+            #xnames : ["geog.", "EEMS-fitted", "PCA-fitted"]
+        southafrica0hg :
+            copy: africa0fb
+        africa0fbP:
+                copy: africa0fb
+        southafrica0hgP: 
+            copy : "southafrica0hg"
+            n_bins : 15
+
+        seasia0fc:
+            copy : africa0fb
+            tall : false
+        seasia2fcP :
+            copy : seasia0fc
+        global0fg: 
+            copy : "seasia0fc"
+        eumedi1fP:
+            copy: seasia0fc
+        xasia1fP: 
+            copy : "southafrica0hg"
+            n_bins : 30
+        eumedi1f:
+            copy : "southafrica0hg"
+            n_bins : 30
+        southafrica0f: 
+            copy : "southafrica0hg"
+            n_bins : 15
+        southafrica0: 
+            copy : "southafrica0hg"
+            n_bins : 15
+        southafrica0fhg: 
+            copy : "southafrica0hg"
+            n_bins : 15
+            #annotations : ['admixed']
+        _paper_tall :
+            tall : true
+        _paper_wide :
+            tall : false
+
+        seasia3s :
+            copy : _paper_tall
+            width : .9
+            height : 1.6
+            no_panel : true
+        easia1stest :
+            copy : seasia3s
+        casia0sd :
+            copy : seasia3s
+
+        africa1s:
+            copy : _paper_wide
+            tall : false
+            width : 2.3
+            height : .8
+
+        southafrica1s:
+            copy : _paper_wide
+            tall : false
+            width : 2.3
+            height : .8
+        eumedi1sb:
+            copy : _paper_wide
+            width : 3
+            height : .8
+    pve:
+        __default__ :
+            nmax : 10
+            width : 3
+            height : 2
+    pca2d:
+        __default__:
+            text_field : "name"
+            max_n_pc : 4
+            point_type : "text" #points|text|none
+            text_size : 1
+            point_alpha : 1
+            point_grey : true
+            median : true
+            median_alpha : 1.0
+            median_label_grey : false
+            median_repel : false
+            median_label : true
+            median_label_alpha : .8
+            median_size : 0.5
+            median_label_size : 1.4
+            color : "exclusion"
+            width : 4
+            height : 4
+            rotate : false
+            flip : []
+        _paper :
+            color: "exclusion"
+            median_label_size : 2
+            width: 2
+            height : 2
+            point_type : "points"
+            median_label : false
+            median_size : 2
+            point_alpha : 0.6
+            text_size : .5
+        _poster:
+            color: "location"
+            width : 6.5
+            height : 6.5
+            median_repel : false
+            median_size : 1
+            median_label_size : 4
+            text_size : 3
+            theme_size : 18
+        southafrica0:
+            copy: _poster
+            width : 6.5
+            height : 4
+        eumedi1f:
+            copy : _paper
+            width : 1.7
+            height : 1.7
+            flip : [ 2]
+            rotate : true
+        europe0f:
+            copy : _paper
+            width : 1.7
+            height : 1.7
+            rotate : true
+            flip : []
+
+        #        europe0f:
+            #copy : _poster
+            #width : 5
+            #height : 5
+        southafrica0hg:
+            copy : _paper
+            width : 2
+            height : 1.7
+        southafrica0fhg:
+            copy : _paper
+            width : 1.7
+            height : 2
+        africa0hg:
+            copy : _paper
+            width : 1.7
+            height : 2
+        #southafrica0hgP: #for main text fig
+        #    copy : _paper
+        #    width : 2
+        #    height : 1.7
+        southafrica0hgP: # for supp text fig
+            copy : _paper
+            width : 1.7
+            height : 2
+        xasia1fP :
+            copy : _paper
+            width: 1.7 
+            height : 1.7
+            flip : [1,2]
+            rotate : false
+        africa0fb :
+            width: 1.5
+            height : 1.7
+            copy : _paper
+            rotate : true
+            flip : []
+        seasia0fc:
+            copy : africa0fb
+            width: 1.7
+            height : 1.7
+            flip : [2]
+        seasia2fcP:
+            copy : seasia0fc
+            width: 1.7
+            height : 1.7
+            rotate: true
+            flip : [2]
+        xasia1f :
+            copy : africa0fb
+            width: 3.5
+            height : 2.5
+        eumedi1fP:
+            copy : africa0fb
+            width : 1.7
+            height : 1.7
+            flip : [1,2]
+        global0fg:
+            copy : _paper
+            #median_repel : false
+            width : 3.4
+            height : 3
+            theme_size : 10
+            rotate : true
+            flip : []
+
+        global1sf:
+            copy : _paper
+            point_type : "points"
+            median_label : false
+            median_size : 2
+            point_alpha : 0.6
+            text_size : .5
+            #width : 2
+            #height : 1.7
+        seasia3s :
+            copy : _paper
+            width : 2
+            height : 1.2
+        easia1s :
+            copy : _paper
+            width : 2
+            height : 1.2
+        casia0sd :
+            copy : _paper
+            width : 2
+            height : 1.2
+        africa1s:
+            copy : _paper
+            width : 2.3
+            height : 2.3
+        southafrica1s:
+            copy : _paper
+            width : 2.0
+            height : 2.0
+            median_repel : true
+            median_label_size : 2.5
+        southafrica0x:
+            copy : _paper
+            median_repel : true
+            median_label_size : 2.5
+            text_field : "name"
+            width : 3.5
+            height : 3.5
+        seasia0fb:
+            median_repel : true
+            text_size : .5
+            median_label_size : 3
+            point_grey: false
+            point_type: "points"
+        southafrica0f:
+            copy: southafrica0x
+    error:
+        __default__ :
+            label : "abbrev"
+            nmax : 100
+            grid_label : "first"
+            width : 6.2
+            height : 1.2
+            annotations : ['hg', 'admixed', 'bantu']
+        _paper :
+            label : "abbrev"
+            width : 3
+            height : 2
+            nmax : 25
+        _poster:
+            label : "name"
+            width : 6
+            height : 4
+        southafrica0fhg:
+            width : 2.3
+        southafrica0hgP:
+            width : 2.3
+        southafrica0f:
+            width : 2.3
+    map :
+        __default__ :
+            width : 12
+            height : 12
+            fancy : true
+            interior : true
+
+        global0fg:
+            width : 20
+            height : 20

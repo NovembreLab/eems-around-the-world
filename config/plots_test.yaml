@@ -1,0 +1,37 @@
+plot:
+    _default:
+        theme_size : 8
+    eems:
+        _default :
+            fancy_background : 0
+            zoom : 4
+            RES : 200
+            interior : true
+            min_alpha : 0.2
+            max_alpha : .7
+            add_graph : false
+            add_label : false
+            map_proj_pars : [90, 10, 40]
+            width: 6
+            height : 6
+            add_pts : false
+            add_pts_color : true
+        _paper :
+            fancy : 1
+            RES : 400
+            interior : false
+            min_alpha : 0.2
+            max_alpha : .7
+            width: 6
+            height : 6
+            annotations : ['hg', 'admixed']
+        _poster : 
+            theme_size : 24
+            width : 24   
+            height : 24 
+        _talk : 
+            sign_only : true
+            add_pts_color : false
+        eumedi0f :
+            sign_add_label : false
+            map_proj_pars : [90, 10, 10]
