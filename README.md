@@ -28,3 +28,11 @@ data format, with some minor (recommended) changes.
 The pipeline is implemented using [Snakemake](https://bitbucket.org/snakemake),
 using `python` for most data wrangling and `R` for most plotting
 
+
+## Reproducing results from Peter et al. 2019
+As some of the data used requires permission, we are not free to redistribute it. To
+re-generate all figures from the paper, it will be necessary to 
+1. acquire access to all data and create master data set as described in the
+   merge-pipeline
+2. change paths in `config/config.json` to reflect your working environment
+3. run `snakemake all`
